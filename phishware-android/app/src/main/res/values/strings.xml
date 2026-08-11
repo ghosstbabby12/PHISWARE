@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">PHISHWARE</string>
+    <string name="nav_dashboard">Dashboard</string>
+    <string name="nav_analysis">Análisis</string>
+    <string name="nav_education">Educación</string>
+    <string name="nav_alerts">Alertas</string>
+    <string name="btn_analyze">Analizar URL</string>
+    <string name="hint_url">Ingresa URL o enlace sospechoso…</string>
+    <string name="btn_login">Iniciar Sesión</string>
+    <string name="btn_register">Crear Cuenta</string>
+    <string name="risk_safe">Sitio Seguro</string>
+    <string name="risk_suspicious">Sitio Sospechoso</string>
+    <string name="risk_dangerous">Sitio Peligroso</string>
+</resources>

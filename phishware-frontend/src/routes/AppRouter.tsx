@@ -11,6 +11,7 @@ import ArticlePage from '@/pages/ArticlePage'
 import AlertsPage from '@/pages/AlertsPage'
 import ProfilePage from '@/pages/ProfilePage'
 import ReportPage from '@/pages/ReportPage'
+import AdminDashboardPage from '@/pages/AdminDashboardPage'
 import AppLayout from '@/components/common/AppLayout'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -22,6 +23,11 @@ function ProtectedRoute({ children }: { children: React.ReactNode }) {
 function GuestRoute({ children }: { children: React.ReactNode }) {
   const { isAuthenticated } = useAuth()
   return isAuthenticated ? <Navigate to="/dashboard" replace /> : <>{children}</>
+}
+
+function AdminRoute({ children }: { children: React.ReactNode }) {
+  const { isAdmin } = useAuth()
+  return isAdmin ? <>{children}</> : <Navigate to="/dashboard" replace />
 }
 
 export default function AppRouter() {
@@ -40,6 +46,7 @@ export default function AppRouter() {
           <Route path="/education/:slug" element={<ArticlePage />} />
           <Route path="/alerts" element={<AlertsPage />} />
           <Route path="/reports" element={<ReportPage />} />
+          <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
 

@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Search, History, BookOpen,
-  Bell, User, Shield, LogOut, Flag
+  Bell, User, Shield, LogOut, Flag, ShieldCheck
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import clsx from 'clsx'
@@ -17,7 +17,7 @@ const navItems = [
 ]
 
 export default function Sidebar() {
-  const { user, logout } = useAuth()
+  const { user, logout, isAdmin } = useAuth()
 
   return (
     <aside className="w-64 bg-dark-900 border-r border-slate-700/50 flex flex-col">
@@ -36,6 +36,15 @@ export default function Sidebar() {
 
       {/* Nav */}
       <nav className="flex-1 p-4 space-y-1">
+        {isAdmin && (
+          <NavLink
+            to="/admin"
+            className={({ isActive }) => clsx('nav-link', isActive && 'active')}
+          >
+            <ShieldCheck className="w-4 h-4" />
+            <span>Administracion</span>
+          </NavLink>
+        )}
         {navItems.map(({ to, icon: Icon, label }) => (
           <NavLink
             key={to}

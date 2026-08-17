@@ -94,7 +94,7 @@ public class RateLimitingConfig {
                 response.setContentType("application/json");
                 response.getWriter().write(
                     "{\"status\":429,\"error\":\"Too Many Requests\"," +
-                    "\"message\":\"Has excedido el límite de solicitudes. Intenta en 60 segundos.\",}"
+                    "\"message\":\"Has excedido el límite de solicitudes. Intenta en 60 segundos.\"}"
                 );
                 return;
             }

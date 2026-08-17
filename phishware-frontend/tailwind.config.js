@@ -8,6 +8,8 @@ export default {
         primary: {
           50:  '#eff6ff',
           100: '#dbeafe',
+          300: '#93c5fd',
+          400: '#60a5fa',
           500: '#3b82f6',
           600: '#2563eb',
           700: '#1d4ed8',
@@ -16,6 +18,8 @@ export default {
         danger: {
           50:  '#fff1f2',
           100: '#ffe4e6',
+          300: '#fca5a5',
+          400: '#f87171',
           500: '#ef4444',
           600: '#dc2626',
           700: '#b91c1c',
@@ -23,12 +27,16 @@ export default {
         warning: {
           50:  '#fffbeb',
           100: '#fef3c7',
+          300: '#fcd34d',
+          400: '#fbbf24',
           500: '#f59e0b',
           600: '#d97706',
         },
         success: {
           50:  '#f0fdf4',
           100: '#dcfce7',
+          300: '#86efac',
+          400: '#4ade80',
           500: '#22c55e',
           600: '#16a34a',
         },

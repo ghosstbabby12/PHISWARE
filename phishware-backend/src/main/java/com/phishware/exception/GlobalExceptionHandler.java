@@ -80,6 +80,14 @@ public class GlobalExceptionHandler {
         ));
     }
 
+    @ExceptionHandler(SecurityException.class)
+    public ResponseEntity<ApiErrorResponse> handleSecurityException(
+            SecurityException ex, HttpServletRequest request) {
+        return ResponseEntity.badRequest().body(buildError(
+            400, "Security Violation", ex.getMessage(), request.getRequestURI()
+        ));
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ApiErrorResponse> handleIllegalArgument(
             IllegalArgumentException ex, HttpServletRequest request) {

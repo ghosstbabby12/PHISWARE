@@ -1,0 +1,28 @@
+# Java / Maven
+target/
+*.class
+*.jar
+*.war
+
+# Node / Frontend
+node_modules/
+dist/
+*.tsbuildinfo
+
+# Android
+.gradle/
+build/
+local.properties
+
+# IDE
+.idea/
+*.iml
+.vscode/
+*.swp
+*.swo
+nbproject/
+
+# OS
+.DS_Store
+Thumbs.db
+desktop.ini

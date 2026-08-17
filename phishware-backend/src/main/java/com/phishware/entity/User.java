@@ -118,6 +118,6 @@ public class User implements UserDetails {
     public boolean isEnabled() { return isActive; }
 
     public String getFullName() {
-        return (firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "");
+        return ((firstName != null ? firstName : "") + " " + (lastName != null ? lastName : "")).trim();
     }
 }

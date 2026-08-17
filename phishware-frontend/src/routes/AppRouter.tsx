@@ -10,6 +10,7 @@ import EducationPage from '@/pages/EducationPage'
 import ArticlePage from '@/pages/ArticlePage'
 import AlertsPage from '@/pages/AlertsPage'
 import ProfilePage from '@/pages/ProfilePage'
+import ReportPage from '@/pages/ReportPage'
 import AppLayout from '@/components/common/AppLayout'
 
 function ProtectedRoute({ children }: { children: React.ReactNode }) {
@@ -38,6 +39,7 @@ export default function AppRouter() {
           <Route path="/education" element={<EducationPage />} />
           <Route path="/education/:slug" element={<ArticlePage />} />
           <Route path="/alerts" element={<AlertsPage />} />
+          <Route path="/reports" element={<ReportPage />} />
           <Route path="/profile" element={<ProfilePage />} />
         </Route>
 

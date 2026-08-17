@@ -7,11 +7,9 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
-import org.springframework.stereotype.Repository;
 
 import java.time.LocalDateTime;
 
-@Repository
 public interface UrlAnalysisRepository extends JpaRepository<UrlAnalysis, Long> {
 
     Page<UrlAnalysis> findByUserIdOrderByAnalyzedAtDesc(Long userId, Pageable pageable);
@@ -59,4 +57,14 @@ public interface UrlAnalysisRepository extends JpaRepository<UrlAnalysis, Long> 
     long countByRiskLevel(RiskLevel riskLevel);
 
     long countByIsPhishingTrue();
+
+    @Query(value = """
+        SELECT t.threat_type, COUNT(*) as count
+        FROM threats t
+        JOIN url_analysis ua ON t.analysis_id = ua.id
+        WHERE ua.user_id = :userId
+        GROUP BY t.threat_type
+        ORDER BY count DESC
+        """, nativeQuery = true)
+    java.util.List<Object[]> countThreatsByTypeForUser(@Param("userId") Long userId);
 }

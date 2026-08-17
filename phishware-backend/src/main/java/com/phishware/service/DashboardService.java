@@ -46,6 +46,11 @@ public class DashboardService {
         analysisRepository.countAnalysesByDayForUser(userId)
             .forEach(row -> byDay.put((String) row[0], ((Number) row[1]).longValue()));
 
+        // Amenazas por tipo
+        Map<String, Long> threatsByType = new LinkedHashMap<>();
+        analysisRepository.countThreatsByTypeForUser(userId)
+            .forEach(row -> threatsByType.put((String) row[0], ((Number) row[1]).longValue()));
+
         return DashboardResponse.builder()
             .totalAnalyses(total)
             .threatsDetected(threats)
@@ -57,6 +62,7 @@ public class DashboardService {
             .userLevel(user.getLevel())
             .recentAnalyses(recent)
             .analysesByDay(byDay)
+            .threatsByType(threatsByType)
             .build();
     }
 }

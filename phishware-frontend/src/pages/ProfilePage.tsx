@@ -6,8 +6,9 @@ export default function ProfilePage() {
 
   const levelThresholds = [0, 100, 250, 500, 800, 1200, 1700, 2300, 3000, 4000]
   const currentThreshold = levelThresholds[(user?.level ?? 1) - 1] ?? 0
-  const nextThreshold = levelThresholds[user?.level ?? 1] ?? (user?.points ?? 0)
-  const progress = ((( user?.points ?? 0) - currentThreshold) / (nextThreshold - currentThreshold)) * 100
+  const nextThreshold = levelThresholds[user?.level ?? 1] ?? ((user?.points ?? 0) + 1)
+  const denominator = nextThreshold - currentThreshold
+  const progress = denominator > 0 ? (((user?.points ?? 0) - currentThreshold) / denominator) * 100 : 100
 
   return (
     <div className="max-w-2xl mx-auto space-y-6 animate-fade-in">

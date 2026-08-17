@@ -58,10 +58,7 @@ app:
     base-url: https://www.virustotal.com/api/v3
 
   cors:
-    allowed-origins:
-      - http://localhost:5173
-      - http://localhost:3000
-      - https://phishware.app
+    allowed-origins: http://localhost:5173,http://localhost:3000,https://phishware.app
 
 # SpringDoc / Swagger
 springdoc:

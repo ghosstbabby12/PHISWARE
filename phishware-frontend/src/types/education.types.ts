@@ -6,6 +6,8 @@ export type ContentCategory =
   | 'BEST_PRACTICES'
   | 'CASE_STUDIES'
   | 'TOOLS'
+  | 'OWASP'
+  | 'NIST'
 
 export type Difficulty = 'BEGINNER' | 'INTERMEDIATE' | 'ADVANCED'
 

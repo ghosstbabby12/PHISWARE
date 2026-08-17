@@ -7,6 +7,9 @@ import com.phishware.entity.enums.RiskLevel;
 import com.phishware.repository.AlertRepository;
 import com.phishware.repository.UrlAnalysisRepository;
 import com.phishware.repository.UserRepository;
+import com.phishware.security.InputSanitizerService;
+import com.phishware.security.NistThreatClassifier;
+import com.phishware.security.OwaspComplianceValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -15,6 +18,7 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -33,6 +37,9 @@ class UrlAnalysisServiceTest {
     @Mock private VirusTotalService virusTotalService;
     @Mock private GamificationService gamificationService;
     @Mock private AuditLogService auditLogService;
+    @Mock private InputSanitizerService inputSanitizer;
+    @Mock private NistThreatClassifier nistClassifier;
+    @Mock private OwaspComplianceValidator owaspValidator;
 
     @InjectMocks
     private UrlAnalysisService urlAnalysisService;
@@ -49,6 +56,22 @@ class UrlAnalysisServiceTest {
             .points(0)
             .level(1)
             .build();
+
+        lenient().when(inputSanitizer.sanitizeAndValidateUrl(anyString()))
+            .thenAnswer(invocation -> {
+                String url = invocation.getArgument(0);
+                if (!url.startsWith("http://") && !url.startsWith("https://")) {
+                    return "https://" + url;
+                }
+                return url;
+            });
+
+        lenient().when(owaspValidator.validateUrlForInjection(anyString()))
+            .thenReturn(new OwaspComplianceValidator.ValidationResult(true, List.of()));
+
+        lenient().when(nistClassifier.classify(any(), any()))
+            .thenReturn(new NistThreatClassifier.HeuristicResult(
+                RiskLevel.SAFE, BigDecimal.ZERO, List.of(), List.of()));
     }
 
     @Test
@@ -134,7 +157,8 @@ class UrlAnalysisServiceTest {
         UrlAnalysisRequest request = new UrlAnalysisRequest();
         request.setUrl("not-a-valid-url-!!@@##");
 
-        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(inputSanitizer.sanitizeAndValidateUrl(anyString()))
+            .thenThrow(new IllegalArgumentException("URL inválida"));
 
         // Act & Assert
         assertThatThrownBy(() -> urlAnalysisService.analyzeUrl(request, 1L))

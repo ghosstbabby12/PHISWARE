@@ -1,7 +1,7 @@
 import { NavLink } from 'react-router-dom'
 import {
   LayoutDashboard, Search, History, BookOpen,
-  Bell, User, Shield, LogOut
+  Bell, User, Shield, LogOut, Flag
 } from 'lucide-react'
 import { useAuth } from '@/context/AuthContext'
 import clsx from 'clsx'
@@ -12,6 +12,7 @@ const navItems = [
   { to: '/history',    icon: History,         label: 'Historial' },
   { to: '/education',  icon: BookOpen,        label: 'Educación' },
   { to: '/alerts',     icon: Bell,            label: 'Alertas' },
+  { to: '/reports',    icon: Flag,            label: 'Reportar' },
   { to: '/profile',    icon: User,            label: 'Perfil' },
 ]
 

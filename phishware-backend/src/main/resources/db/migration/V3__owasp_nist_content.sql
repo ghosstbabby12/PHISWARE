@@ -5,13 +5,19 @@
 -- plan de respuesta NIST CSF RC.IM-2 (Recovery improvements based on learnings)
 -- =============================================================================
 
+-- Ampliar categorías permitidas para incluir contenido OWASP y NIST
+ALTER TABLE educational_content DROP CONSTRAINT educational_content_category_check;
+ALTER TABLE educational_content ADD CONSTRAINT educational_content_category_check
+    CHECK (category IN ('PHISHING_BASICS', 'SOCIAL_ENGINEERING', 'SMISHING', 'VISHING', 'BEST_PRACTICES', 'CASE_STUDIES', 'TOOLS', 'OWASP', 'NIST'));
+
 -- ─────────────────────────────────────────────────────────────────────────────
 -- SECCIÓN 1: Artículos educativos OWASP Top 10 aplicado a phishing
 -- ─────────────────────────────────────────────────────────────────────────────
 
-INSERT INTO educational_content (title, content, category, difficulty_level, reading_time_minutes, tags, is_published, created_at, updated_at) VALUES
+INSERT INTO educational_content (title, slug, content, category, difficulty, reading_time_min, tags, is_published, created_at, updated_at) VALUES
 (
   'OWASP Top 10: Las Amenazas Web que Facilitan el Phishing',
+  'owasp-top-10-amenazas-web-phishing',
   '## ¿Qué es OWASP Top 10?
 
 El **Open Web Application Security Project (OWASP)** publica cada pocos años la lista de las 10 vulnerabilidades más críticas en aplicaciones web. Los atacantes de phishing explotan estas mismas vulnerabilidades para hacer sus ataques más convincentes y difíciles de detectar.
@@ -61,13 +67,14 @@ PHISHWARE implementa controles específicos para cada categoría OWASP:
   'OWASP',
   'INTERMEDIATE',
   12,
-  '["owasp", "top10", "phishing", "seguridad-web", "vulnerabilidades"]',
+  '{"owasp", "top10", "phishing", "seguridad-web", "vulnerabilidades"}',
   true,
   NOW(),
   NOW()
 ),
 (
   'OWASP A03: Inyección y Phishing — Cómo los Atacantes Manipulan URLs',
+  'owasp-a03-inyeccion-phishing-manipulacion-urls',
   '## Inyección en el contexto del phishing
 
 La **inyección** ocupa el tercer lugar en OWASP Top 10:2021. En el contexto del phishing, los atacantes usan técnicas de inyección de múltiples maneras para engañar tanto a usuarios como a sistemas de seguridad.
@@ -127,13 +134,14 @@ El servicio también detecta el ataque homograph mediante normalización Unicode
   'OWASP',
   'ADVANCED',
   10,
-  '["owasp", "inyeccion", "url-manipulation", "homograph", "phishing"]',
+  '{"owasp", "inyeccion", "url-manipulation", "homograph", "phishing"}',
   true,
   NOW(),
   NOW()
 ),
 (
   'OWASP A07: Fallos de Autenticación — El Objetivo Principal del Phishing',
+  'owasp-a07-fallos-autenticacion-objetivo-phishing',
   '## Por qué la autenticación es el objetivo #1
 
 OWASP A07:2021 — *Identification and Authentication Failures* describe exactamente lo que el phishing intenta explotar: **robar credenciales de autenticación**.
@@ -194,7 +202,7 @@ El estándar NIST para contraseñas recomienda:
   'OWASP',
   'BEGINNER',
   8,
-  '["owasp", "autenticacion", "credenciales", "mfa", "contrasenas"]',
+  '{"owasp", "autenticacion", "credenciales", "mfa", "contrasenas"}',
   true,
   NOW(),
   NOW()
@@ -204,9 +212,10 @@ El estándar NIST para contraseñas recomienda:
 -- SECCIÓN 2: Artículos educativos NIST Cybersecurity Framework
 -- ─────────────────────────────────────────────────────────────────────────────
 
-INSERT INTO educational_content (title, content, category, difficulty_level, reading_time_minutes, tags, is_published, created_at, updated_at) VALUES
+INSERT INTO educational_content (title, slug, content, category, difficulty, reading_time_min, tags, is_published, created_at, updated_at) VALUES
 (
   'NIST Cybersecurity Framework: Tu Marco de Defensa contra el Phishing',
+  'nist-cybersecurity-framework-defensa-phishing',
   '## ¿Qué es el NIST Cybersecurity Framework?
 
 El **National Institute of Standards and Technology (NIST)** publicó el Cybersecurity Framework (CSF) como guía voluntaria para que organizaciones de cualquier tamaño gestionen y reduzcan el riesgo de ciberseguridad.
@@ -287,13 +296,14 @@ En el contexto del phishing:
   'NIST',
   'INTERMEDIATE',
   15,
-  '["nist", "csf", "framework", "ciberseguridad", "gestion-riesgos"]',
+  '{"nist", "csf", "framework", "ciberseguridad", "gestion-riesgos"}',
   true,
   NOW(),
   NOW()
 ),
 (
   'NIST SP 800-30: Evaluación de Riesgos de Phishing en tu Organización',
+  'nist-sp-800-30-evaluacion-riesgos-phishing',
   '## ¿Qué es NIST SP 800-30?
 
 La publicación especial **NIST SP 800-30 Rev. 1** — *Guide for Conducting Risk Assessments* — proporciona una guía para evaluar los riesgos de seguridad de la información. PHISHWARE usa esta metodología para calcular el score de riesgo de cada URL analizada.
@@ -373,13 +383,14 @@ B CRIT. │  🟠  │  🔴  │  🔴  │  🔴  │
   'NIST',
   'ADVANCED',
   14,
-  '["nist", "sp800-30", "riesgo", "evaluacion", "metodologia"]',
+  '{"nist", "sp800-30", "riesgo", "evaluacion", "metodologia"}',
   true,
   NOW(),
   NOW()
 ),
 (
   'Buenas Prácticas OWASP y NIST: Tu Guía Completa de Ciberhigiene',
+  'buenas-practicas-owasp-nist-ciberhigiene',
   '## Ciberhigiene: El concepto que une OWASP y NIST
 
 La **ciberhigiene** es el conjunto de prácticas cotidianas de seguridad que, al igual que lavarse las manos, previenen la mayoría de los problemas antes de que ocurran.
@@ -462,7 +473,7 @@ El phishing evoluciona constantemente:
   'NIST',
   'BEGINNER',
   11,
-  '["nist", "owasp", "buenas-practicas", "ciberhigiene", "guia-completa"]',
+  '{"nist", "owasp", "buenas-practicas", "ciberhigiene", "guia-completa"}',
   true,
   NOW(),
   NOW()
@@ -472,16 +483,15 @@ El phishing evoluciona constantemente:
 -- SECCIÓN 3: Quiz OWASP Top 10 aplicado a phishing
 -- ─────────────────────────────────────────────────────────────────────────────
 
-INSERT INTO quiz (title, description, difficulty_level, time_limit_minutes, passing_score, points_reward, is_published, created_at, updated_at) VALUES
+INSERT INTO quiz (title, description, difficulty, time_limit_sec, passing_score, points_reward, is_active, created_at) VALUES
 (
   'Quiz OWASP: ¿Conoces las Vulnerabilidades del Phishing?',
   'Evalúa tu conocimiento sobre cómo el OWASP Top 10 se relaciona con los ataques de phishing y las defensas que PHISHWARE implementa. Requiere haber leído los artículos OWASP.',
   'INTERMEDIATE',
-  15,
+  900,
   70,
   50,
   true,
-  NOW(),
   NOW()
 );
 
@@ -497,50 +507,50 @@ BEGIN
   (v_quiz_id,
    '¿Cuál categoría de OWASP Top 10:2021 describe directamente el objetivo principal del phishing?',
    'SINGLE_CHOICE',
-   '["A01 - Broken Access Control", "A03 - Injection", "A07 - Identification and Authentication Failures", "A10 - Server-Side Request Forgery"]',
-   '["A07 - Identification and Authentication Failures"]',
-   'OWASP A07 cubre el robo y fallo en la autenticación de identidades. El phishing busca exactamente eso: robar credenciales de autenticación (usuario y contraseña) para suplantar la identidad de la víctima.',
-   10, 1);
+    '{"A": "A01 - Broken Access Control", "B": "A03 - Injection", "C": "A07 - Identification and Authentication Failures", "D": "A10 - Server-Side Request Forgery"}',
+    '{"correct": ["C"]}',
+    'OWASP A07 cubre el robo y fallo en la autenticación de identidades. El phishing busca exactamente eso: robar credenciales de autenticación (usuario y contraseña) para suplantar la identidad de la víctima.',
+    10, 1);
 
   -- Pregunta 2
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    '¿Qué es un "homograph attack" en el contexto de phishing?',
    'SINGLE_CHOICE',
-   '["Un ataque que usa imágenes para ocultar texto malicioso", "Uso de caracteres Unicode visualmente idénticos para crear dominios falsos", "Un ataque que copia exactamente el diseño visual de un sitio legítimo", "Envío masivo del mismo correo de phishing a múltiples víctimas"]',
-   '["Uso de caracteres Unicode visualmente idénticos para crear dominios falsos"]',
+   '{"A": "Un ataque que usa imágenes para ocultar texto malicioso", "B": "Uso de caracteres Unicode visualmente idénticos para crear dominios falsos", "C": "Un ataque que copia exactamente el diseño visual de un sitio legítimo", "D": "Envío masivo del mismo correo de phishing a múltiples víctimas"}',
+   '{"correct": ["B"]}',
    'Los ataques homograph usan caracteres de otros alfabetos (como cirílico) que son visualmente idénticos a letras latinas. Por ejemplo: "pаypal.com" donde la "а" es cirílica (U+0430), no latina. El dominio es diferente pero parece idéntico visualmente.',
-   10, 2);
+    10, 2);
 
   -- Pregunta 3
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    '¿Cuál de las siguientes URLs es más probable que sea un ataque de phishing? (OWASP A03)',
    'SINGLE_CHOICE',
-   '["https://paypal.com/es/signin", "https://secure-paypal.com/login", "https://www.paypal.com/signin?returnUrl=/home", "https://developer.paypal.com/docs/api/"]',
-   '["https://secure-paypal.com/login"]',
+   '{"A": "https://paypal.com/es/signin", "B": "https://secure-paypal.com/login", "C": "https://www.paypal.com/signin?returnUrl=/home", "D": "https://developer.paypal.com/docs/api/"}',
+   '{"correct": ["B"]}',
    'La URL "secure-paypal.com" es un dominio diferente a "paypal.com". El prefijo "secure-" es un truco común: el dominio real es "secure-paypal.com", no "paypal.com". Las otras tres URLs pertenecen legítimamente al dominio "paypal.com".',
-   10, 3);
+    10, 3);
 
   -- Pregunta 4
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    '¿Qué categoría OWASP protege contra ataques donde el servidor es usado para escanear redes internas?',
    'SINGLE_CHOICE',
-   '["A01 - Broken Access Control", "A05 - Security Misconfiguration", "A09 - Security Logging Failures", "A10 - Server-Side Request Forgery (SSRF)"]',
-   '["A10 - Server-Side Request Forgery (SSRF)"]',
+   '{"A": "A01 - Broken Access Control", "B": "A05 - Security Misconfiguration", "C": "A09 - Security Logging Failures", "D": "A10 - Server-Side Request Forgery (SSRF)"}',
+   '{"correct": ["D"]}',
    'OWASP A10 cubre SSRF: ataques donde el atacante engaña al servidor para que realice peticiones HTTP a recursos internos (192.168.x.x, 169.254.169.254 para metadata de cloud, etc.). PHISHWARE bloquea este vector antes de consultar APIs externas.',
-   10, 4);
+    10, 4);
 
   -- Pregunta 5
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    'Según NIST SP 800-63B, ¿cuál recomendación sobre contraseñas es INCORRECTA?',
    'SINGLE_CHOICE',
-   '["Las contraseñas deben tener mínimo 8 caracteres", "Se deben verificar contra listas negras de contraseñas comprometidas", "Las contraseñas deben expirar obligatoriamente cada 90 días", "Se deben permitir todos los caracteres ASCII y Unicode"]',
-   '["Las contraseñas deben expirar obligatoriamente cada 90 días"]',
+   '{"A": "Las contraseñas deben tener mínimo 8 caracteres", "B": "Se deben verificar contra listas negras de contraseñas comprometidas", "C": "Las contraseñas deben expirar obligatoriamente cada 90 días", "D": "Se deben permitir todos los caracteres ASCII y Unicode"}',
+   '{"correct": ["C"]}',
    'NIST SP 800-63B específicamente recomienda NO forzar la expiración periódica de contraseñas. Este requisito lleva a los usuarios a elegir contraseñas predecibles (Password1, Password2...). NIST solo recomienda cambiar la contraseña cuando hay evidencia de compromiso.',
-   10, 5);
+    10, 5);
 
 END $$;
 
@@ -548,16 +558,15 @@ END $$;
 -- SECCIÓN 4: Quiz NIST Cybersecurity Framework
 -- ─────────────────────────────────────────────────────────────────────────────
 
-INSERT INTO quiz (title, description, difficulty_level, time_limit_minutes, passing_score, points_reward, is_published, created_at, updated_at) VALUES
+INSERT INTO quiz (title, description, difficulty, time_limit_sec, passing_score, points_reward, is_active, created_at) VALUES
 (
   'Quiz NIST CSF: Gestión del Riesgo de Phishing',
   'Evalúa tu comprensión del NIST Cybersecurity Framework y cómo sus 5 funciones (Identify, Protect, Detect, Respond, Recover) se aplican a la prevención y respuesta ante ataques de phishing.',
   'INTERMEDIATE',
-  12,
+  720,
   70,
   50,
   true,
-  NOW(),
   NOW()
 );
 
@@ -572,50 +581,50 @@ BEGIN
   (v_quiz_id,
    'Has recibido un correo sospechoso y copiaste la URL en PHISHWARE antes de hacer clic. ¿A qué función NIST CSF corresponde esta acción?',
    'SINGLE_CHOICE',
-   '["IDENTIFY (ID) — Identificar activos y riesgos", "PROTECT (PR) — Implementar salvaguardas", "DETECT (DE) — Detectar eventos de seguridad", "RESPOND (RS) — Responder a incidentes"]',
-   '["DETECT (DE) — Detectar eventos de seguridad"]',
+   '{"A": "IDENTIFY (ID) — Identificar activos y riesgos", "B": "PROTECT (PR) — Implementar salvaguardas", "C": "DETECT (DE) — Detectar eventos de seguridad", "D": "RESPOND (RS) — Responder a incidentes"}',
+   '{"correct": ["C"]}',
    'Verificar activamente una URL antes de hacer clic es una acción de DETECCIÓN (DE). Estás usando una herramienta para detectar si la URL es un riesgo antes de exponerte. PROTECT sería tener filtros automáticos; IDENTIFY sería mapear los activos en riesgo.',
-   10, 1);
+    10, 1);
 
   -- Pregunta 2
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    'Tu empresa decide activar MFA obligatorio para todos los empleados después de un incidente de phishing. ¿A qué función NIST CSF pertenece esta decisión?',
    'SINGLE_CHOICE',
-   '["IDENTIFY — Catalogar activos de la organización", "PROTECT — Implementar salvaguardas para servicios críticos", "DETECT — Monitorear eventos de seguridad continúamente", "RECOVER — Implementar mejoras post-incidente"]',
-   '["PROTECT — Implementar salvaguardas para servicios críticos"]',
+   '{"A": "IDENTIFY — Catalogar activos de la organización", "B": "PROTECT — Implementar salvaguardas para servicios críticos", "C": "DETECT — Monitorear eventos de seguridad continúamente", "D": "RECOVER — Implementar mejoras post-incidente"}',
+   '{"correct": ["B"]}',
    'Implementar MFA es una salvaguarda de PROTECCIÓN (PR.AC-7: Users, devices, and other assets are authenticated). PROTECT incluye todos los controles preventivos: control de acceso, capacitación, protección de datos e infraestructura.',
-   10, 2);
+    10, 2);
 
   -- Pregunta 3
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    '¿Cuál es el orden correcto de las 5 funciones del NIST Cybersecurity Framework?',
    'SINGLE_CHOICE',
-   '["Protect → Identify → Detect → Respond → Recover", "Identify → Protect → Detect → Respond → Recover", "Detect → Identify → Protect → Respond → Recover", "Identify → Detect → Protect → Respond → Recover"]',
-   '["Identify → Protect → Detect → Respond → Recover"]',
+   '{"A": "Protect → Identify → Detect → Respond → Recover", "B": "Identify → Protect → Detect → Respond → Recover", "C": "Detect → Identify → Protect → Respond → Recover", "D": "Identify → Detect → Protect → Respond → Recover"}',
+   '{"correct": ["B"]}',
    'El orden lógico del NIST CSF es: primero IDENTIFY (conocer qué proteger), luego PROTECT (implementar controles), DETECT (monitorear amenazas), RESPOND (actuar ante incidentes), y RECOVER (volver a la normalidad y mejorar). Forman un ciclo continuo.',
-   10, 3);
+    10, 3);
 
   -- Pregunta 4
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    'Después de que un empleado cayó en un ataque de phishing, la empresa realiza una sesión de capacitación sobre el tipo de ataque. ¿Qué función NIST CSF aplica principalmente?',
    'SINGLE_CHOICE',
-   '["DETECT (DE) — Detección de amenazas futuras", "RESPOND (RS) — Respuesta al incidente actual", "RECOVER (RC) — Mejora de capacidades post-incidente", "IDENTIFY (ID) — Identificación de nuevos riesgos"]',
-   '["RECOVER (RC) — Mejora de capacidades post-incidente"]',
+   '{"A": "DETECT (DE) — Detección de amenazas futuras", "B": "RESPOND (RS) — Respuesta al incidente actual", "C": "RECOVER (RC) — Mejora de capacidades post-incidente", "D": "IDENTIFY (ID) — Identificación de nuevos riesgos"}',
+   '{"correct": ["C"]}',
    'La capacitación post-incidente corresponde a RECOVER, específicamente RC.IM-1 (Recovery plans incorporate lessons learned) y RC.IM-2 (Recovery strategies are updated). La organización aprende del incidente y mejora sus capacidades para el futuro.',
-   10, 4);
+    10, 4);
 
   -- Pregunta 5
   INSERT INTO quiz_questions (quiz_id, question_text, question_type, options, correct_answers, explanation, points, order_index) VALUES
   (v_quiz_id,
    'Según NIST SP 800-30, ¿cómo se calcula el riesgo en una evaluación formal?',
    'SINGLE_CHOICE',
-   '["Riesgo = Amenaza + Vulnerabilidad", "Riesgo = Probabilidad × Impacto", "Riesgo = Activo × Amenaza × Vulnerabilidad", "Riesgo = Impacto ÷ Controles"]',
-   '["Riesgo = Probabilidad × Impacto"]',
+   '{"A": "Riesgo = Amenaza + Vulnerabilidad", "B": "Riesgo = Probabilidad × Impacto", "C": "Riesgo = Activo × Amenaza × Vulnerabilidad", "D": "Riesgo = Impacto ÷ Controles"}',
+   '{"correct": ["B"]}',
    'NIST SP 800-30 define: Riesgo = f(Probabilidad, Impacto). La probabilidad incluye la likelihood de que una amenaza explote una vulnerabilidad; el impacto mide el daño resultante. PHISHWARE implementa esta fórmula combinando el score de GSB (60%), VirusTotal (30%) y heurística (10%).',
-   10, 5);
+    10, 5);
 
 END $$;
 
@@ -623,31 +632,31 @@ END $$;
 -- SECCIÓN 5: Badges para contenido OWASP + NIST
 -- ─────────────────────────────────────────────────────────────────────────────
 
-INSERT INTO badges (name, description, icon_url, badge_type, points_required, criteria, is_active) VALUES
+INSERT INTO badges (name, description, icon_url, badge_type, condition_type, condition_value, points_reward) VALUES
 (
   'Defensor OWASP',
   'Completaste todos los artículos educativos sobre OWASP Top 10 y aprobaste el quiz con más del 80%.',
   'shield-owasp',
   'EDUCATION',
-  0,
-  '{"type": "quiz_score", "quiz_category": "OWASP", "min_score": 80}',
-  true
+  'QUIZ_SCORE_OWASP',
+  80,
+  100
 ),
 (
   'Analista NIST',
   'Completaste todos los artículos sobre NIST Cybersecurity Framework y aprobaste el quiz con más del 80%.',
   'chart-nist',
   'EDUCATION',
-  0,
-  '{"type": "quiz_score", "quiz_category": "NIST", "min_score": 80}',
-  true
+  'QUIZ_SCORE_NIST',
+  80,
+  100
 ),
 (
-  'Experto en Seguridad',
+  'Maestro OWASP y NIST',
   'Completaste todo el contenido de OWASP y NIST. Eres un defensor avanzado contra el phishing.',
   'star-security',
   'SPECIAL',
-  0,
-  '{"type": "badges_earned", "required_badges": ["Defensor OWASP", "Analista NIST"]}',
-  true
+  'BADGES_EARNED',
+  2,
+  200
 );

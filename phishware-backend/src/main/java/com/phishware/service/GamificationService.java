@@ -44,6 +44,20 @@ public class GamificationService {
         userRepository.save(user);
     }
 
+    @Async
+    @Transactional
+    public void onCommunityReport(User user) {
+        int pointsEarned = 10;
+        int newPoints = user.getPoints() + pointsEarned;
+        int newLevel = calculateLevel(newPoints);
+        user.setPoints(newPoints);
+        user.setLevel(newLevel);
+        userRepository.save(user);
+
+        log.debug("Usuario {} ganó {} puntos por reporte comunitario. Total: {} - Nivel: {}",
+            user.getUsername(), pointsEarned, newPoints, newLevel);
+    }
+
     // Niveles basados en puntos: 1=0-99, 2=100-249, ..., 10=2000+
     private int calculateLevel(int points) {
         if (points < 100)  return 1;

@@ -9,6 +9,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.client.reactive.ReactorClientHttpConnector;
+import org.springframework.lang.NonNull;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.netty.http.client.HttpClient;
 
@@ -19,14 +20,18 @@ import java.util.concurrent.TimeUnit;
 public class WebClientConfig {
 
     @Value("${app.google-safe-browsing.base-url}")
-    private String googleSafeBrowsingBaseUrl;
+    @NonNull
+    private String googleSafeBrowsingBaseUrl = "";
 
     @Value("${app.virus-total.base-url}")
-    private String virusTotalBaseUrl;
+    @NonNull
+    private String virusTotalBaseUrl = "";
 
     @Value("${app.virus-total.api-key}")
-    private String virusTotalApiKey;
+    @NonNull
+    private String virusTotalApiKey = "";
 
+    @NonNull
     private HttpClient buildHttpClient() {
         return HttpClient.create()
             .option(ChannelOption.CONNECT_TIMEOUT_MILLIS, 10000)

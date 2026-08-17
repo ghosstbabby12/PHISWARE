@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { useMutation, useQuery } from '@tanstack/react-query'
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
 import { AlertTriangle, Flag, ExternalLink, Clock, Send } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { reportService } from '@/services/reportService'
@@ -28,6 +28,7 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 }
 
 export default function ReportPage() {
+  const queryClient = useQueryClient()
   const [url, setUrl] = useState('')
   const [type, setType] = useState<ReportType>('PHISHING')
   const [severity, setSeverity] = useState<ReportSeverity>('MEDIUM')
@@ -39,11 +40,12 @@ export default function ReportPage() {
       toast.success('Reporte enviado correctamente (+10 pts)')
       setUrl('')
       setDescription('')
+      queryClient.invalidateQueries({ queryKey: ['my-reports'] })
     },
     onError: () => toast.error('Error al enviar el reporte'),
   })
 
-  const { data: myReports, refetch } = useQuery({
+  const { data: myReports } = useQuery({
     queryKey: ['my-reports'],
     queryFn: () => reportService.getMyReports(0, 5),
   })
@@ -52,7 +54,6 @@ export default function ReportPage() {
     e.preventDefault()
     if (!url.trim()) return
     createMutation.mutate({ reportedUrl: url, reportType: type, severity, description: description || undefined })
-    refetch()
   }
 
   return (

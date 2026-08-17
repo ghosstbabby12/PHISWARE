@@ -17,7 +17,7 @@ function SummaryCard({ label, value, icon: Icon, tone }: {
   tone: string
 }) {
   return (
-    <div className="card flex items-center gap-4">
+    <div className="stat-card flex-row items-center gap-4">
       <div className={`p-3 rounded-xl ${tone}`}>
         <Icon className="w-5 h-5" />
       </div>
@@ -35,7 +35,7 @@ function ReportRow({ report, onReview, isReviewing }: {
   isReviewing: boolean
 }) {
   return (
-    <article className="border border-slate-700/60 rounded-xl p-4 space-y-3">
+    <article className="bg-dark-900/60 border border-slate-700/60 rounded-lg p-4 space-y-3 transition-colors hover:border-slate-600">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
         <div className="min-w-0">
           <p className="font-medium text-white break-all">{report.reportedUrl}</p>
@@ -44,8 +44,8 @@ function ReportRow({ report, onReview, isReviewing }: {
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-xs px-2 py-1 rounded-full bg-primary-500/15 text-primary-300">{report.reportType}</span>
-          <span className={`text-xs px-2 py-1 rounded-full ${severityStyles[report.severity]}`}>{report.severity}</span>
+          <span className="badge-primary">{report.reportType}</span>
+          <span className={`text-xs font-semibold px-2 py-1 rounded-full ${severityStyles[report.severity]}`}>{report.severity}</span>
         </div>
       </div>
       {report.description && <p className="text-sm text-slate-400">{report.description}</p>}

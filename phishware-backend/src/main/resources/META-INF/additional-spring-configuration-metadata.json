@@ -1,0 +1,49 @@
+{
+  "properties": [
+    {
+      "name": "app.jwt.secret",
+      "type": "java.lang.String",
+      "description": "Secret used to sign JWT access tokens."
+    },
+    {
+      "name": "app.jwt.expiration-ms",
+      "type": "java.lang.Long",
+      "description": "JWT access token lifetime in milliseconds."
+    },
+    {
+      "name": "app.jwt.refresh-expiration-ms",
+      "type": "java.lang.Long",
+      "description": "JWT refresh token lifetime in milliseconds."
+    },
+    {
+      "name": "app.google-safe-browsing.api-key",
+      "type": "java.lang.String",
+      "description": "Google Safe Browsing API key."
+    },
+    {
+      "name": "app.google-safe-browsing.base-url",
+      "type": "java.lang.String",
+      "description": "Google Safe Browsing API base URL."
+    },
+    {
+      "name": "app.virus-total.api-key",
+      "type": "java.lang.String",
+      "description": "VirusTotal API key."
+    },
+    {
+      "name": "app.virus-total.base-url",
+      "type": "java.lang.String",
+      "description": "VirusTotal API base URL."
+    },
+    {
+      "name": "app.cors.allowed-origins",
+      "type": "java.lang.String",
+      "description": "Comma-separated list of allowed CORS origins."
+    },
+    {
+      "name": "app.rate-limit.requests-per-minute",
+      "type": "java.lang.Integer",
+      "description": "Maximum requests per minute for rate-limited endpoints."
+    }
+  ]
+}

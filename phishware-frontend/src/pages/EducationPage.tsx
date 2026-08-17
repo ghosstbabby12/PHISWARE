@@ -177,7 +177,7 @@ export default function EducationPage() {
             value={search}
             onChange={(event) => setSearch(event.target.value)}
             placeholder="Buscar por título, tema o etiqueta"
-            className="input pl-10 w-full"
+            className="input-field pl-10 w-full"
             aria-label="Buscar contenido educativo"
           />
         </label>
@@ -186,7 +186,7 @@ export default function EducationPage() {
           <select
             value={difficulty}
             onChange={(event) => setDifficulty(event.target.value)}
-            className="input w-full"
+            className="input-field w-full appearance-none"
             aria-label="Filtrar por dificultad"
           >
             <option value="">Todas las dificultades</option>

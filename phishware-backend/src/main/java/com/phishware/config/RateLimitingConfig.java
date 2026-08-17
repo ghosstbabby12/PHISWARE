@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
@@ -56,9 +57,9 @@ public class RateLimitingConfig {
 
         @Override
         protected void doFilterInternal(
-                HttpServletRequest request,
-                HttpServletResponse response,
-                FilterChain chain) throws ServletException, IOException {
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain chain) throws ServletException, IOException {
 
             String path = request.getRequestURI().replaceFirst("^/api", "");
 

@@ -19,8 +19,8 @@ spring:
     properties:
       hibernate:
         dialect: org.hibernate.dialect.PostgreSQLDialect
-        format_sql: true
-        default_schema: public
+        "[format_sql]": true
+        "[default_schema]": public
 
   flyway:
     enabled: true
@@ -68,20 +68,12 @@ springdoc:
     path: /swagger-ui.html
     tags-sorter: alpha
     operations-sorter: alpha
-  info:
-    title: PHISHWARE API
-    description: API REST para el sistema de detección y prevención de phishing
-    version: 1.0.0
-    contact:
-      name: PHISHWARE Team
-      email: dev@phishware.com
-
 # Logging
 logging:
   level:
-    com.phishware: DEBUG
-    org.springframework.security: WARN
-    org.hibernate.SQL: WARN
+    "[com.phishware]": DEBUG
+    "[org.springframework.security]": WARN
+    "[org.hibernate.SQL]": WARN
   pattern:
     console: "%d{yyyy-MM-dd HH:mm:ss} [%thread] %-5level %logger{36} - %msg%n"
 

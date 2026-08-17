@@ -1,12 +1,16 @@
 package com.phishware.config;
 
-import jakarta.servlet.*;
-import jakarta.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.lang.NonNull;
 import org.springframework.web.filter.OncePerRequestFilter;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
-import java.io.IOException;
+import jakarta.servlet.http.HttpServletResponse;
 
 /**
  * OWASP A05 - Security Misconfiguration
@@ -29,9 +33,9 @@ public class SecurityHeadersConfig {
 
         @Override
         protected void doFilterInternal(
-                HttpServletRequest request,
-                HttpServletResponse response,
-                FilterChain chain) throws ServletException, IOException {
+            @NonNull HttpServletRequest request,
+            @NonNull HttpServletResponse response,
+            @NonNull FilterChain chain) throws ServletException, IOException {
 
             // OWASP: Evitar que el navegador infiera el tipo de contenido
             response.setHeader("X-Content-Type-Options", "nosniff");

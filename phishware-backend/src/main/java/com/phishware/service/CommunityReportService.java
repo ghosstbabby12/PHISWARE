@@ -12,6 +12,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.access.prepost.PreAuthorize;
+import org.springframework.lang.NonNull;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -25,7 +26,7 @@ public class CommunityReportService {
     private final GamificationService gamificationService;
 
     @Transactional
-    public ReportResponse createReport(ReportRequest request, Long userId) {
+    public ReportResponse createReport(ReportRequest request, @NonNull Long userId) {
         User user = userRepository.findById(userId)
             .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
 
@@ -49,7 +50,7 @@ public class CommunityReportService {
     }
 
     @Transactional(readOnly = true)
-    public Page<ReportResponse> getUserReports(Long userId, Pageable pageable) {
+    public Page<ReportResponse> getUserReports(@NonNull Long userId, Pageable pageable) {
         return reportRepository.findByUserIdOrderByCreatedAtDesc(userId, pageable)
             .map(this::toResponse);
     }
@@ -63,7 +64,7 @@ public class CommunityReportService {
 
     @Transactional
     @PreAuthorize("hasRole('ADMIN')")
-    public ReportResponse reviewReport(Long reportId, String newStatus, Long adminId) {
+    public ReportResponse reviewReport(@NonNull Long reportId, String newStatus, @NonNull Long adminId) {
         CommunityReport report = reportRepository.findById(reportId)
             .orElseThrow(() -> new ResourceNotFoundException("Reporte no encontrado"));
 

@@ -1,7 +1,7 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { BookOpen, Clock, Eye, Tag, Shield, AlertTriangle } from 'lucide-react'
+import { BookOpen, Clock, Eye, Tag, Shield, AlertTriangle, Search, SlidersHorizontal } from 'lucide-react'
 import { educationService } from '@/services/educationService'
 
 const CATEGORIES = [
@@ -117,11 +117,25 @@ function CategoryBadge({ category }: { category: string }) {
 
 export default function EducationPage() {
   const [category, setCategory] = useState('')
+  const [difficulty, setDifficulty] = useState('')
+  const [search, setSearch] = useState('')
 
   const { data, isLoading } = useQuery({
-    queryKey: ['education', category],
-    queryFn: () => educationService.getAll({ category: category || undefined }),
+    queryKey: ['education', category, difficulty],
+    queryFn: () => educationService.getAll({
+      category: category || undefined,
+      difficulty: difficulty || undefined,
+    }),
   })
+
+  const normalizedSearch = search.trim().toLowerCase()
+  const articles = data?.content.filter((article) => {
+    if (!normalizedSearch) return true
+    return [article.title, article.summary, ...article.tags]
+      .join(' ')
+      .toLowerCase()
+      .includes(normalizedSearch)
+  }) ?? []
 
   return (
     <div className="space-y-6 animate-fade-in">
@@ -156,6 +170,33 @@ export default function EducationPage() {
         ))}
       </div>
 
+      <div className="flex flex-col md:flex-row gap-3">
+        <label className="relative flex-1">
+          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
+          <input
+            value={search}
+            onChange={(event) => setSearch(event.target.value)}
+            placeholder="Buscar por título, tema o etiqueta"
+            className="input pl-10 w-full"
+            aria-label="Buscar contenido educativo"
+          />
+        </label>
+        <label className="flex items-center gap-2 min-w-52">
+          <SlidersHorizontal className="w-4 h-4 text-slate-500" />
+          <select
+            value={difficulty}
+            onChange={(event) => setDifficulty(event.target.value)}
+            className="input w-full"
+            aria-label="Filtrar por dificultad"
+          >
+            <option value="">Todas las dificultades</option>
+            <option value="BEGINNER">Básico</option>
+            <option value="INTERMEDIATE">Intermedio</option>
+            <option value="ADVANCED">Avanzado</option>
+          </select>
+        </label>
+      </div>
+
       {/* OWASP / NIST contextual banner */}
       <OwaspNistBanner category={category} />
 
@@ -171,7 +212,7 @@ export default function EducationPage() {
         </div>
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          {data?.content.map((article) => (
+          {articles.map((article) => (
             <Link
               key={article.id}
               to={`/education/${article.slug}`}
@@ -221,6 +262,14 @@ export default function EducationPage() {
               </div>
             </Link>
           ))}
+        </div>
+      )}
+
+      {!isLoading && articles.length === 0 && (
+        <div className="card text-center py-12">
+          <Search className="w-8 h-8 text-slate-600 mx-auto mb-3" />
+          <p className="text-slate-300 font-medium">No encontramos contenido</p>
+          <p className="text-sm text-slate-500 mt-1">Prueba con otra búsqueda o cambia los filtros.</p>
         </div>
       )}
 

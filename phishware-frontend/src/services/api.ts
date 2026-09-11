@@ -19,7 +19,10 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
 api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
-    if (error.response?.status === 401) {
+    const status = error.response?.status
+    // 401 = token expired/invalid (after AuthenticationEntryPoint fix)
+    // 403 on non-admin endpoint = old backend behavior with expired token
+    if (status === 401 || (status === 403 && !error.config?.url?.includes('/admin'))) {
       localStorage.removeItem('phishware_token')
       localStorage.removeItem('phishware_user')
       window.location.href = '/login'

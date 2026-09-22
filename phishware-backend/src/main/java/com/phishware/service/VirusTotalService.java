@@ -16,11 +16,22 @@ public class VirusTotalService {
 
     private final WebClient webClient;
 
+    @org.springframework.beans.factory.annotation.Value("${app.virus-total.api-key}")
+    private String apiKey;
+
     public VirusTotalService(@Qualifier("virusTotalClient") WebClient webClient) {
         this.webClient = webClient;
     }
 
+    public boolean isConfigured() {
+        return apiKey != null && !apiKey.isBlank() && !apiKey.equals("YOUR_API_KEY");
+    }
+
     public VirusTotalResult analyzeUrl(String url) {
+        if (!isConfigured()) {
+            log.debug("VirusTotal no configurado — omitiendo llamada API");
+            return VirusTotalResult.error();
+        }
         try {
             // Encode URL to base64 (VirusTotal v3 requirement)
             String urlId = Base64.getUrlEncoder().withoutPadding()

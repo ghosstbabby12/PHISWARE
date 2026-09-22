@@ -23,7 +23,15 @@ public class GoogleSafeBrowsingService {
         this.webClient = webClient;
     }
 
+    public boolean isConfigured() {
+        return apiKey != null && !apiKey.isBlank() && !apiKey.equals("YOUR_API_KEY");
+    }
+
     public SafeBrowsingResult checkUrl(String url) {
+        if (!isConfigured()) {
+            log.debug("Google Safe Browsing no configurado — omitiendo llamada API");
+            return SafeBrowsingResult.error();
+        }
         try {
             Map<String, Object> requestBody = buildRequestBody(url);
 

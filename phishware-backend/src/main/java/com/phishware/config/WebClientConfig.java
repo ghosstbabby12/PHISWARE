@@ -19,17 +19,18 @@ import java.util.concurrent.TimeUnit;
 @Configuration
 public class WebClientConfig {
 
-    @Value("${app.google-safe-browsing.base-url}")
-    @NonNull
-    private String googleSafeBrowsingBaseUrl = "";
+    private final String googleSafeBrowsingBaseUrl;
+    private final String virusTotalBaseUrl;
+    private final String virusTotalApiKey;
 
-    @Value("${app.virus-total.base-url}")
-    @NonNull
-    private String virusTotalBaseUrl = "";
-
-    @Value("${app.virus-total.api-key}")
-    @NonNull
-    private String virusTotalApiKey = "";
+    public WebClientConfig(
+            @Value("${app.google-safe-browsing.base-url}") String googleSafeBrowsingBaseUrl,
+            @Value("${app.virus-total.base-url}") String virusTotalBaseUrl,
+            @Value("${app.virus-total.api-key}") String virusTotalApiKey) {
+        this.googleSafeBrowsingBaseUrl = googleSafeBrowsingBaseUrl;
+        this.virusTotalBaseUrl         = virusTotalBaseUrl;
+        this.virusTotalApiKey          = virusTotalApiKey;
+    }
 
     @NonNull
     private HttpClient buildHttpClient() {

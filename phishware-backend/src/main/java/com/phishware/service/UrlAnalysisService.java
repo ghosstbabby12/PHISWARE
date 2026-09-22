@@ -134,9 +134,7 @@ public class UrlAnalysisService {
                 throw new UrlValidationException("URL rechazada (OWASP A03): " + check.firstViolation());
             }
             return url;
-        } catch (SecurityException e) {
-            throw new UrlValidationException(e.getMessage());
-        } catch (IllegalArgumentException e) {
+        } catch (SecurityException | IllegalArgumentException e) {
             throw new UrlValidationException(e.getMessage());
         }
     }
@@ -145,40 +143,58 @@ public class UrlAnalysisService {
 
     /**
      * NIST ID.RA-3: Threats, vulnerabilities, likelihoods, and impacts are used to
-     * determine risk. Combina tres fuentes: GSB (60%), VirusTotal (30%), Heurística (10%).
+     * determine risk. Pesos dinámicos: GSB(60%) + VT(30%) + Heurística(10%) cuando
+     * todas las fuentes están disponibles. Si una falla, su peso se redistribuye.
      */
     private RiskAssessment calculateCombinedRisk(
             GoogleSafeBrowsingService.SafeBrowsingResult gsb,
             VirusTotalService.VirusTotalResult vt,
             NistThreatClassifier.HeuristicResult heuristic) {
 
+        boolean gsbAvailable = !gsb.isError();
+        boolean vtAvailable  = !vt.isError();
+
+        // Pesos dinámicos según disponibilidad de APIs externas
+        double gsbWeight, vtWeight, heuristicWeight;
+        if (gsbAvailable && vtAvailable) {
+            gsbWeight = 0.60; vtWeight = 0.30; heuristicWeight = 0.10;
+        } else if (gsbAvailable) {
+            gsbWeight = 0.70; vtWeight = 0.00; heuristicWeight = 0.30;
+        } else if (vtAvailable) {
+            gsbWeight = 0.00; vtWeight = 0.60; heuristicWeight = 0.40;
+        } else {
+            // Sin APIs externas: heurística es la única fuente → peso completo
+            gsbWeight = 0.00; vtWeight = 0.00; heuristicWeight = 1.00;
+        }
+
         double score = 0.0;
         boolean isPhishing = false;
         List<String> recommendations = new ArrayList<>();
 
-        // Fuente 1 — Google Safe Browsing (peso 60%)
-        if (!gsb.isSafe() && !gsb.isError()) {
-            score += 60.0;
+        // Fuente 1 — Google Safe Browsing
+        if (gsbAvailable && !gsb.isSafe()) {
+            score += 100.0 * gsbWeight;
             isPhishing = true;
             recommendations.add("Google Safe Browsing marcó este sitio como peligroso.");
         }
 
-        // Fuente 2 — VirusTotal (peso 30%)
-        if (!vt.isError()) {
+        // Fuente 2 — VirusTotal
+        if (vtAvailable) {
             if (vt.threatLevel() == VirusTotalService.VirusTotalResult.ThreatLevel.MALICIOUS) {
-                double vtContrib = Math.min(30.0, vt.maliciousPercentage() * 0.3);
+                double vtContrib = Math.min(100.0, vt.maliciousPercentage()) * vtWeight;
                 score += vtContrib;
                 isPhishing = true;
                 recommendations.add(vt.maliciousCount() + "/" + vt.totalEngines()
                     + " motores antivirus detectaron malware.");
             } else if (vt.threatLevel() == VirusTotalService.VirusTotalResult.ThreatLevel.SUSPICIOUS) {
-                score += Math.min(15.0, vt.suspiciousCount() * 2.0);
+                double vtContrib = Math.min(50.0, vt.suspiciousCount() * 5.0) * vtWeight;
+                score += vtContrib;
                 recommendations.add("Motores de análisis marcaron el sitio como sospechoso.");
             }
         }
 
-        // Fuente 3 — Heurística NIST (peso 10%)
-        double heuristicContrib = heuristic.heuristicScore().doubleValue() * 0.10;
+        // Fuente 3 — Heurística NIST (peso dinámico)
+        double heuristicContrib = heuristic.heuristicScore().doubleValue() * heuristicWeight;
         score += heuristicContrib;
         if (heuristic.hasThreats()) {
             recommendations.addAll(heuristic.recommendations());

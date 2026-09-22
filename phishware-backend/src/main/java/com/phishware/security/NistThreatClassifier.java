@@ -27,10 +27,35 @@ public class NistThreatClassifier {
 
     // ── Indicadores Heurísticos de Phishing ─────────────────────────────────
 
-    // Typosquatting de marcas conocidas (NIST ID.RA-2: Threat intelligence)
-    private static final Pattern BRAND_TYPOSQUATTING = Pattern.compile(
-        "(paypa[^l]|amaz[o0]n|g[o0]{2}gle|faceb[o0]{2}k|micr[o0]s[o0]ft|" +
-        "app[l1]e|net[f1]lix|bank[o0]f|we[l1][l1]sfarg[o0])",
+    // Marcas conocidas en dominios no oficiales (brand squatting + typosquatting)
+    // NIST ID.RA-2: Threat intelligence
+    private static final Pattern BRAND_IN_DOMAIN = Pattern.compile(
+        "(paypal|amazon|google|facebook|microsoft|apple|netflix|bankofamerica|" +
+        "wellsfargo|instagram|whatsapp|twitter|linkedin|dropbox|icloud|" +
+        "paypa[^l]|amaz[o0]n|g[o0]{2}gle|faceb[o0]{2}k|micr[o0]s[o0]ft|" +
+        "app[l1]e|net[f1]lix)",
+        Pattern.CASE_INSENSITIVE
+    );
+
+    // TLDs oficiales de esas marcas (excluye falsos positivos)
+    private static final List<String> BRAND_OFFICIAL_TLDS = List.of(
+        "paypal.com", "amazon.com", "amazon.es", "google.com", "facebook.com",
+        "microsoft.com", "apple.com", "netflix.com", "instagram.com",
+        "whatsapp.com", "twitter.com", "linkedin.com", "dropbox.com", "icloud.com"
+    );
+
+    // Palabras de phishing en el nombre del dominio (no solo subdominios punteados)
+    private static final Pattern PHISHING_TERMS_IN_DOMAIN = Pattern.compile(
+        "(secure[-.]login|login[-.]secure|verify[-.]account|account[-.]verify|" +
+        "secure[-.]account|confirm[-.]identity|update[-.]info|signin[-.]verify|" +
+        "banking[-.]update|password[-.]reset|credential|webscr)",
+        Pattern.CASE_INSENSITIVE
+    );
+
+    // URL shorteners — ocultan el destino real
+    private static final Pattern URL_SHORTENER = Pattern.compile(
+        "^(bit\\.ly|tinyurl\\.com|t\\.co|goo\\.gl|ow\\.ly|buff\\.ly|" +
+        "short\\.link|rb\\.gy|cutt\\.ly|is\\.gd|v\\.gd)$",
         Pattern.CASE_INSENSITIVE
     );
 
@@ -67,19 +92,36 @@ public class NistThreatClassifier {
         List<ThreatIndicator> indicators = new ArrayList<>();
         double heuristicScore = 0.0;
 
-        // 1. Typosquatting de marcas
-        if (domain != null && BRAND_TYPOSQUATTING.matcher(domain).find()) {
-            indicators.add(new ThreatIndicator(
-                "TYPOSQUATTING",
-                "El dominio imita una marca conocida con errores tipográficos",
-                Severity.HIGH,
-                30.0,
-                NistFunction.IDENTIFY
-            ));
-            heuristicScore += 30.0;
+        // 1. Brand squatting: marca conocida en dominio no oficial
+        if (domain != null && BRAND_IN_DOMAIN.matcher(domain).find()) {
+            boolean isOfficial = BRAND_OFFICIAL_TLDS.stream()
+                .anyMatch(official -> domain.equalsIgnoreCase(official)
+                    || domain.endsWith("." + official));
+            if (!isOfficial) {
+                indicators.add(new ThreatIndicator(
+                    "BRAND_SQUATTING",
+                    "El dominio contiene el nombre de una marca conocida pero no es el dominio oficial",
+                    Severity.HIGH,
+                    40.0,
+                    NistFunction.IDENTIFY
+                ));
+                heuristicScore += 40.0;
+            }
         }
 
-        // 2. Subdominio sospechoso
+        // 2. Términos de phishing en el propio nombre del dominio (e.g. paypal-secure-login)
+        if (domain != null && PHISHING_TERMS_IN_DOMAIN.matcher(domain).find()) {
+            indicators.add(new ThreatIndicator(
+                "PHISHING_DOMAIN_PATTERN",
+                "El dominio combina términos de phishing típicos (secure-login, verify-account, etc.)",
+                Severity.HIGH,
+                35.0,
+                NistFunction.DETECT
+            ));
+            heuristicScore += 35.0;
+        }
+
+        // 3. Subdominio sospechoso punteado (e.g. secure.bancosantander.xyz)
         if (domain != null && SUSPICIOUS_SUBDOMAIN.matcher(domain).find()) {
             indicators.add(new ThreatIndicator(
                 "SUSPICIOUS_SUBDOMAIN",
@@ -91,7 +133,19 @@ public class NistThreatClassifier {
             heuristicScore += 20.0;
         }
 
-        // 3. TLD de alto riesgo
+        // 4. URL shortener — destino desconocido
+        if (domain != null && URL_SHORTENER.matcher(domain).find()) {
+            indicators.add(new ThreatIndicator(
+                "URL_SHORTENER",
+                "La URL usa un acortador que puede ocultar un destino malicioso",
+                Severity.MEDIUM,
+                20.0,
+                NistFunction.DETECT
+            ));
+            heuristicScore += 20.0;
+        }
+
+        // 5. TLD de alto riesgo
         String urlLower = url.toLowerCase();
         for (String tld : HIGH_RISK_TLDS) {
             if (urlLower.contains(tld + "/") || urlLower.endsWith(tld)) {
@@ -107,19 +161,19 @@ public class NistThreatClassifier {
             }
         }
 
-        // 4. Palabras clave de phishing en la URL
+        // 6. Palabras clave de phishing en la URL
         if (PHISHING_KEYWORDS.matcher(url).find() && !isLikelySafeDomain(domain)) {
             indicators.add(new ThreatIndicator(
                 "PHISHING_KEYWORDS",
                 "La URL contiene términos frecuentemente usados en páginas de phishing",
-                Severity.LOW,
-                10.0,
+                Severity.MEDIUM,
+                15.0,
                 NistFunction.DETECT
             ));
-            heuristicScore += 10.0;
+            heuristicScore += 15.0;
         }
 
-        // 5. URL excesivamente larga (técnica de ofuscación)
+        // 7. URL excesivamente larga (técnica de ofuscación)
         if (url.length() > SUSPICIOUS_URL_LENGTH) {
             indicators.add(new ThreatIndicator(
                 "EXCESSIVE_URL_LENGTH",
@@ -131,7 +185,7 @@ public class NistThreatClassifier {
             heuristicScore += 5.0;
         }
 
-        // 6. IP en lugar de dominio (técnica directa de phishing)
+        // 8. IP en lugar de dominio (técnica directa de phishing)
         if (domain != null && domain.matches("^\\d{1,3}(\\.\\d{1,3}){3}$")) {
             indicators.add(new ThreatIndicator(
                 "IP_AS_DOMAIN",
@@ -143,7 +197,7 @@ public class NistThreatClassifier {
             heuristicScore += 35.0;
         }
 
-        // 7. Múltiples subdominios (técnica de evasión)
+        // 9. Múltiples subdominios (técnica de evasión)
         if (domain != null && domain.chars().filter(c -> c == '.').count() > 3) {
             indicators.add(new ThreatIndicator(
                 "EXCESSIVE_SUBDOMAINS",
@@ -161,7 +215,7 @@ public class NistThreatClassifier {
         return new HeuristicResult(
             heuristicRisk,
             BigDecimal.valueOf(Math.min(heuristicScore, 100.0)),
-            indicators,
+            List.copyOf(indicators),
             generateNistRecommendations(heuristicRisk, indicators)
         );
     }
@@ -238,6 +292,11 @@ public class NistThreatClassifier {
         List<ThreatIndicator> indicators,
         List<String> recommendations
     ) {
+        public HeuristicResult {
+            indicators    = List.copyOf(indicators);
+            recommendations = List.copyOf(recommendations);
+        }
+
         public boolean hasThreats() {
             return riskLevel != RiskLevel.SAFE || !indicators.isEmpty();
         }

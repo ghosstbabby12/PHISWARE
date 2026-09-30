@@ -48,7 +48,9 @@ class LoginActivity : AppCompatActivity() {
                     is AuthViewModel.AuthState.Loading -> setLoading(true)
                     is AuthViewModel.AuthState.Success -> {
                         setLoading(false)
-                        startActivity(Intent(this@LoginActivity, MainActivity::class.java))
+                        startActivity(Intent(this@LoginActivity, MainActivity::class.java).apply {
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                        })
                         finish()
                     }
                     is AuthViewModel.AuthState.Error -> {

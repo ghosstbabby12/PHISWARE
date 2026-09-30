@@ -1,0 +1,6 @@
+-keepattributes Signature
+-keepattributes *Annotation*
+-keep class com.phishware.android.data.model.** { *; }
+-keep class com.phishware.android.data.remote.PageResponse { *; }
+-keep class com.phishware.android.data.remote.AlertDto { *; }
+-dontwarn javax.annotation.**

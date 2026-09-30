@@ -17,15 +17,15 @@ data class RegisterRequest(
 
 data class AuthResponse(
     @SerializedName("accessToken") val accessToken: String,
-    @SerializedName("tokenType") val tokenType: String,
-    @SerializedName("expiresIn") val expiresIn: Long,
+    @SerializedName("tokenType") val tokenType: String? = null,
+    @SerializedName("expiresIn") val expiresIn: Long = 0,
     @SerializedName("userId") val userId: Long,
     @SerializedName("username") val username: String,
     @SerializedName("email") val email: String,
-    @SerializedName("fullName") val fullName: String,
-    @SerializedName("roles") val roles: List<String>,
-    @SerializedName("points") val points: Int,
-    @SerializedName("level") val level: Int
+    @SerializedName("fullName") val fullName: String? = null,
+    @SerializedName("roles") val roles: List<String>? = null,
+    @SerializedName("points") val points: Int = 0,
+    @SerializedName("level") val level: Int = 1
 )
 
 data class UrlAnalysisRequest(
@@ -33,19 +33,19 @@ data class UrlAnalysisRequest(
 )
 
 data class UrlAnalysisResponse(
-    @SerializedName("id") val id: Long,
-    @SerializedName("uuid") val uuid: String,
-    @SerializedName("originalUrl") val originalUrl: String,
-    @SerializedName("domain") val domain: String,
-    @SerializedName("riskLevel") val riskLevel: String,
-    @SerializedName("riskScore") val riskScore: Double,
-    @SerializedName("isPhishing") val isPhishing: Boolean,
-    @SerializedName("analysisSource") val analysisSource: String,
-    @SerializedName("threats") val threats: List<ThreatResponse>,
-    @SerializedName("analysisTimeMs") val analysisTimeMs: Int,
-    @SerializedName("analyzedAt") val analyzedAt: String,
-    @SerializedName("riskMessage") val riskMessage: String,
-    @SerializedName("recommendations") val recommendations: List<String>
+    @SerializedName("id") val id: Long = 0,
+    @SerializedName("uuid") val uuid: String? = null,
+    @SerializedName("originalUrl") val originalUrl: String? = null,
+    @SerializedName("domain") val domain: String? = null,
+    @SerializedName("riskLevel") val riskLevel: String? = null,
+    @SerializedName("riskScore") val riskScore: Double = 0.0,
+    @SerializedName("isPhishing") val isPhishing: Boolean = false,
+    @SerializedName("analysisSource") val analysisSource: String? = null,
+    @SerializedName("threats") val threats: List<ThreatResponse>? = null,
+    @SerializedName("analysisTimeMs") val analysisTimeMs: Int? = null,
+    @SerializedName("analyzedAt") val analyzedAt: String? = null,
+    @SerializedName("riskMessage") val riskMessage: String? = null,
+    @SerializedName("recommendations") val recommendations: List<String>? = null
 )
 
 data class ThreatResponse(
@@ -68,8 +68,9 @@ data class DashboardResponse(
 )
 
 data class ApiError(
-    @SerializedName("status") val status: Int,
-    @SerializedName("error") val error: String,
-    @SerializedName("message") val message: String,
-    @SerializedName("path") val path: String?
+    @SerializedName("status") val status: Int = 0,
+    @SerializedName("error") val error: String? = null,
+    @SerializedName("message") val message: String? = null,
+    @SerializedName("path") val path: String? = null,
+    @SerializedName("fieldErrors") val fieldErrors: Map<String, String>? = null
 )

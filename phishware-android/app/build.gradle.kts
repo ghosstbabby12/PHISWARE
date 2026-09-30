@@ -8,6 +8,7 @@ plugins {
 android {
     namespace = "com.phishware.android"
     compileSdk = 34
+    buildToolsVersion = "35.0.0"
 
     defaultConfig {
         applicationId = "com.phishware.android"
@@ -18,13 +19,20 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+        // Para celular físico: reemplaza la IP por la de tu PC en la red local
+        // Ejecuta `ipconfig` en tu PC y usa esa IP (ej: 192.168.1.100)
+        // Para emulador Android Studio: usa 10.0.2.2
+        buildConfigField("String", "BASE_URL", "\"http://172.16.142.46:8080/api/\"")
     }
 
     buildTypes {
         debug {
             isDebuggable = true
-            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/\"")
+            // ⚠️ IMPORTANTE: Cambia esta IP por la IP local de tu PC
+            // Para ver tu IP: abre cmd y escribe `ipconfig`, busca "Dirección IPv4"
+            // Ejemplo: "\"http://192.168.1.100:8080/api/\""
+            // Para emulador Android Studio usa: "\"http://10.0.2.2:8080/api/\""
+            buildConfigField("String", "BASE_URL", "\"http://172.16.142.46:8080/api/\"")
         }
         release {
             isMinifyEnabled = true

@@ -78,20 +78,20 @@ class UrlAnalysisFragment : Fragment() {
         val color = ContextCompat.getColor(requireContext(), colorRes)
         binding.tvRiskLevel.text = "$icon $label"
         binding.tvRiskLevel.setTextColor(color)
-        binding.tvRiskMessage.text = result.riskMessage
-        binding.tvDomain.text = "Dominio: ${result.domain}"
+        binding.tvRiskMessage.text = result.riskMessage.orEmpty()
+        binding.tvDomain.text = "Dominio: ${result.domain.orEmpty()}"
         binding.tvScore.text = "Score de riesgo: ${String.format("%.1f", result.riskScore)}/100"
-        binding.tvAnalysisTime.text = "Tiempo: ${result.analysisTimeMs}ms"
+        binding.tvAnalysisTime.text = "Tiempo: ${result.analysisTimeMs ?: 0}ms"
 
-        if (result.threats.isNotEmpty()) {
+        val threats = result.threats.orEmpty()
+        if (threats.isNotEmpty()) {
             binding.tvThreats.visibility = View.VISIBLE
-            binding.tvThreats.text = "⚠ ${result.threats.size} amenaza(s) detectada(s)"
+            binding.tvThreats.text = "⚠ ${threats.size} amenaza(s) detectada(s)"
         } else {
             binding.tvThreats.visibility = View.GONE
         }
 
-        val recommendations = result.recommendations.joinToString("\n") { "• $it" }
-        binding.tvRecommendations.text = recommendations
+        binding.tvRecommendations.text = result.recommendations.orEmpty().joinToString("\n") { "• $it" }
     }
 
     override fun onDestroyView() {

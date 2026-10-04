@@ -8,10 +8,10 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.*
 import org.junit.After
+import org.junit.Assert.assertTrue
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.*
-import kotlin.test.assertIs
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AuthViewModelTest {
@@ -37,7 +37,7 @@ class AuthViewModelTest {
     @Test
     fun `login con credenciales vacías debe emitir Error`() = runTest {
         viewModel.login("", "")
-        assertIs<AuthViewModel.AuthState.Error>(viewModel.authState.value)
+        assertTrue(viewModel.authState.value is AuthViewModel.AuthState.Error)
     }
 
     @Test
@@ -54,7 +54,7 @@ class AuthViewModelTest {
         viewModel.login("testuser", "Pass@123")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertIs<AuthViewModel.AuthState.Success>(viewModel.authState.value)
+        assertTrue(viewModel.authState.value is AuthViewModel.AuthState.Success)
         verify(sessionManager).saveSession(eq("token"), eq(1L), eq("testuser"), eq("test@test.com"))
     }
 
@@ -67,6 +67,6 @@ class AuthViewModelTest {
         viewModel.login("baduser", "badpass")
         testDispatcher.scheduler.advanceUntilIdle()
 
-        assertIs<AuthViewModel.AuthState.Error>(viewModel.authState.value)
+        assertTrue(viewModel.authState.value is AuthViewModel.AuthState.Error)
     }
 }

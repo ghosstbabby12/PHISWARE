@@ -6,6 +6,7 @@ import com.phishware.android.data.remote.ApiService
 import com.phishware.android.data.remote.PageResponse
 import retrofit2.HttpException
 import java.io.IOException
+import kotlinx.coroutines.CancellationException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -29,23 +30,25 @@ class PhishwareRepository @Inject constructor(
     suspend fun getHistory(
         page: Int = 0, size: Int = 10, riskLevel: String? = null
     ): Result<PageResponse<UrlAnalysisResponse>> =
-        runCatching { apiService.getHistory(page, size, riskLevel) }
+        call { apiService.getHistory(page, size, riskLevel) }
 
     suspend fun getDashboard(): Result<DashboardResponse> =
-        runCatching { apiService.getDashboard() }
+        call { apiService.getDashboard() }
 
-    suspend fun getUnreadAlertCount(): Result<Long> = runCatching {
+    suspend fun getUnreadAlertCount(): Result<Long> = call {
         apiService.getUnreadCount()["unreadCount"] ?: 0L
     }
 
     suspend fun markAlertRead(id: Long): Result<Unit> =
-        runCatching { apiService.markAlertRead(id) }
+        call { apiService.markAlertRead(id) }
 
     suspend fun markAllAlertsRead(): Result<Unit> =
         call { apiService.markAllAlertsRead() }
 
     private suspend fun <T> call(block: suspend () -> T): Result<T> = try {
         Result.success(block())
+    } catch (e: CancellationException) {
+        throw e
     } catch (e: Exception) {
         Result.failure(Exception(e.toUserMessage()))
     }

@@ -33,7 +33,10 @@ api.interceptors.response.use(
 
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    const data = error.response?.data as { message?: string } | undefined
+    const data = error.response?.data as { message?: string; fieldErrors?: Record<string, string>; errors?: string[] } | undefined
+    if (data?.fieldErrors) {
+      return Object.values(data.fieldErrors).join(', ')
+    }
     return data?.message ?? error.message
   }
   return 'Ha ocurrido un error inesperado'

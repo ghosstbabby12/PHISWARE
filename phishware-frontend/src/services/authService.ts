@@ -31,8 +31,14 @@ export const authService = {
   },
 
   getStoredUser() {
-    const raw = localStorage.getItem('phishware_user')
-    return raw ? JSON.parse(raw) : null
+    try {
+      const raw = localStorage.getItem('phishware_user')
+      return raw ? JSON.parse(raw) : null
+    } catch {
+      localStorage.removeItem('phishware_user')
+      localStorage.removeItem('phishware_token')
+      return null
+    }
   },
 
   isAuthenticated(): boolean {

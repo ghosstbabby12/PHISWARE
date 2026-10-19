@@ -26,7 +26,9 @@ function GuestRoute({ children }: { children: React.ReactNode }) {
 }
 
 function AdminRoute({ children }: { children: React.ReactNode }) {
-  const { isAdmin } = useAuth()
+  const { isAdmin, isAuthenticated, isLoading } = useAuth()
+  if (isLoading) return <div className="min-h-screen flex items-center justify-center"><div className="animate-spin w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full" /></div>
+  if (!isAuthenticated) return <Navigate to="/login" replace />
   return isAdmin ? <>{children}</> : <Navigate to="/dashboard" replace />
 }
 

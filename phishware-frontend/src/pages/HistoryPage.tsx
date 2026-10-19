@@ -16,7 +16,7 @@ export default function HistoryPage() {
   const [page, setPage] = useState(0)
   const [riskFilter, setRiskFilter] = useState('')
 
-  const { data, isLoading } = useQuery({
+  const { data, isLoading, isError } = useQuery({
     queryKey: ['history', page, riskFilter],
     queryFn: () => urlAnalysisService.getHistory(page, 10, riskFilter || undefined),
   })
@@ -56,6 +56,11 @@ export default function HistoryPage() {
       {isLoading ? (
         <div className="flex justify-center py-20">
           <div className="animate-spin w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full" />
+        </div>
+      ) : isError ? (
+        <div className="card text-center py-16">
+          <p className="text-slate-300 font-medium">Error al cargar el historial</p>
+          <p className="text-slate-500 text-sm mt-1">Intenta recargar la página</p>
         </div>
       ) : data?.content.length === 0 ? (
         <div className="card text-center py-16">

@@ -18,9 +18,16 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
-    const stored = authService.getStoredUser()
-    if (stored && authService.isAuthenticated()) {
-      setUser(stored)
+    try {
+      const stored = authService.getStoredUser()
+      if (stored && authService.isAuthenticated()) {
+        setUser(stored)
+      } else if (stored) {
+        // token vencido o borrado, limpio sesion vieja
+        authService.clearSession()
+      }
+    } catch {
+      authService.clearSession()
     }
     setIsLoading(false)
   }, [])

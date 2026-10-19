@@ -12,16 +12,26 @@ import {
 export default function DashboardPage() {
   const { user } = useAuth()
 
-  const { data: dashboard, isLoading } = useQuery({
+  const { data: dashboard, isLoading, isError } = useQuery({
     queryKey: ['dashboard'],
     queryFn: dashboardService.getDashboard,
     refetchInterval: 60000,
+    retry: 1,
   })
 
   if (isLoading) {
     return (
       <div className="flex items-center justify-center h-64">
         <div className="animate-spin w-8 h-8 border-2 border-primary-500 border-t-transparent rounded-full" />
+      </div>
+    )
+  }
+
+  if (isError) {
+    return (
+      <div className="card text-center py-16">
+        <p className="text-slate-300 font-medium">No se pudo cargar el dashboard</p>
+        <p className="text-slate-500 text-sm mt-1">Revisa tu conexión o intenta de nuevo más tarde</p>
       </div>
     )
   }

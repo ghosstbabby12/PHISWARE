@@ -17,7 +17,6 @@ import java.util.List;
 @RequestMapping("/public/url")
 @RequiredArgsConstructor
 @Slf4j
-@CrossOrigin(origins = "*")
 @Tag(name = "Público", description = "Endpoints sin autenticación — extensión del navegador y uso externo")
 public class PublicUrlCheckController {
 
@@ -27,6 +26,11 @@ public class PublicUrlCheckController {
     @Operation(summary = "Verificación rápida heurística", description = "Análisis local sin APIs externas. Usado por la extensión PHISWARE.")
     public ResponseEntity<QuickCheckResponse> check(@RequestParam String url) {
         if (url == null || url.isBlank() || url.length() > 2048) {
+            return ResponseEntity.badRequest().build();
+        }
+        // solo aceptamos http/https para evitar SSRF con otros esquemas
+        String lower = url.toLowerCase().trim();
+        if (!lower.startsWith("http://") && !lower.startsWith("https://")) {
             return ResponseEntity.badRequest().build();
         }
 
@@ -55,7 +59,15 @@ public class PublicUrlCheckController {
     }
 
     private String extractDomain(String url) {
-        try { return new URI(url).getHost(); } catch (URISyntaxException e) { return url; }
+        try {
+            String host = new URI(url).getHost();
+            if (host == null || host.isBlank()) {
+                return "desconocido";
+            }
+            return host;
+        } catch (URISyntaxException e) {
+            return "desconocido";
+        }
     }
 
     public record QuickCheckResponse(

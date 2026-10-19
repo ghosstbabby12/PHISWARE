@@ -39,6 +39,10 @@ public class EducationalController {
     @PreAuthorize("hasRole('ADMIN')")
     @Operation(summary = "Crear contenido", description = "Crea nuevo contenido educativo (solo admins)")
     public ResponseEntity<EducationalContent> create(@RequestBody EducationalContent content) {
+        // evitamos que desde el front manipulen views o autor
+        content.setId(null);
+        content.setViews(0);
+        content.setAuthor(null);
         return ResponseEntity.ok(educationalService.save(content));
     }
 
@@ -48,8 +52,18 @@ public class EducationalController {
     public ResponseEntity<EducationalContent> update(
             @PathVariable Long id,
             @RequestBody EducationalContent content) {
-        content.setId(id);
-        return ResponseEntity.ok(educationalService.save(content));
+        EducationalContent actual = educationalService.getById(id);
+        actual.setTitle(content.getTitle());
+        actual.setSlug(content.getSlug());
+        actual.setCategory(content.getCategory());
+        actual.setContent(content.getContent());
+        actual.setSummary(content.getSummary());
+        actual.setDifficulty(content.getDifficulty());
+        actual.setReadingTimeMin(content.getReadingTimeMin());
+        actual.setThumbnailUrl(content.getThumbnailUrl());
+        actual.setTags(content.getTags());
+        actual.setPublished(content.isPublished());
+        return ResponseEntity.ok(educationalService.save(actual));
     }
 
     @DeleteMapping("/{id}")

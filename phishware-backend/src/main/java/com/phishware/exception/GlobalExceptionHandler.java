@@ -1,6 +1,7 @@
 package com.phishware.exception;
 
 import com.phishware.dto.response.ApiErrorResponse;
+import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
@@ -85,6 +86,14 @@ public class GlobalExceptionHandler {
             SecurityException ex, HttpServletRequest request) {
         return ResponseEntity.badRequest().body(buildError(
             400, "Security Violation", ex.getMessage(), request.getRequestURI()
+        ));
+    }
+
+    @ExceptionHandler(JwtException.class)
+    public ResponseEntity<ApiErrorResponse> handleJwtException(
+            JwtException ex, HttpServletRequest request) {
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(buildError(
+            401, "Unauthorized", "Token inválido o sesión expirada", request.getRequestURI()
         ));
     }
 

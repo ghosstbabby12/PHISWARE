@@ -48,7 +48,8 @@ public class RateLimitingConfig {
         private static final java.util.Set<String> RATE_LIMITED_PATHS = java.util.Set.of(
             "/auth/login",
             "/auth/register",
-            "/analysis"
+            "/analysis",
+            "/public/url"
         );
 
         public RateLimitFilter(int maxRequestsPerMinute) {

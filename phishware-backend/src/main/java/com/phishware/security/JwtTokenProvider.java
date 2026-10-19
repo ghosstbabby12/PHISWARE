@@ -60,6 +60,10 @@ public class JwtTokenProvider {
             log.warn("JWT token expirado: {}", e.getMessage());
         } catch (UnsupportedJwtException e) {
             log.warn("JWT token no soportado: {}", e.getMessage());
+        } catch (SecurityException e) {
+            log.warn("Firma JWT invalida: {}", e.getMessage());
+        } catch (JwtException e) {
+            log.warn("JWT invalido: {}", e.getMessage());
         } catch (IllegalArgumentException e) {
             log.warn("JWT claims vacíos: {}", e.getMessage());
         }

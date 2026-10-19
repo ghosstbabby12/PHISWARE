@@ -9,12 +9,21 @@
 
   // ── Overlay warning ───────────────────────────────────────────────────────
 
+  function escapeHtml(str) {
+    return String(str ?? '').replace(/[&<>"']/g, c => ({
+      '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;'
+    }[c]));
+  }
+
   function showWarning(result, continueHref) {
     const existing = document.getElementById('phisware-overlay');
     if (existing) existing.remove();
 
     const overlay = document.createElement('div');
     overlay.id = 'phisware-overlay';
+    const safeDomain = escapeHtml(result.domain ?? result.url);
+    const safeScore = Math.round(Number(result.riskScore) || 0);
+    const safeIndicators = (result.indicators || []).slice(0, 3).map(i => `<li>${escapeHtml(i)}</li>`).join('');
     overlay.innerHTML = `
       <div id="phisware-modal">
         <div id="phisware-header">
@@ -22,10 +31,10 @@
           <span id="phisware-title">PHISWARE Link Guard</span>
         </div>
         <div id="phisware-body">
-          <p id="phisware-classification">${labelFor(result.classification)}</p>
-          <p id="phisware-domain"><strong>${result.domain ?? result.url}</strong></p>
-          <p id="phisware-score">Puntuación de riesgo: <strong>${Math.round(result.riskScore)}/100</strong></p>
-          ${result.indicators?.length ? `<ul id="phisware-indicators">${result.indicators.slice(0, 3).map(i => `<li>${i}</li>`).join('')}</ul>` : ''}
+          <p id="phisware-classification">${escapeHtml(labelFor(result.classification))}</p>
+          <p id="phisware-domain"><strong>${safeDomain}</strong></p>
+          <p id="phisware-score">Puntuación de riesgo: <strong>${safeScore}/100</strong></p>
+          ${safeIndicators ? `<ul id="phisware-indicators">${safeIndicators}</ul>` : ''}
         </div>
         <div id="phisware-actions">
           <button id="phisware-back">← Volver</button>
@@ -171,17 +180,21 @@
 
   function scanLinks(root) {
     const anchors = root.querySelectorAll('a[href]');
-    anchors.forEach(anchor => {
+    // limitamos para no mandar 100 requests de una
+    let count = 0;
+    for (const anchor of anchors) {
+      if (count >= 20) break;
       const url = normalizeHref(anchor.getAttribute('href'));
-      if (!url) return;
+      if (!url) continue;
 
       // Use cached result to tint immediately
       const cached = checked.get(url);
-      if (cached !== undefined) { tintLink(anchor, cached); return; }
+      if (cached !== undefined) { tintLink(anchor, cached); continue; }
 
+      count++;
       // Background pre-fetch
       checkUrl(url).then(result => tintLink(anchor, result));
-    });
+    }
   }
 
   // ── MutationObserver for SPAs ─────────────────────────────────────────────

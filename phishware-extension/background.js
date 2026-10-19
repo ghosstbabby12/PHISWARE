@@ -1,3 +1,5 @@
+// cambiar por la url del backend cuando este desplegado
+// en local usar localhost, en pruebas con otra pc usar su ip
 const BACKEND = 'http://localhost:8080/api/public/url/check';
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
 const cache = new Map();

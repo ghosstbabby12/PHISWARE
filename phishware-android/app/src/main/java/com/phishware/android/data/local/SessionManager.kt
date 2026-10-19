@@ -10,7 +10,9 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -40,8 +42,20 @@ class SessionManager @Inject constructor(
         context.dataStore.edit { it.clear() }
     }
 
-    fun getToken(): String? = runBlocking {
-        context.dataStore.data.first()[KEY_TOKEN]
+    fun getToken(): String? = try {
+        runBlocking(Dispatchers.IO) {
+            context.dataStore.data.first()[KEY_TOKEN]
+        }
+    } catch (e: Exception) {
+        null
+    }
+
+    suspend fun getTokenSuspend(): String? {
+        return try {
+            context.dataStore.data.first()[KEY_TOKEN]
+        } catch (e: Exception) {
+            null
+        }
     }
 
     fun isLoggedIn(): Boolean = getToken() != null

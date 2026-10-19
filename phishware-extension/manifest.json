@@ -7,13 +7,12 @@
   "permissions": [
     "activeTab",
     "storage",
-    "tabs",
     "notifications"
   ],
 
   "host_permissions": [
-    "http://localhost:8080/*",
-    "<all_urls>"
+    "http://10.0.2.2:8080/*",
+    "http://localhost:8080/*"
   ],
 
   "background": {
@@ -42,12 +41,5 @@
     "16": "icons/icon16.png",
     "48": "icons/icon48.png",
     "128": "icons/icon128.png"
-  },
-
-  "web_accessible_resources": [
-    {
-      "resources": ["warning.html"],
-      "matches": ["<all_urls>"]
-    }
-  ]
+  }
 }

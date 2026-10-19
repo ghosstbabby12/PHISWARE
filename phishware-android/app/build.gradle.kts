@@ -19,13 +19,15 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        buildConfigField("String", "BASE_URL", "\"http://localhost:8080/api/\"")
+        // 10.0.2.2 es el localhost de la pc cuando se corre en emulador
+        // si es celular fisico por usb usar la ip local ej: http://192.168.1.5:8080/api/
+        buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/\"")
     }
 
     buildTypes {
         debug {
             isDebuggable = true
-            buildConfigField("String", "BASE_URL", "\"http://localhost:8080/api/\"")
+            buildConfigField("String", "BASE_URL", "\"http://10.0.2.2:8080/api/\"")
         }
         release {
             isMinifyEnabled = true

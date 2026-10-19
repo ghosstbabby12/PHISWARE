@@ -67,19 +67,37 @@ function renderPageResult(result) {
 
 function renderAlerts(alerts) {
   const list = document.getElementById('alerts-list');
+  list.innerHTML = '';
   if (!alerts?.length) {
     list.innerHTML = '<div class="empty">Sin alertas</div>';
     return;
   }
-  list.innerHTML = alerts.slice(0, 10).map(a => `
-    <div class="alert-item">
-      <span class="alert-icon">${iconFor(a.classification)}</span>
-      <div class="alert-content">
-        <div class="alert-domain" title="${a.url}">${a.domain || a.url}</div>
-        <div class="alert-time">${a.classification} · ${timeAgo(a.ts)}</div>
-      </div>
-    </div>
-  `).join('');
+  alerts.slice(0, 10).forEach(a => {
+    const div = document.createElement('div');
+    div.className = 'alert-item';
+
+    const icon = document.createElement('span');
+    icon.className = 'alert-icon';
+    icon.textContent = iconFor(a.classification);
+
+    const content = document.createElement('div');
+    content.className = 'alert-content';
+
+    const domain = document.createElement('div');
+    domain.className = 'alert-domain';
+    domain.textContent = a.domain || a.url || 'desconocido';
+    domain.title = a.url || '';
+
+    const time = document.createElement('div');
+    time.className = 'alert-time';
+    time.textContent = `${a.classification} · ${timeAgo(a.ts)}`;
+
+    content.appendChild(domain);
+    content.appendChild(time);
+    div.appendChild(icon);
+    div.appendChild(content);
+    list.appendChild(div);
+  });
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────

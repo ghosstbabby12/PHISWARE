@@ -1,3 +1,10 @@
+# Env / secretos - no subir nunca
+.env
+*.env
+!.env.example
+phishware-backend/.env
+phishware-frontend/.env.local
+
 # Java / Maven
 target/
 *.class
@@ -13,6 +20,9 @@ dist/
 .gradle/
 build/
 local.properties
+# jdk descargado por error dentro del codigo
+**/oracleJdk-*/
+**/jdk-*/
 
 # IDE
 .idea/

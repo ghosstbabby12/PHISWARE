@@ -35,6 +35,8 @@ class UrlAnalysisServiceTest {
     @Mock private AlertRepository alertRepository;
     @Mock private GoogleSafeBrowsingService safeBrowsingService;
     @Mock private VirusTotalService virusTotalService;
+    @Mock private WebContentAnalyzer contentAnalyzer;
+    @Mock private DomainAgeService domainAgeService;
     @Mock private GamificationService gamificationService;
     @Mock private AuditLogService auditLogService;
     @Mock private InputSanitizerService inputSanitizer;
@@ -68,6 +70,11 @@ class UrlAnalysisServiceTest {
 
         lenient().when(owaspValidator.validateUrlForInjection(anyString()))
             .thenReturn(new OwaspComplianceValidator.ValidationResult(true, List.of()));
+
+        lenient().when(contentAnalyzer.analyze(any()))
+            .thenReturn(WebContentAnalyzer.ContentAnalysisResult.unavailable("test"));
+        lenient().when(domainAgeService.check(any()))
+            .thenReturn(DomainAgeService.DomainAgeResult.unavailable());
 
         lenient().when(nistClassifier.classify(any(), any()))
             .thenReturn(new NistThreatClassifier.HeuristicResult(
@@ -163,5 +170,29 @@ class UrlAnalysisServiceTest {
         // Act & Assert
         assertThatThrownBy(() -> urlAnalysisService.analyzeUrl(request, 1L))
             .isInstanceOf(com.phishware.exception.UrlValidationException.class);
+    }
+
+    @Test
+    @DisplayName("Debe marcar DANGEROUS cuando el contenido suplanta una marca aunque las APIs no lo detecten")
+    void analyzeUrl_WhenContentImpersonatesBrand_ShouldReturnDangerous() {
+        UrlAnalysisRequest request = new UrlAnalysisRequest();
+        request.setUrl("https://paypal-verificacion.xyz/login");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(safeBrowsingService.checkUrl(any())).thenReturn(GoogleSafeBrowsingService.SafeBrowsingResult.safe());
+        when(virusTotalService.analyzeUrl(any())).thenReturn(VirusTotalService.VirusTotalResult.safe(0, 70));
+        when(nistClassifier.classify(any(), any())).thenReturn(new NistThreatClassifier.HeuristicResult(
+            RiskLevel.DANGEROUS, BigDecimal.valueOf(55), List.of(), List.of()));
+        when(contentAnalyzer.analyze(any())).thenReturn(new WebContentAnalyzer.ContentAnalysisResult(
+            true, null, 75.0, List.of(new NistThreatClassifier.ThreatIndicator(
+                "BRAND_IMPERSONATION", "Se presenta como paypal", com.phishware.entity.enums.Severity.CRITICAL,
+                45.0, NistThreatClassifier.NistFunction.DETECT)), java.util.Map.of()));
+        when(analysisRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        UrlAnalysisResponse response = urlAnalysisService.analyzeUrl(request, 1L);
+
+        assertThat(response.getRiskLevel()).isEqualTo(RiskLevel.DANGEROUS);
+        assertThat(response.getThreats()).anyMatch(t -> t.getSource().equals("CONTENT_SCRAPING"));
+        assertThat(response.getScoreBreakdown()).containsKeys("urlHeuristic", "pageContent");
     }
 }

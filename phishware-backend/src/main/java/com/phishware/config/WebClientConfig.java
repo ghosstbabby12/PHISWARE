@@ -22,14 +22,17 @@ public class WebClientConfig {
     private final String googleSafeBrowsingBaseUrl;
     private final String virusTotalBaseUrl;
     private final String virusTotalApiKey;
+    private final String rdapBaseUrl;
 
     public WebClientConfig(
             @Value("${app.google-safe-browsing.base-url}") String googleSafeBrowsingBaseUrl,
             @Value("${app.virus-total.base-url}") String virusTotalBaseUrl,
-            @Value("${app.virus-total.api-key}") String virusTotalApiKey) {
+            @Value("${app.virus-total.api-key}") String virusTotalApiKey,
+            @Value("${app.rdap.base-url:https://rdap.org}") String rdapBaseUrl) {
         this.googleSafeBrowsingBaseUrl = googleSafeBrowsingBaseUrl;
         this.virusTotalBaseUrl         = virusTotalBaseUrl;
         this.virusTotalApiKey          = virusTotalApiKey;
+        this.rdapBaseUrl               = rdapBaseUrl;
     }
 
     @NonNull
@@ -58,6 +61,16 @@ public class WebClientConfig {
             .defaultHeader("x-apikey", virusTotalApiKey)
             .defaultHeader(HttpHeaders.ACCEPT, MediaType.APPLICATION_JSON_VALUE)
             .clientConnector(new ReactorClientHttpConnector(buildHttpClient()))
+            .build();
+    }
+
+    // RDAP: rdap.org redirige a la base de datos del registro correspondiente a cada TLD
+    @Bean("rdapClient")
+    public WebClient rdapClient() {
+        return WebClient.builder()
+            .baseUrl(rdapBaseUrl)
+            .defaultHeader(HttpHeaders.ACCEPT, "application/rdap+json, application/json")
+            .clientConnector(new ReactorClientHttpConnector(buildHttpClient().followRedirect(true)))
             .build();
     }
 }

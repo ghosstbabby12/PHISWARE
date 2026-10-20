@@ -8,6 +8,7 @@ import lombok.Data;
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Data
@@ -26,4 +27,6 @@ public class UrlAnalysisResponse {
     private LocalDateTime analyzedAt;
     private String riskMessage;
     private List<String> recommendations;
+    // Probabilidad (0-100) aportada por cada fuente: googleSafeBrowsing, virusTotal, urlHeuristic, pageContent, domainAge
+    private Map<String, Object> scoreBreakdown;
 }

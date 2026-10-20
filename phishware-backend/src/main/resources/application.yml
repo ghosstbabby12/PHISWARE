@@ -57,6 +57,17 @@ app:
     api-key: ${VIRUSTOTAL_KEY:YOUR_API_KEY}
     base-url: https://www.virustotal.com/api/v3
 
+  # RDAP (antigüedad de dominios, sin API key)
+  rdap:
+    base-url: https://rdap.org
+
+  # Análisis de contenido web (scraping con Jsoup)
+  content-analysis:
+    enabled: ${CONTENT_ANALYSIS_ENABLED:true}
+    timeout-ms: 8000
+    max-bytes: 1500000
+    max-redirects: 5
+
   cors:
     allowed-origins: http://localhost:5173,http://localhost:3000,https://phishware.app
 

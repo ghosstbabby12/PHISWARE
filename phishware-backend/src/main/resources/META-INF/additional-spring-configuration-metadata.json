@@ -36,6 +36,31 @@
       "description": "VirusTotal API base URL."
     },
     {
+      "name": "app.rdap.base-url",
+      "type": "java.lang.String",
+      "description": "RDAP bootstrap base URL used to look up domain registration dates."
+    },
+    {
+      "name": "app.content-analysis.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Enables fetching and scraping the analyzed page with Jsoup."
+    },
+    {
+      "name": "app.content-analysis.timeout-ms",
+      "type": "java.lang.Long",
+      "description": "Connect/response timeout for page fetching in milliseconds."
+    },
+    {
+      "name": "app.content-analysis.max-bytes",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of bytes downloaded per page."
+    },
+    {
+      "name": "app.content-analysis.max-redirects",
+      "type": "java.lang.Integer",
+      "description": "Maximum number of redirects followed when fetching a page."
+    },
+    {
       "name": "app.cors.allowed-origins",
       "type": "java.lang.String",
       "description": "Comma-separated list of allowed CORS origins."

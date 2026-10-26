@@ -32,6 +32,14 @@ class UrlAnalysisFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        // Prefill desde notificacion / ShareReceiver (SMS, QR, correo compartido)
+        val prefill = arguments?.getString("prefill_url")
+        if (!prefill.isNullOrBlank()) {
+            binding.etUrl.setText(prefill)
+            viewModel.analyzeUrl(prefill)
+            arguments?.remove("prefill_url")
+        }
+
         binding.btnAnalyze.setOnClickListener {
             val url = binding.etUrl.text.toString()
             viewModel.analyzeUrl(url)

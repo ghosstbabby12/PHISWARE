@@ -1,0 +1,9 @@
+caracteristica,subcaracteristica,evidencia_phishware,calificacion_1_5,observaciones
+Adecuacion funcional,"correccion, pertinencia","Clases AnalisisURL/ResultadoAnalisis; metricas 4.3.2 (precision)",,Completar tras 4.3.2
+Eficiencia de desempeno,"comportamiento temporal","ServicioDeteccion + p95 JMeter 4.3.3 (<5s HU-NF01)",,Completar tras JMeter
+Compatibilidad,"coexistencia interoperabilidad","Extension Chrome/Edge + APIs GSB/VT; HU-NF09",,Probar en ambos navegadores
+Usabilidad,"aprendizaje operabilidad","Alertas clase Alerta + modulo educativo; encuesta piloto 4.4.3",,Completar tras piloto
+Fiabilidad,"disponibilidad tolerancia fallos","Disponibilidad SG3 (>=95%) + fallback HU-NF08",,Completar tras SG3/SG4
+Seguridad,"confidencialidad integridad autenticidad","BCrypt+JWT+RBAC+OWASP+NIST; Ley 1581 (HU-NF02/03/04/12)",,Verificar checklist OWASP_NIST_MAPPING
+Mantenibilidad,"modularidad capacidad modificacion","Arquitectura por capas 4.2; reglas configurables HU-NF10",,Fuerte por diseno
+Portabilidad,"adaptabilidad instalacion","docker-compose + despliegue documentado HU-NF11; Android fase posterior",,Probar despliegue limpio

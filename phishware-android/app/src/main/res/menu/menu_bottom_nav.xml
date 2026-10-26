@@ -4,4 +4,20 @@
         android:id="@+id/url_analysis_fragment"
         android:icon="@drawable/ic_search"
         android:title="@string/nav_analysis" />
+    <item
+        android:id="@+id/qr_scanner_fragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/nav_qr" />
+    <item
+        android:id="@+id/history_fragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/nav_history" />
+    <item
+        android:id="@+id/alerts_fragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/nav_alerts" />
+    <item
+        android:id="@+id/settings_fragment"
+        android:icon="@drawable/ic_search"
+        android:title="@string/nav_guard" />
 </menu>

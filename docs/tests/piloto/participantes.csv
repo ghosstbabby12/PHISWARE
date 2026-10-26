@@ -1,0 +1,6 @@
+# Registro participantes piloto — Tabla 4.4.1
+# Una fila por participante. n minimo = 15.
+codigo,edad,rango_edad,ocupacion,uso_internet,frecuencia,nivel_previo,dispositivo,navegador,fecha,consentimiento
+P01,22,18-25,estudiante,diario,3h-5h,basico,android,chrome,2026-11-01,si
+P02,0,,,,,,,,,si
+P03,0,,,,,,,,,si

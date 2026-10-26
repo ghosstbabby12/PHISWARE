@@ -1,0 +1,101 @@
+url,tipo_esperado,fuente,nota
+https://www.google.com,legitima,manual_top,buscador oficial
+https://www.youtube.com,legitima,manual_top,video oficial
+https://www.github.com,legitima,manual_top,codigo oficial
+https://www.microsoft.com,legitima,manual_top,oficial
+https://www.amazon.com,legitima,manual_top,ecommerce oficial
+https://www.wikipedia.org,legitima,manual_top,enciclopedia
+https://www.bancolombia.com,legitima,banco_co,banco oficial Colombia
+https://www.davivienda.com,legitima,banco_co,banco oficial Colombia
+https://www.bancodebogota.com.co,legitima,banco_co,banco oficial Colombia
+https://www.dian.gov.co,legitima,gob_co,entidad oficial Colombia
+https://www.gov.co,legitima,gob_co,portal oficial Colombia
+https://www.registraduria.gov.co,legitima,gob_co,entidad oficial
+https://www.unal.edu.co,legitima,edu_co,universidad oficial
+https://www.unicauca.edu.co,legitima,edu_co,universidad oficial
+https://www.eltiempo.com,legitima,prensa_co,prensa oficial
+https://www.elespectador.com,legitima,prensa_co,prensa oficial
+https://www.netflix.com,legitima,manual_top,streaming oficial
+https://www.spotify.com,legitima,manual_top,musica oficial
+https://www.linkedin.com,legitima,manual_top,red profesional
+https://www.paypal.com,legitima,manual_top,pagos oficial
+https://www.nequi.com.co,legitima,fintech_co,fintech oficial Colombia
+https://www.bancolombia.com/personas,legitima,banco_co,ruta interna oficial
+https://www.davivienda.com/wps/portal/personas,legitima,banco_co,ruta interna oficial
+https://www.facebook.com,legitima,manual_top,red social oficial
+https://www.instagram.com,legitima,manual_top,red social oficial
+https://www.x.com,legitima,manual_top,red social oficial
+https://www.whatsapp.com,legitima,manual_top,mensajeria oficial
+https://www.office.com,legitima,manual_top,ofimatica oficial
+https://www.adobe.com,legitima,manual_top,software oficial
+https://www.dropbox.com,legitima,manual_top,almacenamiento oficial
+https://www.zoom.us,legitima,manual_top,videollamadas oficial
+https://www.mercadolibre.com.co,legitima,ecommerce_co,ecommerce oficial Colombia
+https://www.exito.com,legitima,ecommerce_co,retail oficial Colombia
+https://www.avianca.com,legitima,empresa_co,aerolinea oficial
+https://www.claro.com.co,legitima,empresa_co,telco oficial Colombia
+https://www.movistar.co,legitima,empresa_co,telco oficial Colombia
+https://www.etb.com,legitima,empresa_co,telco oficial Colombia
+https://www.sena.edu.co,legitima,edu_co,entidad educativa oficial
+https://www.icfes.gov.co,legitima,gob_co,entidad oficial
+https://www.policia.gov.co,legitima,gob_co,entidad oficial
+https://www.fiscalia.gov.co,legitima,gob_co,entidad oficial
+https://www.supersalud.gov.co,legitima,gob_co,entidad oficial
+https://www.gmail.com,legitima,manual_top,correo oficial
+https://www.outlook.com,legitima,manual_top,correo oficial
+https://www.apple.com,legitima,manual_top,oficial
+https://www.samsung.com/co,legitima,manual_top,oficial regional
+https://www.oracle.com,legitima,manual_top,software oficial
+https://www.cisco.com,legitima,manual_top,redes oficial
+https://www.unicooperativa.edu.co,legitima,edu_co,universidad (contexto proyecto)
+https://www.python.org,legitima,manual_top,software oficial
+http://bancolombia-seguro.com/login,phishing,sintetica_4.1_typosquatting,typosquatting + palabra sensible login
+https://bancolombia-seguridad.net/verificar,phishing,sintetica_4.1_subdominio,subdominio enganoso + verificar
+https://www.davivienda-segura.xyz/clientes,phishing,sintetica_4.1_tld,TLD alto riesgo .xyz + marca
+https://nequi-verificacion.tk/login,phishing,sintetica_4.1_tld,TLD .tk + verificacion
+https://paypa1.com/login,phishing,sintetica_4.1_typosquatting,typosquatting clasico paypal
+https://amaz0n-seguro.ml/ofertas,phishing,sintetica_4.1_typosquatting,homografo con cero + .ml
+https://banco.seguridad-login.net/bancolombia,phishing,sintetica_4.1_ejemplo_doc,ejemplo literal del documento 4.1.1
+https://secure-login-bancolombia.verify-user.com,phishing,sintetica_4.1_phishing_domain,patron secure-login + guiones
+https://dian-actualizacion.cf/declaracion,phishing,sintetica_4.1_autoridad,suplantacion DIAN + .cf
+https://bit.ly/3xB4ncoL0mb14,phishing,sintetica_4.1_acortador,acortador oculta dominio
+https://tinyurl.com/banco-seguro-2026,phishing,sintetica_4.1_acortador,acortador + texto banco
+http://192.168.1.100.bancolombia.xyz/login,phishing,sintetica_4.1_ip,IP como dominio + marca
+http://45.90.12.33/verificar-nequi,phishing,sintetica_4.1_ip,IP directa + verificar
+https://xn--bancolombia-seguro.com/login,phishing,sintetica_4.1_punycode,punycode homograph xn--
+https://bancolombia.com@malicioso.ru/login,phishing,sintetica_4.1_userinfo,truco userinfo con @
+https://bancolombia.com:8080@evil.com/cuenta,phishing,sintetica_4.1_userinfo,puerto no estandar + @
+http://bancolombia-login.evil-site.gq/session?id=12345&token=abc,phishing,sintetica_4.1_params,subdominios excesivos + params
+https://www.bancolombia.com.secure-update.top/login.php?user=verify&session=99,phishing,sintetica_4.1_subdominio,subdominio que imita oficial + .top
+https://login-davivienda.sytes.net/ingreso?redirect=https://evil.com/steal,phishing,sintetica_4.1_redirect,redirect embebido ?redirect=
+https://verifique-su-cuenta-bancolombia-ahora.mooo.com/urgente24h,phishing,sintetica_4.1_urgencia,urgencia + TLD .mooo + guiones
+https://suspendida-cuenta-nequi-24horas.buzz/login,phishing,sintetica_4.1_urgencia,urgencia + .buzz
+https://premio-celular-gratis-banco.xyz/reclamar?a=1&b=2&c=3&d=4,phishing,sintetica_4.1_curiosidad,curiosidad/beneficio + params largos
+https://actualice-sus-datos-dian-sancion.ml/formulario,phishing,sintetica_4.1_miedo,miedo + DIAN + .ml
+https://soporte-tecnico-banco.ga/verificacion?url=https://real.com//evil,phishing,sintetica_4.1_redirect,doble slash + redirect
+https://github.io-seguro.tk/bancolombia/login,phishing,sintetica_4.1_freehosting,free hosting + marca + .tk
+https://bancolombia-login.vercel-app.surge.sh/signin,phishing,sintetica_4.1_freehosting,free hosting en subdominio
+https://xkqzv9wrtplm02jfhdksl0293dnfhr8395.xyz/login,phishing,sintetica_4.1_entropia,dominio aleatorio alta entropia
+https://a1b2c3d4e5f6g7h8i9j0k1l2m3n4o5p6q7r8.xyz/verify,phishing,sintetica_4.1_entropia,alta proporcion digitos + largo
+https://banc0lombia---seguro---verificacion---urgente.zip/datos,phishing,sintetica_4.1_composicion,TLD .zip + multiples guiones
+https://faceb00k-login-security.review/login,phishing,sintetica_4.1_typosquatting,typosquatting facebook + .review
+https://netflix-suspencion-pago.work/actualizar,phishing,sintetica_4.1_urgencia,urgencia pago + .work
+https://whatsapp-premium-gratis.date/descargar.apk,phishing,sintetica_4.1_apk,TLD .date + APK (smishing)
+https://instagram-verificacion-urgente.top/cuenta-suspendida,phishing,sintetica_4.1_urgencia,urgencia + top
+https://apple-id-bloqueado-24h.country/verificar,phishing,sintetica_4.1_urgencia,autoridad + urgencia + TLD raro
+https://microsoft-soporte-tecnico.stream/sesion,phishing,sintetica_4.1_autoridad,autoridad soporte + .stream
+https://banco-bogota-actualizacion-datos.science/form,phishing,sintetica_4.1_miedo,TLD .science + miedo
+https://nequi-promo-bono-500mil.racing/reclamar,phishing,sintetica_4.1_curiosidad,beneficio + .racing
+https://dian-devolucion-saldo-2026.download/declarar,phishing,sintetica_4.1_curiosidad,curiosidad devolucion + .download
+https://claro-factura-vencida-pague-ya.cricket/pagar,phishing,sintetica_4.1_miedo,miedo factura + .cricket
+https://movistar-recarga-gratis-doble.wang/recargar,phishing,sintetica_4.1_curiosidad,beneficio + .wang
+https://exito-bono-regalo-navidad.faith/participar,phishing,sintetica_4.1_curiosidad,beneficio + .faith
+https://avianca-boleto-gratis-sorteo.bid/ganar,phishing,sintetica_4.1_curiosidad,beneficio + .bid
+https://sena-certificado-gratis-2026.men/descargar,phishing,sintetica_4.1_curiosidad,beneficio + .men
+https://registraduria-actualice-cedula-multas.loan/formulario,phishing,sintetica_4.1_miedo,miedo multa + .loan
+https://fiscalia-citacion-urgente-comparezca.trade/ver,phishing,sintetica_4.1_miedo,miedo legal + .trade
+https://policia-comparendo-foto-multa.party/pagar,phishing,sintetica_4.1_miedo,miedo multa + .party
+https://secure-paypal-verification-account-limited.icu/login,phishing,sintetica_4.1_phishing_domain,patron secure + limited + .icu
+https://login-outlook-verificacion-urgente.sbs/inicio,phishing,sintetica_4.1_urgencia,urgencia correo + .sbs
+https://zoom-actualizacion-obligatoria-2026.sbs/descargar,phishing,sintetica_4.1_autoridad,autoridad + .sbs
+https://drive-descarga-gratis-urgente.sbs/archivo,phishing,sintetica_4.1_curiosidad,beneficio + .sbs

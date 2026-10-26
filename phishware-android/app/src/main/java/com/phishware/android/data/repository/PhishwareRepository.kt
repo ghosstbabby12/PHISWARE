@@ -39,6 +39,9 @@ class PhishwareRepository @Inject constructor(
         apiService.getUnreadCount()["unreadCount"] ?: 0L
     }
 
+    suspend fun getAlerts(page: Int = 0, size: Int = 20) =
+        call { apiService.getAlerts(page, size) }
+
     suspend fun markAlertRead(id: Long): Result<Unit> =
         call { apiService.markAlertRead(id) }
 

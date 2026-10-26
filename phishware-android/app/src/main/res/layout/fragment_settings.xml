@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:fillViewport="true">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:padding="20dp">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Protección"
+            android:textColor="@color/text_primary"
+            android:textSize="22sp"
+            android:textStyle="bold" />
+        <TextView
+            android:id="@+id/tvConsent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp"
+            android:text="Para analizar SMS/QR/correos en segundo plano necesitamos tu autorización (Ley 1581 de 2012 y Ley 1273 de 2009). Solo se envían las URL al servidor, nunca el contenido completo." />
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swConsent"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:text="Autorizo la protección (consentimiento)" />
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swGuard"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Protección en segundo plano" />
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swSms"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Analizar SMS automáticamente" />
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swNotif"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Notificaciones de amenaza" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPermissions"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:text="Conceder permisos (SMS / Cámara / Avisos)" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnStart"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Activar protección ahora" />
+        <TextView
+            android:id="@+id/tvStatus"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:textColor="@color/text_secondary"
+            android:textSize="13sp" />
+    </LinearLayout>
+</ScrollView>

@@ -60,6 +60,18 @@ dependencies {
     implementation(libs.constraintlayout)
     implementation(libs.navigation.fragment.ktx)
     implementation(libs.navigation.ui.ktx)
+    implementation(libs.activity.ktx)
+    implementation(libs.fragment.ktx)
+
+    // CameraX + ML Kit (QR)
+    implementation(libs.camera.core)
+    implementation(libs.camera.camera2)
+    implementation(libs.camera.lifecycle)
+    implementation(libs.camera.view)
+    implementation(libs.mlkit.barcode)
+
+    // WorkManager (segundo plano)
+    implementation(libs.workmanager.ktx)
 
     // Lifecycle
     implementation(libs.lifecycle.viewmodel.ktx)
@@ -77,6 +89,7 @@ dependencies {
 
     // Hilt - DI
     implementation(libs.hilt.android)
+    implementation(libs.hilt.work)
     kapt(libs.hilt.compiler)
 
     // Shared Preferences (DataStore)

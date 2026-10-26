@@ -1,5 +1,6 @@
 import { UrlAnalysisResponse } from '@/types/analysis.types'
 import RiskBadge from '@/components/common/RiskBadge'
+import ScoreBreakdown from '@/components/url-analysis/ScoreBreakdown'
 import { AlertTriangle, CheckCircle, Clock, Globe, Shield, XCircle } from 'lucide-react'
 import clsx from 'clsx'
 
@@ -61,6 +62,9 @@ export default function AnalysisResult({ result }: Props) {
           />
         </div>
       </div>
+
+      {/* Aporte de cada fuente al puntaje */}
+      <ScoreBreakdown breakdown={result.scoreBreakdown} />
 
       {/* Threats */}
       {result.threats.length > 0 && (

@@ -21,6 +21,12 @@ export default function AnalysisResult({ result }: Props) {
     DANGEROUS:  <XCircle className="w-10 h-10 text-danger-500" />,
   }
 
+  const severityOrder: Record<string, number> = { CRITICAL: 0, HIGH: 1, MEDIUM: 2, LOW: 3 }
+
+  const sortedThreats = [...result.threats].sort(
+    (a, b) => (severityOrder[a.severity] ?? 4) - (severityOrder[b.severity] ?? 4)
+  )
+
   const sourceLabels: Record<string, string> = {
     GOOGLE_SAFE_BROWSING: 'Google Safe Browsing',
     VIRUS_TOTAL: 'VirusTotal',
@@ -82,7 +88,7 @@ export default function AnalysisResult({ result }: Props) {
             Amenazas Detectadas ({result.threats.length})
           </h4>
           <div className="space-y-2">
-            {result.threats.map((threat) => (
+              {sortedThreats.map((threat) => (
               <div key={threat.id} className="flex items-start gap-3 p-3 bg-danger-500/10 rounded-lg border border-danger-500/20">
                 <XCircle className="w-4 h-4 text-danger-400 mt-0.5 flex-shrink-0" />
                 <div>

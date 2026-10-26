@@ -144,7 +144,7 @@ public class InputSanitizerService {
      */
     public boolean isStrongPassword(String password) {
         if (password == null || password.length() < 8) return false;
-        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[@$!%*?&_\\-#])[A-Za-z\\d@$!%*?&_\\-#]{8,}$");
+        return password.matches("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)(?=.*[^A-Za-z0-9\\s]).{8,}$");
     }
 
     /**

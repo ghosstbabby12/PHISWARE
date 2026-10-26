@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { useQuery } from '@tanstack/react-query'
 import { Link } from 'react-router-dom'
-import { BookOpen, Clock, Eye, Tag, Shield, AlertTriangle, Search, SlidersHorizontal } from 'lucide-react'
+import { BookOpen, Clock, Eye, Tag, Shield, AlertTriangle, Search, SlidersHorizontal, CheckCircle2, CircleDashed } from 'lucide-react'
 import { educationService } from '@/services/educationService'
+import LearningProgressPanel, { useLearningProgress } from '@/components/education/LearningProgressPanel'
 
 const CATEGORIES = [
   { value: '',                    label: 'Todo' },
@@ -128,6 +129,9 @@ export default function EducationPage() {
     }),
   })
 
+  const { data: progress } = useLearningProgress()
+  const statusBySlug = new Map(progress?.modules.map(m => [m.slug, m]) ?? [])
+
   const normalizedSearch = search.trim().toLowerCase()
   const articles = data?.content.filter((article) => {
     if (!normalizedSearch) return true
@@ -148,6 +152,8 @@ export default function EducationPage() {
           Fortalece tu cultura de ciberseguridad con nuestros recursos
         </p>
       </div>
+
+      <LearningProgressPanel />
 
       {/* Category filter */}
       <div className="flex flex-wrap gap-2">
@@ -253,7 +259,17 @@ export default function EducationPage() {
                   <Clock className="w-3 h-3" />
                   {article.readingTimeMin} min de lectura
                 </span>
-                {article.tags.length > 0 && (
+                {statusBySlug.get(article.slug)?.status === 'PASSED' ? (
+                  <span className="flex items-center gap-1 text-success-400">
+                    <CheckCircle2 className="w-3 h-3" />
+                    Quiz aprobado · {statusBySlug.get(article.slug)?.bestScore}%
+                  </span>
+                ) : statusBySlug.get(article.slug)?.status === 'IN_PROGRESS' ? (
+                  <span className="flex items-center gap-1 text-warning-400">
+                    <CircleDashed className="w-3 h-3" />
+                    Quiz por aprobar
+                  </span>
+                ) : article.tags.length > 0 && (
                   <span className="flex items-center gap-1">
                     <Tag className="w-3 h-3" />
                     {article.tags[0]}

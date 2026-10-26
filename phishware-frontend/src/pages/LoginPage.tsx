@@ -5,7 +5,7 @@ import { Eye, EyeOff, Lock, Shield, User } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { authService } from '@/services/authService'
 import { useAuth } from '@/context/AuthContext'
-import { getErrorMessage } from '@/services/api'
+import { getErrorMessage, getFieldErrors } from '@/services/api'
 import { LoginRequest } from '@/types/auth.types'
 
 export default function LoginPage() {
@@ -14,7 +14,7 @@ export default function LoginPage() {
   const [showPass, setShowPass] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
-  const { register, handleSubmit, formState: { errors } } = useForm<LoginRequest>()
+  const { register, handleSubmit, setError, formState: { errors } } = useForm<LoginRequest>()
 
   async function onSubmit(data: LoginRequest) {
     setIsLoading(true)
@@ -32,6 +32,13 @@ export default function LoginPage() {
       toast.success(`¡Bienvenido, ${auth.username}!`)
       navigate('/dashboard')
     } catch (err) {
+      const fieldErrors = getFieldErrors(err)
+      if (fieldErrors.usernameOrEmail) {
+        setError('usernameOrEmail', { message: fieldErrors.usernameOrEmail }, { shouldFocus: true })
+      }
+      if (fieldErrors.password) {
+        setError('password', { message: fieldErrors.password }, { shouldFocus: true })
+      }
       toast.error(getErrorMessage(err))
     } finally {
       setIsLoading(false)

@@ -1,7 +1,9 @@
-import { useParams, Link } from 'react-router-dom'
+import { useEffect } from 'react'
+import { useParams, Link, useLocation } from 'react-router-dom'
 import { useQuery } from '@tanstack/react-query'
 import { ArrowLeft, Clock, Eye } from 'lucide-react'
 import { educationService } from '@/services/educationService'
+import ModuleQuiz from '@/components/education/ModuleQuiz'
 
 export default function ArticlePage() {
   const { slug } = useParams<{ slug: string }>()
@@ -11,6 +13,14 @@ export default function ArticlePage() {
     queryFn: () => educationService.getBySlug(slug!),
     enabled: !!slug,
   })
+
+  // Desde el panel de progreso se llega con #quiz: bajar directo a la evaluación
+  const { hash } = useLocation()
+  useEffect(() => {
+    if (hash === '#quiz' && article) {
+      document.getElementById('quiz')?.scrollIntoView({ behavior: 'smooth' })
+    }
+  }, [hash, article])
 
   if (isLoading) {
     return (
@@ -85,6 +95,10 @@ export default function ArticlePage() {
           </div>
         )}
       </article>
+
+      <div id="quiz" className="scroll-mt-6">
+        <ModuleQuiz slug={article.slug} />
+      </div>
     </div>
   )
 }

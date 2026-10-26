@@ -20,9 +20,12 @@ api.interceptors.response.use(
   (response) => response,
   (error: AxiosError) => {
     const status = error.response?.status
+    // En login/registro un 401 significa credenciales incorrectas, no sesión expirada:
+    // no se redirige para que la pantalla pueda mostrar el error
+    const isAuthRequest = error.config?.url?.includes('/auth/')
     // 401 = token expired/invalid (after AuthenticationEntryPoint fix)
     // 403 on non-admin endpoint = old backend behavior with expired token
-    if (status === 401 || (status === 403 && !error.config?.url?.includes('/admin'))) {
+    if (!isAuthRequest && (status === 401 || (status === 403 && !error.config?.url?.includes('/admin')))) {
       localStorage.removeItem('phishware_token')
       localStorage.removeItem('phishware_user')
       window.location.href = '/login'
@@ -30,6 +33,14 @@ api.interceptors.response.use(
     return Promise.reject(error)
   }
 )
+
+export function getFieldErrors(error: unknown): Record<string, string> {
+  if (axios.isAxiosError(error)) {
+    const data = error.response?.data as { fieldErrors?: Record<string, string> } | undefined
+    return data?.fieldErrors ?? {}
+  }
+  return {}
+}
 
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {

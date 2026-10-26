@@ -112,8 +112,8 @@ export default function RegisterPage() {
                   required: 'La contraseña es requerida',
                   minLength: { value: 8, message: 'Mínimo 8 caracteres' },
                   pattern: {
-                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])/,
-                    message: 'Debe tener mayúscula, minúscula, número y símbolo',
+                    value: /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[^A-Za-z0-9\s])/,
+                    message: 'Debe tener mayúscula, minúscula, número y un símbolo (ej. ! @ # < . -)',
                   },
                 })}
                 type={showPass ? 'text' : 'password'}

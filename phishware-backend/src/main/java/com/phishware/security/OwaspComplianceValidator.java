@@ -105,7 +105,7 @@ public class OwaspComplianceValidator {
         if (!password.matches(".*[A-Z].*")) violations.add("Requiere al menos una letra mayúscula");
         if (!password.matches(".*[a-z].*")) violations.add("Requiere al menos una letra minúscula");
         if (!password.matches(".*\\d.*")) violations.add("Requiere al menos un número");
-        if (!password.matches(".*[@$!%*?&_\\-#].*")) violations.add("Requiere al menos un carácter especial");
+        if (!password.matches(".*[^A-Za-z0-9\\s].*")) violations.add("Requiere al menos un carácter especial");
 
         // NIST: Rechazar contraseñas comunes
         List<String> commonPasswords = List.of(

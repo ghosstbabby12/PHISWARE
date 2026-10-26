@@ -1,5 +1,5 @@
 import { api } from './api'
-import { EducationalContent, Quiz, QuizAnswerRequest, QuizResult } from '@/types/education.types'
+import { EducationalContent, LearningProgress, Quiz, QuizAnswerRequest, QuizResult } from '@/types/education.types'
 import { PageResponse } from '@/types/analysis.types'
 
 export const educationService = {
@@ -18,8 +18,13 @@ export const educationService = {
     return response.data
   },
 
-  async getQuizzes(): Promise<PageResponse<Quiz>> {
-    const response = await api.get<PageResponse<Quiz>>('/quiz')
+  async getProgress(): Promise<LearningProgress> {
+    const response = await api.get<LearningProgress>('/quiz/progress')
+    return response.data
+  },
+
+  async getModuleQuiz(slug: string): Promise<Quiz> {
+    const response = await api.get<Quiz>(`/quiz/module/${slug}`)
     return response.data
   },
 

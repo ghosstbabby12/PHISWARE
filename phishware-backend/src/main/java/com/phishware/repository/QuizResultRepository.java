@@ -13,6 +13,10 @@ public interface QuizResultRepository extends JpaRepository<QuizResult, Long> {
 
     boolean existsByUserIdAndQuizId(Long userId, Long quizId);
 
+    boolean existsByUserIdAndQuizIdAndPassedTrue(Long userId, Long quizId);
+
+    List<QuizResult> findByUserIdAndQuizIdOrderByCompletedAtDesc(Long userId, Long quizId);
+
     @Query("SELECT COUNT(r) FROM QuizResult r WHERE r.user.id = :userId AND r.passed = true")
     long countPassedByUserId(@Param("userId") Long userId);
 

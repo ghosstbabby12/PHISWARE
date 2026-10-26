@@ -21,6 +21,14 @@ export default function AnalysisResult({ result }: Props) {
     DANGEROUS:  <XCircle className="w-10 h-10 text-danger-500" />,
   }
 
+  const sourceLabels: Record<string, string> = {
+    GOOGLE_SAFE_BROWSING: 'Google Safe Browsing',
+    VIRUS_TOTAL: 'VirusTotal',
+    HEURISTIC_NIST: 'Reglas de URL',
+    CONTENT_SCRAPING: 'Contenido de la página',
+    DOMAIN_INTEL: 'Antigüedad del dominio',
+  }
+
   return (
     <div className={clsx('card border-2 animate-fade-in', riskColorMap[result.riskLevel])}>
       {/* Header */}
@@ -80,7 +88,9 @@ export default function AnalysisResult({ result }: Props) {
                 <div>
                   <p className="text-sm font-medium text-danger-300">{threat.threatType}</p>
                   <p className="text-xs text-slate-400">{threat.description}</p>
-                  <p className="text-xs text-slate-500 mt-1">Fuente: {threat.source}</p>
+                  <p className="text-xs text-slate-500 mt-1">
+                    Fuente: {sourceLabels[threat.source] ?? threat.source} · Severidad: {threat.severity}
+                  </p>
                 </div>
               </div>
             ))}

@@ -24,6 +24,7 @@ export interface UrlAnalysisResponse {
   analyzedAt: string
   riskMessage: string
   recommendations: string[]
+  scoreBreakdown?: Record<string, number>
 }
 
 export interface UrlAnalysisRequest {

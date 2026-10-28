@@ -28,7 +28,7 @@ import java.util.concurrent.ConcurrentHashMap;
 @Slf4j
 public class RateLimitingConfig {
 
-    @Value("${app.rate-limit.requests-per-minute:30}")
+    @Value("${app.rate-limit.requests-per-minute:120}")
     private int requestsPerMinute;
 
     @Bean

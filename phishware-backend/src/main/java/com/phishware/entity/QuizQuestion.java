@@ -1,5 +1,6 @@
 package com.phishware.entity;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -36,7 +37,7 @@ public class QuizQuestion {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "correct_answers", nullable = false, columnDefinition = "jsonb")
-    private Map<String, Object> correctAnswers;
+    private JsonNode correctAnswers;
 
     @Column(columnDefinition = "TEXT")
     private String explanation;

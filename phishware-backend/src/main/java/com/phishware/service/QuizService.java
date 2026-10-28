@@ -270,7 +270,16 @@ public class QuizService {
     }
 
     private static Set<String> correctAnswersOf(QuizQuestion question) {
-        Object correct = question.getCorrectAnswers() == null ? null : question.getCorrectAnswers().get("correct");
-        return normalizeAnswer(correct);
+        com.fasterxml.jackson.databind.JsonNode node = question.getCorrectAnswers();
+        if (node == null || node.isNull()) return Set.of();
+        // Formato normal: {"correct": ["B"]} — tolera también ["B"] o "B" (datos legacy)
+        com.fasterxml.jackson.databind.JsonNode correct = node.isObject() && node.has("correct") ? node.get("correct") : node;
+        if (correct == null || correct.isNull()) return Set.of();
+        if (correct.isArray()) {
+            Set<String> out = new TreeSet<>();
+            correct.forEach(v -> { if (v != null && !v.asText().isBlank()) out.add(v.asText().trim().toUpperCase()); });
+            return out;
+        }
+        return normalizeAnswer(correct.asText());
     }
 }

@@ -143,11 +143,11 @@ export default function QrScanner({ onDecoded, disabled }: Props) {
 
   return (
     <div onPaste={handlePaste} className="space-y-4">
-      <div className={`relative overflow-hidden rounded-xl border border-slate-700 bg-dark-900 ${mode === 'camera' ? 'aspect-video' : 'hidden'}`}>
+      <div className={`relative overflow-hidden rounded-xl border divider bg-ink-900 ${mode === 'camera' ? 'aspect-video' : 'hidden'}`}>
         <video ref={videoRef} className="w-full h-full object-cover" muted playsInline aria-label="Vista de la cámara" />
         {/* Marco guía */}
         <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
-          <div className="w-1/2 max-w-64 aspect-square rounded-2xl border-2 border-primary-400/80 shadow-[0_0_0_9999px_rgba(2,6,23,0.45)]" />
+          <div className="w-1/2 max-w-64 aspect-square rounded-2xl border-2 border-white/80 shadow-[0_0_0_9999px_rgba(23,23,28,0.45)]" />
         </div>
         <p className="absolute bottom-3 inset-x-0 text-center text-xs text-white/90">Apunta la cámara al código QR</p>
       </div>
@@ -188,9 +188,9 @@ export default function QrScanner({ onDecoded, disabled }: Props) {
       </div>
 
       {message && (
-        <p role="alert" className={`text-sm ${mode === 'error' ? 'text-danger-400' : 'text-warning-400'}`}>{message}</p>
+        <p role="alert" className={`text-sm font-medium ${mode === 'error' ? 'text-danger-600' : 'text-warning-600'}`}>{message}</p>
       )}
-      <p className="text-xs text-slate-500">
+      <p className="text-xs text-ink-500">
         La imagen se procesa en tu navegador y no se sube a ningún servidor. Solo se analiza el enlace que contenga el QR.
         También puedes pegar una captura con Ctrl/⌘+V.
       </p>

@@ -23,7 +23,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="12dp"
-                android:text="📊 Cargando resumen…"
+                android:text="@string/dash_loading"
                 android:textColor="@color/text_primary"
                 android:textSize="13sp" />
         </com.google.android.material.card.MaterialCardView>
@@ -32,7 +32,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Analizar URL"
+            android:text="@string/analysis_title"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -42,7 +42,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="20dp"
-            android:text="Pega un enlace sospechoso para analizarlo"
+            android:text="@string/analysis_sub"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
 
@@ -75,7 +75,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Escanear QR" />
+            android:text="@string/analysis_qr_btn" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -163,7 +163,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:text="Reportar esta URL" />
+                android:text="@string/analysis_report_btn" />
         </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
     </LinearLayout>

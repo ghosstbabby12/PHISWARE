@@ -5,19 +5,21 @@ interface Props {
   title: string
   value: string | number
   icon: LucideIcon
-  colorClass?: string
+  iconClass?: string
   subtitle?: string
 }
 
-export default function StatCard({ title, value, icon: Icon, colorClass = 'text-primary-400', subtitle }: Props) {
+export default function StatCard({ title, value, icon: Icon, iconClass = 'text-primary-700', subtitle }: Props) {
   return (
     <div className="stat-card">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-slate-400 font-medium">{title}</p>
-        <Icon className={clsx('w-5 h-5', colorClass)} />
+        <p className="text-sm text-ink-500 font-medium">{title}</p>
+        <span className="p-2 bg-primary-100 rounded-xl border border-primary-600/10">
+          <Icon className={clsx('w-4.5 h-4.5 w-5 h-5', iconClass)} />
+        </span>
       </div>
-      <p className="text-3xl font-bold text-white mt-1">{value}</p>
-      {subtitle && <p className="text-xs text-slate-500">{subtitle}</p>}
+      <p className="text-3xl font-bold text-ink-900 mt-1 tabular-nums">{value}</p>
+      {subtitle && <p className="text-xs text-ink-500">{subtitle}</p>}
     </div>
   )
 }

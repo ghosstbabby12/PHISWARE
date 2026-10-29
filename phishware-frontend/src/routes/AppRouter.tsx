@@ -11,6 +11,7 @@ import ArticlePage from '@/pages/ArticlePage'
 import AlertsPage from '@/pages/AlertsPage'
 import ProfilePage from '@/pages/ProfilePage'
 import ReportPage from '@/pages/ReportPage'
+import SettingsPage from '@/pages/SettingsPage'
 import AdminDashboardPage from '@/pages/AdminDashboardPage'
 import AppLayout from '@/components/common/AppLayout'
 
@@ -50,6 +51,7 @@ export default function AppRouter() {
           <Route path="/reports" element={<ReportPage />} />
           <Route path="/admin" element={<AdminRoute><AdminDashboardPage /></AdminRoute>} />
           <Route path="/profile" element={<ProfilePage />} />
+          <Route path="/settings" element={<SettingsPage />} />
         </Route>
 
         <Route path="*" element={<Navigate to="/" replace />} />

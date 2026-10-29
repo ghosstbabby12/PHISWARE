@@ -1,9 +1,12 @@
 package com.phishware.android.data.repository
 
+import android.content.Context
 import com.google.gson.Gson
+import com.phishware.android.R
 import com.phishware.android.data.model.*
 import com.phishware.android.data.remote.ApiService
 import com.phishware.android.data.remote.PageResponse
+import dagger.hilt.android.qualifiers.ApplicationContext
 import retrofit2.HttpException
 import java.io.IOException
 import kotlinx.coroutines.CancellationException
@@ -12,7 +15,8 @@ import javax.inject.Singleton
 
 @Singleton
 class PhishwareRepository @Inject constructor(
-    private val apiService: ApiService
+    private val apiService: ApiService,
+    @ApplicationContext private val context: Context
 ) {
     suspend fun login(usernameOrEmail: String, password: String): Result<AuthResponse> =
         call { apiService.login(LoginRequest(usernameOrEmail, password)) }
@@ -82,14 +86,14 @@ class PhishwareRepository @Inject constructor(
                 if (!serverMessage.isNullOrBlank()) return serverMessage
             }
             return when (code()) {
-                401 -> "Credenciales inválidas"
-                403 -> "Acceso denegado"
-                else -> "Error del servidor (${code()})"
+                401 -> context.getString(R.string.err_creds)
+                403 -> context.getString(R.string.err_forbidden)
+                else -> context.getString(R.string.err_server_fmt, code())
             }
         }
         if (this is IOException) {
-            return "Sin conexión con el servidor. Enciende el backend y deja el celular por USB."
+            return context.getString(R.string.err_conn)
         }
-        return message ?: "Error inesperado"
+        return message ?: context.getString(R.string.err_unknown)
     }
 }

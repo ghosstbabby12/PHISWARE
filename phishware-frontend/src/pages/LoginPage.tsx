@@ -1,16 +1,19 @@
 import { useState } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useForm } from 'react-hook-form'
-import { Eye, EyeOff, Lock, Shield, User } from 'lucide-react'
+import { Eye, EyeOff, Lock, User } from 'lucide-react'
 import toast from 'react-hot-toast'
 import { authService } from '@/services/authService'
 import { useAuth } from '@/context/AuthContext'
+import { useLang } from '@/i18n/LanguageContext'
 import { getErrorMessage, getFieldErrors } from '@/services/api'
 import { LoginRequest } from '@/types/auth.types'
+import AuthLayout from '@/components/common/AuthLayout'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { t } = useLang()
   const [showPass, setShowPass] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
 
@@ -29,7 +32,7 @@ export default function LoginPage() {
         points: auth.points,
         level: auth.level,
       }, auth.accessToken)
-      toast.success(`¡Bienvenido, ${auth.username}!`)
+      toast.success(`${t.auth.welcome}, ${auth.username}!`)
       navigate('/dashboard')
     } catch (err) {
       const fieldErrors = getFieldErrors(err)
@@ -46,70 +49,62 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen flex items-center justify-center p-4">
-      <div className="w-full max-w-md">
-        {/* Logo */}
-        <div className="text-center mb-8">
-          <div className="inline-flex p-4 bg-primary-600/20 rounded-2xl border border-primary-500/30 mb-4">
-            <Shield className="w-10 h-10 text-primary-400" />
+    <AuthLayout title={t.auth.loginTitle} subtitle={t.auth.loginSub}>
+      <form onSubmit={handleSubmit(onSubmit)} className="space-y-5" noValidate>
+        <div>
+          <label htmlFor="usernameOrEmail" className="field-label">{t.auth.user}</label>
+          <div className="relative">
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+            <input
+              id="usernameOrEmail"
+              {...register('usernameOrEmail', { required: t.auth.required })}
+              className="input-field pl-11"
+              placeholder="usuario o email@ejemplo.com"
+              autoComplete="username"
+            />
           </div>
-          <h1 className="text-3xl font-bold text-white">PHISHWARE</h1>
-          <p className="text-slate-400 mt-1">Inicia sesión en tu cuenta</p>
+          {errors.usernameOrEmail && (
+            <p role="alert" className="field-error">{errors.usernameOrEmail.message}</p>
+          )}
         </div>
 
-        <form onSubmit={handleSubmit(onSubmit)} className="card space-y-5">
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">
-              Usuario o Email
-            </label>
-            <div className="relative">
-              <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input
-                {...register('usernameOrEmail', { required: 'Campo requerido' })}
-                className="input-field pl-11"
-                placeholder="usuario o email@ejemplo.com"
-              />
-            </div>
-            {errors.usernameOrEmail && (
-              <p className="mt-1 text-xs text-danger-400">{errors.usernameOrEmail.message}</p>
-            )}
+        <div>
+          <label htmlFor="password" className="field-label">{t.auth.password}</label>
+          <div className="relative">
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+            <input
+              id="password"
+              {...register('password', { required: t.auth.required })}
+              type={showPass ? 'text' : 'password'}
+              className="input-field pl-11 pr-11"
+              placeholder="••••••••"
+              autoComplete="current-password"
+            />
+            <button
+              type="button"
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-300 hover:text-ink-900"
+              aria-label={showPass ? t.auth.hidePass : t.auth.showPass}
+            >
+              {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
           </div>
+          {errors.password && (
+            <p role="alert" className="field-error">{errors.password.message}</p>
+          )}
+        </div>
 
-          <div>
-            <label className="block text-sm font-medium text-slate-300 mb-1.5">Contraseña</label>
-            <div className="relative">
-              <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-              <input
-                {...register('password', { required: 'Campo requerido' })}
-                type={showPass ? 'text' : 'password'}
-                className="input-field pl-11 pr-11"
-                placeholder="••••••••"
-              />
-              <button
-                type="button"
-                onClick={() => setShowPass(!showPass)}
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-slate-300"
-              >
-                {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
-              </button>
-            </div>
-            {errors.password && (
-              <p className="mt-1 text-xs text-danger-400">{errors.password.message}</p>
-            )}
-          </div>
+        <button type="submit" disabled={isLoading} className="btn-primary w-full">
+          {isLoading ? t.auth.loggingIn : t.auth.loginBtn}
+        </button>
 
-          <button type="submit" disabled={isLoading} className="btn-primary w-full">
-            {isLoading ? 'Iniciando sesión...' : 'Iniciar Sesión'}
-          </button>
-
-          <p className="text-center text-sm text-slate-400">
-            ¿No tienes cuenta?{' '}
-            <Link to="/register" className="text-primary-400 hover:text-primary-300 font-medium">
-              Regístrate gratis
-            </Link>
-          </p>
-        </form>
-      </div>
-    </div>
+        <p className="text-center text-sm text-ink-500">
+          {t.auth.noAccount}{' '}
+          <Link to="/register" className="text-primary-700 hover:text-primary-800 font-semibold">
+            {t.auth.registerLink}
+          </Link>
+        </p>
+      </form>
+    </AuthLayout>
   )
 }

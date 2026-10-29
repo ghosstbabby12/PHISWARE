@@ -47,6 +47,10 @@ class UrlAnalysisFragment : Fragment() {
 
         binding.btnAnalyze.setOnClickListener {
             val url = binding.etUrl.text.toString()
+            if (url.isBlank()) {
+                Snackbar.make(binding.root, getString(R.string.analysis_need_url), Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             viewModel.analyzeUrl(url)
         }
         binding.btnQr.setOnClickListener {
@@ -54,17 +58,20 @@ class UrlAnalysisFragment : Fragment() {
         }
         binding.btnReport.setOnClickListener {
             val url = lastUrl ?: binding.etUrl.text.toString()
-            if (url.isBlank()) return@setOnClickListener
+            if (url.isBlank()) {
+                Snackbar.make(binding.root, getString(R.string.analysis_need_url), Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             viewLifecycleOwner.lifecycleScope.launch {
                 repository.reportUrl(url).onSuccess {
-                    Snackbar.make(binding.root, "Reporte enviado ✅ (id ${it.id})", Snackbar.LENGTH_LONG).show()
-                }.onFailure { Snackbar.make(binding.root, it.message ?: "Error", Snackbar.LENGTH_LONG).show() }
+                    Snackbar.make(binding.root, getString(R.string.analysis_report_sent, it.id), Snackbar.LENGTH_LONG).show()
+                }.onFailure { Snackbar.make(binding.root, it.message ?: getString(R.string.common_error), Snackbar.LENGTH_LONG).show() }
             }
         }
         viewLifecycleOwner.lifecycleScope.launch {
             repository.getDashboard().onSuccess { d ->
-                binding.tvDash.text = "📊 ${d.totalAnalyses} análisis · ⛔ ${d.threatsDetected} amenazas · ⭐ Nv.${d.userLevel} (${d.userPoints} pts)"
-            }.onFailure { binding.tvDash.text = "📊 Sin conexión" }
+                binding.tvDash.text = getString(R.string.analysis_dash_fmt, d.totalAnalyses, d.threatsDetected, d.userLevel, d.userPoints)
+            }.onFailure { binding.tvDash.text = getString(R.string.analysis_dash_off) }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -100,24 +107,24 @@ class UrlAnalysisFragment : Fragment() {
         binding.cardResult.visibility = View.VISIBLE
 
         val (colorRes, icon, label) = when (result.riskLevel) {
-            "SAFE"       -> Triple(R.color.success_green, "✅", "SEGURO")
-            "SUSPICIOUS" -> Triple(R.color.warning_amber, "⚠️", "SOSPECHOSO")
-            "DANGEROUS"  -> Triple(R.color.danger_red,    "⛔", "PELIGROSO")
-            else         -> Triple(R.color.primary_blue,  "🔍", "ANALIZADO")
+            "SAFE"       -> Triple(R.color.success_green, "✅", getString(R.string.risk_safe))
+            "SUSPICIOUS" -> Triple(R.color.warning_amber, "⚠️", getString(R.string.risk_suspicious))
+            "DANGEROUS"  -> Triple(R.color.danger_red,    "⛔", getString(R.string.risk_dangerous))
+            else         -> Triple(R.color.primary_blue,  "🔍", getString(R.string.analysis_analyzed))
         }
 
         val color = ContextCompat.getColor(requireContext(), colorRes)
         binding.tvRiskLevel.text = "$icon $label"
         binding.tvRiskLevel.setTextColor(color)
         binding.tvRiskMessage.text = result.riskMessage.orEmpty()
-        binding.tvDomain.text = "Dominio: ${result.domain.orEmpty()}"
-        binding.tvScore.text = "Score de riesgo: ${String.format("%.1f", result.riskScore)}/100"
-        binding.tvAnalysisTime.text = "Tiempo: ${result.analysisTimeMs ?: 0}ms"
+        binding.tvDomain.text = getString(R.string.analysis_domain_fmt, result.domain.orEmpty())
+        binding.tvScore.text = getString(R.string.analysis_score_fmt, result.riskScore)
+        binding.tvAnalysisTime.text = getString(R.string.analysis_time_fmt, result.analysisTimeMs ?: 0)
 
         val threats = result.threats.orEmpty()
         if (threats.isNotEmpty()) {
             binding.tvThreats.visibility = View.VISIBLE
-            binding.tvThreats.text = "⚠ ${threats.size} amenaza(s) detectada(s)"
+            binding.tvThreats.text = getString(R.string.analysis_threats_fmt, threats.size)
         } else {
             binding.tvThreats.visibility = View.GONE
         }

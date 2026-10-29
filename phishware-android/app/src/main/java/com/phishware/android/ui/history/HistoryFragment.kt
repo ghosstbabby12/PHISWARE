@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.phishware.android.R
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentHistoryBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -28,7 +29,7 @@ class HistoryFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         binding.btnFilterDanger.setOnClickListener {
             onlyDanger = !onlyDanger
-            binding.btnFilterDanger.text = if (onlyDanger) "Ver todas" else "Solo peligrosas"
+            binding.btnFilterDanger.text = if (onlyDanger) getString(R.string.hist_show_all) else getString(R.string.hist_danger_only)
             load()
         }
         binding.btnRefresh.setOnClickListener { load() }
@@ -36,18 +37,18 @@ class HistoryFragment : Fragment() {
     }
 
     private fun load() {
-        binding.tvList.text = "Cargando…"
+        binding.tvList.text = getString(R.string.hist_loading)
         lifecycleScope.launch {
             val res = repository.getHistory(0, 20, if (onlyDanger) "DANGEROUS" else null)
             res.onSuccess { page ->
-                if (page.content.isEmpty()) binding.tvList.text = "Sin análisis todavía."
+                if (page.content.isEmpty()) binding.tvList.text = getString(R.string.hist_empty)
                 else binding.tvList.text = page.content.joinToString("\n\n") { r ->
                     val icon = when (r.riskLevel) {
                         "SAFE" -> "✅"; "SUSPICIOUS" -> "⚠️"; "DANGEROUS" -> "⛔"; else -> "🔍"
                     }
                     "$icon [${r.riskLevel}] ${"%.0f".format(r.riskScore)}/100\n${r.domain ?: r.originalUrl}\n${r.analyzedAt ?: ""}"
                 }
-            }.onFailure { binding.tvList.text = "Error: ${it.message}" }
+            }.onFailure { binding.tvList.text = getString(R.string.hist_error_fmt, it.message ?: "") }
         }
     }
 

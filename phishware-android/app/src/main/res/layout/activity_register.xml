@@ -15,7 +15,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            android:text="Crear cuenta"
+            android:text="@string/reg_title"
             android:textColor="@color/text_primary"
             android:textSize="24sp"
             android:textStyle="bold" />
@@ -25,14 +25,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="24dp"
-            android:text="Únete a PHISHWARE"
+            android:text="@string/reg_subtitle"
             android:textColor="@color/text_secondary"
             android:textSize="14sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:hint="Nombres (opcional)"
+            android:hint="@string/reg_name_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -48,7 +48,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Apellidos (opcional)"
+            android:hint="@string/reg_last_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -64,7 +64,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Usuario"
+            android:hint="@string/reg_user_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -80,7 +80,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Email"
+            android:hint="@string/reg_email_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
 
             <com.google.android.material.textfield.TextInputEditText
@@ -96,8 +96,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Contraseña"
-            app:helperText="Mín. 8: mayúscula, minúscula, número y símbolo"
+            android:hint="@string/reg_pass_hint"
+            app:helperText="@string/reg_pass_help"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
             app:passwordToggleEnabled="true"
             xmlns:app="http://schemas.android.com/apk/res-auto">
@@ -132,7 +132,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             style="@style/Widget.Material3.Button.TextButton"
-            android:text="Volver"
+            android:text="@string/reg_back"
             android:textColor="@color/text_secondary" />
     </LinearLayout>
 </ScrollView>

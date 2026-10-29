@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
+    <item android:id="@+id/dashboard_fragment" android:icon="@drawable/ic_home" android:title="Inicio" />
     <item android:id="@+id/url_analysis_fragment" android:icon="@drawable/ic_analyze" android:title="@string/nav_analysis" />
-    <item android:id="@+id/history_fragment" android:icon="@drawable/ic_history" android:title="@string/nav_history" />
     <item android:id="@+id/alerts_fragment" android:icon="@drawable/ic_alert" android:title="@string/nav_alerts" />
     <item android:id="@+id/education_fragment" android:icon="@drawable/ic_edu" android:title="@string/nav_education" />
     <item android:id="@+id/settings_fragment" android:icon="@drawable/ic_shield" android:title="@string/nav_guard" />

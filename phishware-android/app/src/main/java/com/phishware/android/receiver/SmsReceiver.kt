@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Build
 import android.provider.Telephony
+import com.phishware.android.R
 import com.phishware.android.data.local.GuardPreferences
 import com.phishware.android.data.local.SessionManager
 import com.phishware.android.data.repository.PhishwareRepository
@@ -71,12 +72,13 @@ class SmsReceiver : BroadcastReceiver() {
                     }.onFailure {
                         // Sin backend: análisis local para no perder el SMS (Ley 1581: solo URL)
                         if (notifOn && looksPhishyLocal(url)) {
+                            val ctx = context.applicationContext
                             notifications.showThreat(
                                 url = url,
                                 domain = url.substringAfter("://").substringBefore("/"),
                                 riskLevel = "SUSPICIOUS",
                                 score = 55.0,
-                                firstTip = "Sin conexión: coincide con patrón de smishing, verifica por canal oficial"
+                                firstTip = ctx.getString(com.phishware.android.R.string.notif_offline_tip)
                             )
                         }
                     }

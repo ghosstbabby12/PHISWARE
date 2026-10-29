@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.phishware.android.R
 import com.phishware.android.databinding.ActivityRegisterBinding
 import com.phishware.android.ui.MainActivity
 import com.phishware.android.viewmodel.AuthViewModel
@@ -37,7 +38,10 @@ class RegisterActivity : AppCompatActivity() {
             val password  = binding.etPassword.text.toString()
             val firstName = binding.etFirstName.text.toString().ifBlank { null }
             val lastName  = binding.etLastName.text.toString().ifBlank { null }
-
+            if (username.isBlank() || email.isBlank() || password.isBlank()) {
+                Snackbar.make(binding.root, getString(R.string.auth_fill_required), Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             viewModel.register(username, email, password, firstName, lastName)
         }
     }

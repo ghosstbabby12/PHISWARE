@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import com.phishware.android.R
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentAlertsBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -36,21 +37,21 @@ class AlertsFragment : Fragment() {
     }
 
     private fun load() {
-        binding.tvList.text = "Cargando…"
+        binding.tvList.text = getString(R.string.alerts_loading)
         lifecycleScope.launch {
-            repository.getUnreadAlertCount().onSuccess { binding.tvUnread.text = "Sin leer: $it" }
+            repository.getUnreadAlertCount().onSuccess { binding.tvUnread.text = getString(R.string.alerts_unread_fmt, it) }
             repository.getAlerts(0, 20)
                 .onSuccess { page ->
-                    if (page.content.isEmpty()) binding.tvList.text = "Sin alertas. Analiza una URL, SMS o QR."
+                    if (page.content.isEmpty()) binding.tvList.text = getString(R.string.alerts_empty)
                     else binding.tvList.text = page.content.joinToString("\n\n") { a ->
                         val icon = when (a.severity) {
                             "CRITICAL" -> "⛔"; "HIGH" -> "🔴"; "MEDIUM" -> "🟠"; else -> "🟡"
                         }
-                        val read = if (a.isRead) "" else " • NUEVA"
+                        val read = if (a.isRead) "" else getString(R.string.alerts_new)
                         "$icon [${a.severity}]${read}\n${a.title}\n${a.message.take(160)}"
                     }
                 }
-                .onFailure { binding.tvList.text = "Error: ${it.message}" }
+                .onFailure { binding.tvList.text = getString(R.string.alerts_error_fmt, it.message ?: "") }
         }
     }
 

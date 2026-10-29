@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
+import com.phishware.android.R
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentEducationBinding
 import dagger.hilt.android.AndroidEntryPoint
@@ -32,15 +33,15 @@ class EducationFragment : Fragment() {
     }
 
     private fun load() {
-        binding.tvList.text = "Cargando lecciones…"
+        binding.tvList.text = getString(R.string.edu_loading_lessons)
         lifecycleScope.launch {
             repository.getEducation(0, 20).onSuccess { page ->
-                if (page.content.isEmpty()) { binding.tvList.text = "Sin contenido todavía."; return@launch }
+                if (page.content.isEmpty()) { binding.tvList.text = getString(R.string.edu_empty); return@launch }
                 binding.tvList.text = page.content.joinToString("\n\n") { "📘 ${it.title}\n${it.summary.orEmpty()}\n[${it.slug}]" }
                 // Tap largo simulado: primer slug con quiz
                 binding.btnQuiz.setOnClickListener { openQuiz(page.content.firstOrNull()?.slug.orEmpty()) }
                 binding.btnDetail.setOnClickListener { openDetail(page.content.firstOrNull()?.slug.orEmpty()) }
-            }.onFailure { binding.tvList.text = "Error: ${it.message}" }
+            }.onFailure { binding.tvList.text = getString(R.string.edu_error_fmt, it.message ?: "") }
         }
     }
 
@@ -51,9 +52,9 @@ class EducationFragment : Fragment() {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(it.title)
                     .setMessage((it.summary.orEmpty() + "\n\n" + it.content.orEmpty()).take(1500))
-                    .setPositiveButton("Cerrar", null)
+                    .setPositiveButton(getString(R.string.common_close), null)
                     .show()
-            }.onFailure { Snackbar.make(binding.root, it.message ?: "Error", Snackbar.LENGTH_LONG).show() }
+            }.onFailure { Snackbar.make(binding.root, it.message ?: getString(R.string.common_error), Snackbar.LENGTH_LONG).show() }
         }
     }
 
@@ -62,7 +63,7 @@ class EducationFragment : Fragment() {
         lifecycleScope.launch {
             repository.getQuizByModule(slug).onSuccess { quiz ->
                 val qs = quiz.questions.orEmpty().sortedBy { it.orderIndex }
-                if (qs.isEmpty()) { Snackbar.make(binding.root, "Este módulo aún no tiene quiz", Snackbar.LENGTH_LONG).show(); return@launch }
+                if (qs.isEmpty()) { Snackbar.make(binding.root, getString(R.string.edu_no_quiz), Snackbar.LENGTH_LONG).show(); return@launch }
                 // Quiz simple: responde solo la primera pregunta (demo móvil); resto en web
                 val q = qs.first()
                 val opts = q.options?.toSortedMap() ?: emptyMap()
@@ -73,13 +74,13 @@ class EducationFragment : Fragment() {
                         val selectedKey = opts.keys.sorted()[which]
                         lifecycleScope.launch {
                             repository.submitQuiz(quiz.id, mapOf(q.id.toString() to selectedKey))
-                                .onSuccess { r -> Snackbar.make(binding.root, "Puntaje: ${r.score} ${if (r.passed) "✅" else "❌"} (+${r.pointsEarned} pts)", Snackbar.LENGTH_LONG).show() }
-                                .onFailure { Snackbar.make(binding.root, it.message ?: "Error", Snackbar.LENGTH_LONG).show() }
+                                .onSuccess { r -> Snackbar.make(binding.root, getString(R.string.edu_quiz_score_fmt, r.score, if (r.passed) "✅" else "❌", r.pointsEarned), Snackbar.LENGTH_LONG).show() }
+                                .onFailure { Snackbar.make(binding.root, it.message ?: getString(R.string.common_error), Snackbar.LENGTH_LONG).show() }
                         }
                     }
-                    .setNegativeButton("Cerrar", null)
+                    .setNegativeButton(getString(R.string.common_close), null)
                     .show()
-            }.onFailure { Snackbar.make(binding.root, it.message ?: "Sin quiz", Snackbar.LENGTH_LONG).show() }
+            }.onFailure { Snackbar.make(binding.root, it.message ?: getString(R.string.edu_no_quiz2), Snackbar.LENGTH_LONG).show() }
         }
     }
 

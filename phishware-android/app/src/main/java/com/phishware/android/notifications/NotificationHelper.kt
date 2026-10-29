@@ -32,13 +32,13 @@ class NotificationHelper @Inject constructor(
         if (Build.VERSION.SDK_INT < Build.VERSION_CODES.O) return
         val nm = context.getSystemService(NotificationManager::class.java)
         nm.createNotificationChannel(
-            NotificationChannel(CHANNEL_GUARD, "Proteccion PhishWare", NotificationManager.IMPORTANCE_LOW).apply {
-                description = "Servicio de proteccion en segundo plano"
+            NotificationChannel(CHANNEL_GUARD, context.getString(R.string.channel_guard), NotificationManager.IMPORTANCE_LOW).apply {
+                description = context.getString(R.string.channel_guard_desc)
             }
         )
         nm.createNotificationChannel(
-            NotificationChannel(CHANNEL_THREATS, "Alertas de amenazas", NotificationManager.IMPORTANCE_HIGH).apply {
-                description = "Avisos de phishing detectado"
+            NotificationChannel(CHANNEL_THREATS, context.getString(R.string.channel_threats), NotificationManager.IMPORTANCE_HIGH).apply {
+                description = context.getString(R.string.channel_threats_desc)
                 enableVibration(true)
             }
         )
@@ -53,9 +53,9 @@ class NotificationHelper @Inject constructor(
         val pi = PendingIntent.getActivity(context, 0, intent,
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         return NotificationCompat.Builder(context, CHANNEL_GUARD)
-            .setSmallIcon(android.R.drawable.ic_lock_lock)
-            .setContentTitle("PhishWare activo")
-            .setContentText("Proteccion en segundo plano · $threatsBlocked amenazas · $unread sin leer")
+            .setSmallIcon(R.drawable.ic_shield)
+            .setContentTitle(context.getString(R.string.notif_guard_title))
+            .setContentText(context.getString(R.string.notif_guard_text_fmt, threatsBlocked, unread))
             .setOngoing(true)
             .setContentIntent(pi)
             .build()
@@ -64,8 +64,8 @@ class NotificationHelper @Inject constructor(
     fun showThreat(url: String, domain: String, riskLevel: String, score: Double, firstTip: String?) {
         ensureChannels()
         val (title, icon) = when (riskLevel) {
-            "DANGEROUS" -> "Posible phishing bloqueado" to R.drawable.ic_alert
-            "SUSPICIOUS" -> "Enlace sospechoso" to R.drawable.ic_analyze
+            "DANGEROUS" -> context.getString(R.string.notif_threat_danger) to R.drawable.ic_alert
+            "SUSPICIOUS" -> context.getString(R.string.notif_threat_susp) to R.drawable.ic_analyze
             else -> return // SAFE no notifica (evita ruido)
         }
         val open = PendingIntent.getActivity(
@@ -111,9 +111,9 @@ class NotificationHelper @Inject constructor(
             .setAutoCancel(true)
             .setOnlyAlertOnce(false)
             .setContentIntent(open)
-            .addAction(0, "Ver", open)
-            .addAction(0, "Reportar", report)
-            .addAction(0, "Ignorar", ignore)
+            .addAction(0, context.getString(R.string.notif_action_view), open)
+            .addAction(0, context.getString(R.string.notif_action_report), report)
+            .addAction(0, context.getString(R.string.notif_action_ignore), ignore)
             .build()
         context.getSystemService(NotificationManager::class.java)
             .notify(url.hashCode(), notif)

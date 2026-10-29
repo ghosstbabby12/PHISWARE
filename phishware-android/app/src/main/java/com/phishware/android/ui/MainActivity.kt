@@ -42,9 +42,9 @@ class MainActivity : AppCompatActivity() {
             try {
                 if (!guard.consent.first()) {
                     com.google.android.material.dialog.MaterialAlertDialogBuilder(this@MainActivity)
-                        .setTitle("Aviso de privacidad")
-                        .setMessage("PHISHWARE puede analizar enlaces de SMS, notificaciones de correo (Gmail/Outlook) y WhatsApp/Telegram.\n\nSolo se extrae la URL para analizarla. Nunca se envía ni se guarda el cuerpo del mensaje, tus contactos ni tus claves. No hacemos nada con tu información personal.\n\nActívalo en Protección cuando quieras.")
-                        .setPositiveButton("Entendido", null)
+                        .setTitle(getString(com.phishware.android.R.string.consent_title))
+                        .setMessage(getString(com.phishware.android.R.string.consent_msg))
+                        .setPositiveButton(getString(com.phishware.android.R.string.consent_ok), null)
                         .show()
                 }
             } catch (_: Exception) { }

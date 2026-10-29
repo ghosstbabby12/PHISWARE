@@ -29,8 +29,8 @@ function QuestionCard({ question, selected, onChange }: {
 
   return (
     <div>
-      <p className="text-white font-medium leading-relaxed">{question.questionText}</p>
-      {multiple && <p className="text-xs text-slate-500 mt-1">Puedes seleccionar varias opciones</p>}
+      <p className="text-ink-900 font-medium leading-relaxed">{question.questionText}</p>
+      {multiple && <p className="text-xs text-ink-500 mt-1">Puedes seleccionar varias opciones</p>}
       <div className="mt-4 space-y-2">
         {Object.entries(question.options).map(([key, label]) => {
           const active = selected.includes(key)
@@ -41,13 +41,13 @@ function QuestionCard({ question, selected, onChange }: {
               onClick={() => toggle(key)}
               className={`w-full text-left flex items-start gap-3 p-3 rounded-lg border transition-colors ${
                 active
-                  ? 'border-primary-500 bg-primary-600/15 text-white'
-                  : 'border-slate-700 bg-dark-800/50 text-slate-300 hover:border-slate-500'
+                  ? 'border-primary-600 bg-primary-50 text-ink-900'
+                  : 'border-ink-200 bg-white text-ink-700 hover:border-primary-600'
               }`}
             >
               <span className={`flex-shrink-0 w-6 h-6 flex items-center justify-center text-xs font-bold border ${
                 multiple ? 'rounded' : 'rounded-full'
-              } ${active ? 'bg-primary-600 border-primary-500 text-white' : 'border-slate-600 text-slate-400'}`}>
+              } ${active ? 'bg-primary-600 border-primary-600 text-white' : 'border-ink-200 text-ink-500'}`}>
                 {key}
               </span>
               <span className="text-sm leading-relaxed">{label}</span>
@@ -70,15 +70,15 @@ function ResultView({ result, questions, onRetry }: {
       <div className={`rounded-xl p-5 border text-center ${
         result.passed ? 'border-success-500/40 bg-success-500/10' : 'border-warning-500/40 bg-warning-500/10'
       }`}>
-        <p className={`text-4xl font-bold ${result.passed ? 'text-success-400' : 'text-warning-400'}`}>{result.score}%</p>
-        <p className="text-white font-semibold mt-1">
+        <p className={`text-4xl font-bold tabular-nums ${result.passed ? 'text-success-600' : 'text-warning-600'}`}>{result.score}%</p>
+        <p className="text-ink-900 font-semibold mt-1">
           {result.passed ? '¡Aprobaste este módulo!' : `Necesitas ${result.passingScore}% para aprobar`}
         </p>
-        <p className="text-sm text-slate-400 mt-1">
+        <p className="text-sm text-ink-500 mt-1">
           {result.correctCount} de {result.totalQuestions} correctas · Intento #{result.attempts} · Mejor puntaje: {result.bestScore}%
         </p>
         {result.pointsEarned > 0 && (
-          <p className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-primary-300">
+          <p className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-primary-700">
             <Award className="w-4 h-4" /> +{result.pointsEarned} puntos
           </p>
         )}
@@ -94,19 +94,19 @@ function ResultView({ result, questions, onRetry }: {
             }`}>
               <div className="flex items-start gap-2">
                 {f.correct
-                  ? <CheckCircle2 className="w-5 h-5 text-success-400 flex-shrink-0 mt-0.5" />
-                  : <XCircle className="w-5 h-5 text-danger-400 flex-shrink-0 mt-0.5" />}
+                  ? <CheckCircle2 className="w-5 h-5 text-success-600 flex-shrink-0 mt-0.5" />
+                  : <XCircle className="w-5 h-5 text-danger-500 flex-shrink-0 mt-0.5" />}
                 <div className="text-sm">
-                  <p className="text-white font-medium">{i + 1}. {q.questionText}</p>
+                  <p className="text-ink-900 font-medium">{i + 1}. {q.questionText}</p>
                   {!f.correct && (
-                    <p className="text-slate-400 mt-1">
+                    <p className="text-ink-500 mt-1">
                       Tu respuesta: {f.selected.length ? f.selected.map(k => q.options[k]).join(', ') : 'sin responder'}
                     </p>
                   )}
-                  <p className="text-success-400 mt-1">
+                  <p className="text-success-600 font-medium mt-1">
                     Correcta: {f.correctAnswers.map(k => q.options[k]).join(', ')}
                   </p>
-                  {f.explanation && <p className="text-slate-400 mt-2 leading-relaxed">{f.explanation}</p>}
+                  {f.explanation && <p className="text-ink-500 mt-2 leading-relaxed">{f.explanation}</p>}
                 </div>
               </div>
             </div>
@@ -185,11 +185,11 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
     <section className="card" aria-labelledby="module-quiz-title">
       <div className="flex items-start justify-between gap-4 mb-5">
         <div>
-          <h2 id="module-quiz-title" className="text-lg font-semibold text-white flex items-center gap-2">
-            <ClipboardCheck className="w-5 h-5 text-primary-400" />
+          <h2 id="module-quiz-title" className="text-lg font-semibold text-ink-900 flex items-center gap-2">
+            <ClipboardCheck className="w-5 h-5 text-primary-700" />
             Evalúa lo que aprendiste
           </h2>
-          <p className="text-sm text-slate-400 mt-1">{quiz.title}</p>
+          <p className="text-sm text-ink-500 mt-1">{quiz.title}</p>
         </div>
         {quiz.passed && phase !== 'result' && (
           <span className="badge-safe flex-shrink-0">Aprobado · {quiz.bestScore}%</span>
@@ -199,21 +199,21 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
       {phase === 'intro' && (
         <div className="space-y-4">
           <div className="grid grid-cols-3 gap-3 text-center">
-            <div className="rounded-lg bg-dark-800/60 p-3">
-              <p className="text-xl font-bold text-white">{questions.length}</p>
-              <p className="text-xs text-slate-500">preguntas</p>
+            <div className="rounded-lg bg-ink-50 border divider p-3">
+              <p className="text-xl font-bold text-ink-900">{questions.length}</p>
+              <p className="text-xs text-ink-500">preguntas</p>
             </div>
-            <div className="rounded-lg bg-dark-800/60 p-3">
-              <p className="text-xl font-bold text-white">{quiz.passingScore}%</p>
-              <p className="text-xs text-slate-500">para aprobar</p>
+            <div className="rounded-lg bg-ink-50 border divider p-3">
+              <p className="text-xl font-bold text-ink-900">{quiz.passingScore}%</p>
+              <p className="text-xs text-ink-500">para aprobar</p>
             </div>
-            <div className="rounded-lg bg-dark-800/60 p-3">
-              <p className="text-xl font-bold text-white">{quiz.passed ? '✓' : `+${quiz.pointsReward}`}</p>
-              <p className="text-xs text-slate-500">{quiz.passed ? 'puntos obtenidos' : 'puntos'}</p>
+            <div className="rounded-lg bg-ink-50 border divider p-3">
+              <p className="text-xl font-bold text-ink-900">{quiz.passed ? '✓' : `+${quiz.pointsReward}`}</p>
+              <p className="text-xs text-ink-500">{quiz.passed ? 'puntos obtenidos' : 'puntos'}</p>
             </div>
           </div>
           {quiz.attempts > 0 && (
-            <p className="text-sm text-slate-400">
+            <p className="text-sm text-ink-500">
               Llevas {quiz.attempts} {quiz.attempts === 1 ? 'intento' : 'intentos'}. Tu mejor puntaje: {quiz.bestScore}%.
             </p>
           )}
@@ -225,14 +225,14 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
 
       {phase === 'answering' && question && (
         <div className="space-y-5">
-          <div className="flex items-center justify-between text-xs text-slate-400">
+          <div className="flex items-center justify-between text-xs text-ink-500">
             <span>Pregunta {current + 1} de {questions.length}</span>
-            <span className={`flex items-center gap-1 ${remaining < 60 ? 'text-warning-400' : ''}`}>
+            <span className={`flex items-center gap-1 tabular-nums ${remaining < 60 ? 'text-warning-600 font-semibold' : ''}`}>
               <Clock className="w-3.5 h-3.5" />
               {remaining > 0 ? formatTime(remaining) : 'Tiempo sugerido agotado'}
             </span>
           </div>
-          <div className="h-1.5 rounded-full bg-slate-700 overflow-hidden">
+          <div className="h-1.5 rounded-full bg-ink-100 overflow-hidden">
             <div className="h-full bg-primary-500 transition-all" style={{ width: `${(answeredCount / questions.length) * 100}%` }} />
           </div>
 
@@ -268,7 +268,7 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
             )}
           </div>
           {current === questions.length - 1 && answeredCount < questions.length && (
-            <p className="text-xs text-warning-400 text-right">
+            <p className="text-xs text-warning-600 font-medium text-right">
               Te faltan {questions.length - answeredCount} {questions.length - answeredCount === 1 ? 'pregunta' : 'preguntas'} por responder
             </p>
           )}

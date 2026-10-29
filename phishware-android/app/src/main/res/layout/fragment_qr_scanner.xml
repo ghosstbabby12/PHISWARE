@@ -11,7 +11,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Escanear QR"
+            android:text="@string/qr_title"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -20,7 +20,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="12dp"
-            android:text="Apunta a un QR o elige una imagen; se analiza solo"
+            android:text="@string/qr_sub"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
         <TextView
@@ -30,7 +30,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
-            android:text="Apunta a un QR…" />
+            android:text="@string/qr_point" />
         <androidx.camera.view.PreviewView
             android:id="@+id/previewView"
             android:layout_width="match_parent"
@@ -41,12 +41,12 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Elegir imagen QR" />
+            android:text="@string/qr_pick" />
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:hint="Contenido del QR"
+            android:hint="@string/qr_content_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etQrText"
@@ -59,7 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Analizar QR" />
+            android:text="@string/qr_analyze" />
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
@@ -106,13 +106,13 @@
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Ver en Análisis" />
+                        android:text="@string/qr_view_in_analysis" />
                     <com.google.android.material.button.MaterialButton
                         android:id="@+id/btnRescan"
                         android:layout_width="0dp"
                         android:layout_height="wrap_content"
                         android:layout_weight="1"
-                        android:text="Escanear otro"
+                        android:text="@string/qr_scan_other"
                         android:visibility="gone" />
                 </LinearLayout>
             </LinearLayout>

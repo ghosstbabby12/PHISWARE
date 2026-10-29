@@ -11,7 +11,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Aprende"
+            android:text="@string/edu_title"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -20,14 +20,14 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
             android:layout_marginBottom="16dp"
-            android:text="Lecciones y quizzes de phishing"
+            android:text="@string/edu_sub"
             android:textColor="@color/text_secondary"
             android:textSize="13sp" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRefresh"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Recargar" />
+            android:text="@string/edu_reload" />
         <TextView
             android:id="@+id/tvList"
             android:layout_width="match_parent"
@@ -41,13 +41,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Ver primera lección" />
+            android:text="@string/edu_view_first" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnQuiz"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Hacer quiz" />
+            android:text="@string/edu_take_quiz" />
     </LinearLayout>
 </ScrollView>

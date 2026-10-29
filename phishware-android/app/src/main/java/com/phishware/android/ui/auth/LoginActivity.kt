@@ -7,6 +7,7 @@ import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
+import com.phishware.android.R
 import com.phishware.android.databinding.ActivityLoginBinding
 import com.phishware.android.ui.MainActivity
 import com.phishware.android.viewmodel.AuthViewModel
@@ -32,6 +33,10 @@ class LoginActivity : AppCompatActivity() {
         binding.btnLogin.setOnClickListener {
             val username = binding.etUsername.text.toString()
             val password = binding.etPassword.text.toString()
+            if (username.isBlank() || password.isBlank()) {
+                Snackbar.make(binding.root, getString(R.string.auth_fill_fields), Snackbar.LENGTH_SHORT).show()
+                return@setOnClickListener
+            }
             viewModel.login(username, password)
         }
 

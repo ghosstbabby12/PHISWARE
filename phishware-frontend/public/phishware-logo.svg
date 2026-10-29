@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 48 48" role="img" aria-label="PHISHWARE">
+  <path d="M24 3 6 10v12c0 10.2 7.4 17.9 18 23 10.6-5.1 18-12.8 18-23V10L24 3z" fill="#790D2B"/>
+  <path d="M24 6.2 9 11.7V22c0 8.6 6.2 15.2 15 19.7 8.8-4.5 15-11.1 15-19.7V11.7L24 6.2z" fill="#fff" opacity=".14"/>
+  <path d="M17 22.5l4.6 4.6L31.5 17" fill="none" stroke="#fff" stroke-width="3.2" stroke-linecap="round" stroke-linejoin="round"/>
+  <circle cx="34.5" cy="33.5" r="5.2" fill="#fff" stroke="#790D2B" stroke-width="2"/>
+  <path d="M32.6 33.5h3.8M34.5 31.6v3.8" stroke="#790D2B" stroke-width="1.8" stroke-linecap="round"/>
+</svg>

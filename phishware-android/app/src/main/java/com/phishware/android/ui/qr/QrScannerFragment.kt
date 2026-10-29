@@ -60,8 +60,8 @@ class QrScannerFragment : Fragment() {
         if (!isAdded) return@registerForActivityResult
         if (ok) startCamera()
         else {
-            setStatus("Sin permiso de cámara: usa galería o escribe la URL.")
-            Snackbar.make(binding.root, "Sin cámara no se puede escanear; usa galería", Snackbar.LENGTH_LONG).show()
+            setStatus(getString(R.string.qr_no_perm_full))
+            Snackbar.make(binding.root, getString(R.string.qr_no_cam_gallery), Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -73,14 +73,14 @@ class QrScannerFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         cameraExecutor = Executors.newSingleThreadExecutor()
-        setStatus("Apunta a un QR…")
+        setStatus(getString(R.string.qr_point))
 
         binding.btnGallery.setOnClickListener { pickImage.launch("image/*") }
         binding.btnRescan.setOnClickListener { resumeScanning() }
         binding.btnOpenAnalysis.setOnClickListener {
             val url = lastUrl ?: UrlExtractor.extractUrls(binding.etQrText.text.toString()).firstOrNull()
             if (url.isNullOrBlank()) {
-                Snackbar.make(binding.root, "No hay URL para llevar al Análisis", Snackbar.LENGTH_SHORT).show()
+                Snackbar.make(binding.root, getString(R.string.qr_no_url_toast), Snackbar.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
             findNavController().navigate(
@@ -110,7 +110,7 @@ class QrScannerFragment : Fragment() {
                     is UrlAnalysisViewModel.AnalysisState.Loading -> {
                         binding.progressBar.visibility = View.VISIBLE
                         binding.cardResult.visibility = View.GONE
-                        setStatus("Analizando URL del QR…")
+                        setStatus(getString(R.string.qr_analyzing_url))
                     }
                     is UrlAnalysisViewModel.AnalysisState.Success -> {
                         binding.progressBar.visibility = View.GONE
@@ -119,7 +119,7 @@ class QrScannerFragment : Fragment() {
                     }
                     is UrlAnalysisViewModel.AnalysisState.Error -> {
                         binding.progressBar.visibility = View.GONE
-                        setStatus("Falló el análisis. Reintenta.")
+                        setStatus(getString(R.string.qr_analysis_fail))
                         Snackbar.make(binding.root, state.message, Snackbar.LENGTH_LONG).show()
                         viewModel.reset()
                     }
@@ -166,10 +166,10 @@ class QrScannerFragment : Fragment() {
                 cameraProvider.bindToLifecycle(
                     viewLifecycleOwner, CameraSelector.DEFAULT_BACK_CAMERA, preview, analysis
                 )
-                setStatus("Apunta a un QR…")
+                setStatus(getString(R.string.qr_point))
             } catch (_: Exception) {
                 if (isAdded && _binding != null)
-                    Snackbar.make(binding.root, "No se pudo iniciar la cámara", Snackbar.LENGTH_LONG).show()
+                    Snackbar.make(binding.root, getString(R.string.qr_no_cam_start), Snackbar.LENGTH_LONG).show()
             }
         }, ContextCompat.getMainExecutor(requireContext()))
     }
@@ -208,27 +208,27 @@ class QrScannerFragment : Fragment() {
     private fun decodeFromGallery(uri: Uri) {
         try {
             val image = InputImage.fromFilePath(requireContext(), uri)
-            setStatus("Leyendo imagen…")
+            setStatus(getString(R.string.qr_reading_img))
             BarcodeScanning.getClient().process(image)
                 .addOnSuccessListener { codes ->
                     if (!isAdded || _binding == null) return@addOnSuccessListener
                     val v = codes.firstOrNull()?.rawValue
                     if (v.isNullOrBlank()) {
-                        setStatus("La imagen no contiene un QR legible.")
-                        Snackbar.make(binding.root, "La imagen no contiene un QR legible", Snackbar.LENGTH_LONG).show()
+                        setStatus(getString(R.string.qr_no_qr_img_status))
+                        Snackbar.make(binding.root, getString(R.string.qr_no_qr_img), Snackbar.LENGTH_LONG).show()
                         return@addOnSuccessListener
                     }
                     onQrDecoded(v)
                 }
                 .addOnFailureListener {
                     if (isAdded && _binding != null) {
-                        setStatus("No se pudo leer la imagen.")
-                        Snackbar.make(binding.root, "No se pudo leer la imagen", Snackbar.LENGTH_LONG).show()
+                        setStatus(getString(R.string.qr_img_fail_status))
+                        Snackbar.make(binding.root, getString(R.string.qr_img_fail), Snackbar.LENGTH_LONG).show()
                     }
                 }
         } catch (_: Exception) {
             if (isAdded && _binding != null)
-                Snackbar.make(binding.root, "No se pudo leer la imagen", Snackbar.LENGTH_LONG).show()
+                Snackbar.make(binding.root, getString(R.string.qr_img_fail), Snackbar.LENGTH_LONG).show()
         }
     }
 
@@ -252,7 +252,7 @@ class QrScannerFragment : Fragment() {
         lastUrl = url
         scanningPaused = true
         stopCamera()
-        setStatus("QR detectado. Analizando…")
+        setStatus(getString(R.string.qr_detected))
         binding.btnRescan.visibility = View.VISIBLE
         viewModel.analyzeUrl(url)
     }
@@ -262,12 +262,11 @@ class QrScannerFragment : Fragment() {
         scanningPaused = true
         stopCamera()
         binding.cardResult.visibility = View.VISIBLE
-        binding.tvRiskLevel.text = "📷 QR sin URL"
-        binding.tvDetail.text = (raw?.take(300) ?: "Vacío") +
-            "\n\nEl QR no contiene un enlace; no hay nada que analizar. Pulsa “Escanear otro” para continuar."
+        binding.tvRiskLevel.text = getString(R.string.qr_no_url_title)
+        binding.tvDetail.text = (raw?.take(300) ?: "") + "\n\n" + getString(R.string.qr_no_url_detail)
         binding.btnOpenAnalysis.visibility = View.GONE
         binding.btnRescan.visibility = View.VISIBLE
-        setStatus("QR leído (sin enlace).")
+        setStatus(getString(R.string.qr_read_no_link))
     }
 
     private fun resumeScanning() {
@@ -284,7 +283,7 @@ class QrScannerFragment : Fragment() {
         }
         if (hasCameraPermission()) startCamera()
         else reqCamera.launch(Manifest.permission.CAMERA)
-        setStatus("Apunta a un QR…")
+        setStatus(getString(R.string.qr_point))
     }
 
     private fun showResult(r: UrlAnalysisResponse) {
@@ -293,15 +292,15 @@ class QrScannerFragment : Fragment() {
         binding.btnRescan.visibility = View.VISIBLE
         binding.btnOpenAnalysis.visibility = View.VISIBLE
         val label = when (r.riskLevel) {
-            "SAFE" -> "✅ SEGURO"
-            "SUSPICIOUS" -> "⚠️ SOSPECHOSO"
-            "DANGEROUS" -> "⛔ PELIGROSO"
-            else -> "🔍 ANALIZADO"
+            "SAFE" -> getString(R.string.qr_status_safe)
+            "SUSPICIOUS" -> getString(R.string.qr_status_susp)
+            "DANGEROUS" -> getString(R.string.qr_status_dang)
+            else -> getString(R.string.analysis_analyzed)
         }
         binding.tvRiskLevel.text = "$label · ${"%.0f".format(r.riskScore)}/100"
         binding.tvDetail.text = "${r.domain.orEmpty()}\n${r.riskMessage.orEmpty()}\n" +
             r.recommendations.orEmpty().take(2).joinToString("\n") { "• $it" }
-        setStatus("Análisis listo: $label.")
+        setStatus(getString(R.string.qr_analysis_ready_fmt, label))
         if (r.riskLevel == "DANGEROUS" || r.riskLevel == "SUSPICIOUS") {
             try {
                 notifications.showThreat(

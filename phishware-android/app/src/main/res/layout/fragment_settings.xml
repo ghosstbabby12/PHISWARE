@@ -11,7 +11,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Protección"
+            android:text="@string/guard_title"
             android:textColor="@color/text_primary"
             android:textSize="22sp"
             android:textStyle="bold" />
@@ -22,67 +22,106 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
-            android:text="Aviso de privacidad (Ley 1581 de 2012): al activar la protección de correo (Gmail/Outlook) y WhatsApp/Telegram solo se extrae la URL visible del mensaje o notificación para analizarla. Nunca se envía ni se guarda el cuerpo del mensaje, tus contactos ni tus credenciales. No hacemos nada con tu información personal: solo análisis de la URL. Puedes desactivarlo cuando quieras." />
+            android:text="@string/guard_consent_long" />
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swConsent"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            android:text="Autorizo la protección (consentimiento)" />
+            android:text="@string/guard_consent" />
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swGuard"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Protección en segundo plano" />
+            android:text="@string/guard_bg" />
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swSms"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Analizar SMS automáticamente" />
+            android:text="@string/guard_sms" />
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swNotif"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Notificaciones de amenaza" />
+            android:text="@string/guard_notif" />
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swNotifListener"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Proteger correo y WhatsApp (lee solo notificaciones con enlaces)" />
+            android:text="@string/guard_notif_listener" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPermissions"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
-            android:text="Conceder permisos (SMS / Cámara / Avisos)" />
+            android:text="@string/guard_grant" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnStart"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Activar protección ahora" />
+            android:text="@string/guard_activate" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBattery"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Quitar restricción de batería" />
+            android:text="@string/guard_battery" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnTestNotif"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Probar notificación estilo iPhone" />
+            android:text="@string/guard_test_notif" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnNotifAccess"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="Dar acceso a notificaciones (correo/WhatsApp)" />
+            android:text="@string/guard_notif_access" />
+        <TextView
+            android:id="@+id/tvLangTitle"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/guard_lang_title"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLangEs"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="Español" />
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnLangEn"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="English" />
+        </LinearLayout>
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnLogout"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/guard_logout" />
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"

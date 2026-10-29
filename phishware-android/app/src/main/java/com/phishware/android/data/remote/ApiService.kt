@@ -38,6 +38,24 @@ interface ApiService {
 
     @PATCH("alerts/read-all")
     suspend fun markAllAlertsRead()
+
+    @GET("education")
+    suspend fun getEducation(
+        @Query("page") page: Int = 0,
+        @Query("size") size: Int = 20
+    ): PageResponse<EducationDto>
+
+    @GET("education/{slug}")
+    suspend fun getEducationDetail(@Path("slug") slug: String): EducationDto
+
+    @GET("quiz/module/{slug}")
+    suspend fun getQuizByModule(@Path("slug") slug: String): QuizDto
+
+    @POST("quiz/submit")
+    suspend fun submitQuiz(@Body request: QuizSubmitRequest): QuizResultDto
+
+    @POST("reports")
+    suspend fun reportUrl(@Body request: ReportRequest): ReportDto
 }
 
 data class PageResponse<T>(

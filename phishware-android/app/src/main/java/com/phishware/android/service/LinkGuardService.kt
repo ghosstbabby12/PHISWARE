@@ -59,14 +59,33 @@ class LinkGuardService : Service() {
     override fun onCreate() {
         super.onCreate()
         notifications.ensureChannels()
-        startForeground(NotificationHelper.NOTIF_GUARD_ID, notifications.persistentGuardNotification(0, 0))
+        startSafeForeground()
         scheduleSync(this)
         refreshBadge()
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
+        startSafeForeground()
         refreshBadge()
         return START_STICKY
+    }
+
+    private fun startSafeForeground() {
+        try {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                startForeground(
+                    NotificationHelper.NOTIF_GUARD_ID,
+                    notifications.persistentGuardNotification(0, 0),
+                    android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_DATA_SYNC
+                )
+            } else {
+                startForeground(NotificationHelper.NOTIF_GUARD_ID, notifications.persistentGuardNotification(0, 0))
+            }
+        } catch (e: Exception) {
+            // Android 12+: no se puede iniciar foreground desde background (Boot/Worker).
+            // Se deja solo el WorkManager periódico como respaldo.
+            try { scheduleSync(this) } catch (_: Exception) { }
+        }
     }
 
     private fun refreshBadge() {

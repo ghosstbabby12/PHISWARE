@@ -60,6 +60,21 @@ class SettingsFragment : Fragment() {
         binding.swNotif.setOnCheckedChangeListener { _, v ->
             lifecycleScope.launch { guard.setNotifications(v); refresh() } }
         binding.btnPermissions.setOnClickListener { requestAll() }
+        binding.btnBattery.setOnClickListener {
+            try {
+                val pm = requireContext().getSystemService(android.content.Context.POWER_SERVICE) as android.os.PowerManager
+                if (!pm.isIgnoringBatteryOptimizations(requireContext().packageName)) {
+                    startActivity(android.content.Intent(
+                        android.provider.Settings.ACTION_REQUEST_IGNORE_BATTERY_OPTIMIZATIONS,
+                        android.net.Uri.parse("package:${requireContext().packageName}")
+                    ))
+                } else {
+                    Snackbar.make(binding.root, "Ya estás sin restricción de batería", Snackbar.LENGTH_SHORT).show()
+                }
+            } catch (_: Exception) {
+                Snackbar.make(binding.root, "Ajustes > Batería > Sin restricción para PHISHWARE", Snackbar.LENGTH_LONG).show()
+            }
+        }
         binding.btnStart.setOnClickListener {
             lifecycleScope.launch {
                 if (!guard.consent.first()) {

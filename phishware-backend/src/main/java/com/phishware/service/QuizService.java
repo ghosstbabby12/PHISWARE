@@ -20,6 +20,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -228,7 +229,7 @@ public class QuizService {
                 .id(q.getId())
                 .questionText(q.getQuestionText())
                 .questionType(q.getQuestionType())
-                .options(new LinkedHashMap<>(new java.util.TreeMap<>(q.getOptions())))
+                .options(toOptionsMap(q.getOptions()))
                 .points(q.getPoints())
                 .orderIndex(q.getOrderIndex())
                 .build())
@@ -267,6 +268,22 @@ public class QuizService {
             result.add(raw.toString().trim().toUpperCase());
         }
         return result;
+    }
+
+    static Map<String, String> toOptionsMap(com.fasterxml.jackson.databind.JsonNode node) {
+        Map<String, String> out = new LinkedHashMap<>();
+        if (node == null || node.isNull()) return out;
+        if (node.isObject()) {
+            List<String> keys = new ArrayList<>();
+            node.fieldNames().forEachRemaining(keys::add);
+            Collections.sort(keys);
+            for (String k : keys) out.put(k, node.get(k).asText(""));
+        } else if (node.isArray()) {
+            // Legacy: ["texto A", "texto B"] -> {"A": ..., "B": ...}
+            char letter = 'A';
+            for (com.fasterxml.jackson.databind.JsonNode v : node) out.put(String.valueOf(letter++), v.asText(""));
+        }
+        return out;
     }
 
     private static Set<String> correctAnswersOf(QuizQuestion question) {

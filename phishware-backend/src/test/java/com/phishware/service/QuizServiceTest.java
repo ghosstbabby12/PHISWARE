@@ -67,7 +67,7 @@ class QuizServiceTest {
     private static final com.fasterxml.jackson.databind.ObjectMapper MAPPER = new com.fasterxml.jackson.databind.ObjectMapper();
     private QuizQuestion question(Long id, int order, String type, List<String> correct) {
         return QuizQuestion.builder().id(id).quiz(quiz).questionText("Q" + id).questionType(type)
-            .options(Map.of("B", "b", "A", "a", "C", "c", "D", "d"))
+            .options(MAPPER.valueToTree(Map.of("B", "b", "A", "a", "C", "c", "D", "d")))
             .correctAnswers(MAPPER.valueToTree(Map.of("correct", correct))).explanation("porque sí").points(10).orderIndex(order).build();
     }
 

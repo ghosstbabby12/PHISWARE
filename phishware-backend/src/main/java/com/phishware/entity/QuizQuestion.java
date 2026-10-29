@@ -33,7 +33,7 @@ public class QuizQuestion {
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(nullable = false, columnDefinition = "jsonb")
-    private Map<String, String> options;
+    private com.fasterxml.jackson.databind.JsonNode options;
 
     @JdbcTypeCode(SqlTypes.JSON)
     @Column(name = "correct_answers", nullable = false, columnDefinition = "jsonb")

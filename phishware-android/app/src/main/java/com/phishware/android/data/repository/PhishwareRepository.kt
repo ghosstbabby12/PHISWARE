@@ -48,6 +48,21 @@ class PhishwareRepository @Inject constructor(
     suspend fun markAllAlertsRead(): Result<Unit> =
         call { apiService.markAllAlertsRead() }
 
+    suspend fun getEducation(page: Int = 0, size: Int = 20) =
+        call { apiService.getEducation(page, size) }
+
+    suspend fun getEducationDetail(slug: String) =
+        call { apiService.getEducationDetail(slug) }
+
+    suspend fun getQuizByModule(slug: String) =
+        call { apiService.getQuizByModule(slug) }
+
+    suspend fun submitQuiz(quizId: Long, answers: Map<String, Any>) =
+        call { apiService.submitQuiz(QuizSubmitRequest(quizId, answers)) }
+
+    suspend fun reportUrl(url: String, description: String = "Reportado desde Android") =
+        call { apiService.reportUrl(ReportRequest(url, description)) }
+
     private suspend fun <T> call(block: suspend () -> T): Result<T> = try {
         Result.success(block())
     } catch (e: CancellationException) {

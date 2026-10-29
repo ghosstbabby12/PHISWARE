@@ -1,5 +1,6 @@
 package com.phishware.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.phishware.entity.enums.Severity;
 import jakarta.persistence.*;
 import lombok.*;
@@ -22,10 +23,12 @@ public class Alert {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "analysis_id")
     private UrlAnalysis analysis;

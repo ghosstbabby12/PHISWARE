@@ -8,7 +8,7 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.findNavController
+import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.phishware.android.R
 import com.phishware.android.data.local.GuardPreferences
@@ -32,7 +32,8 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-        val navController = findNavController(R.id.nav_host_fragment)
+        val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
+        val navController = navHostFragment.navController
         binding.bottomNavigation.setupWithNavController(navController)
 
         handleIntent(intent)
@@ -56,8 +57,9 @@ class MainActivity : AppCompatActivity() {
     /** Deep-links desde notificaciones y ShareReceiver (SMS/QR/correo). */
     private fun handleIntent(intent: Intent?) {
         if (intent == null) return
-        val navController = runCatching { findNavController(R.id.nav_host_fragment) }.getOrNull()
-            ?: return
+        val navController = runCatching {
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment)?.navController
+        }.getOrNull() ?: return
         val sharedUrl = intent.getStringExtra("shared_url")
             ?: intent.getStringExtra("extra_url")
         val dest = intent.getStringExtra("dest")

@@ -67,6 +67,54 @@ data class DashboardResponse(
     @SerializedName("userLevel") val userLevel: Int
 )
 
+data class EducationDto(
+    @SerializedName("id") val id: Long = 0,
+    @SerializedName("title") val title: String = "",
+    @SerializedName("slug") val slug: String = "",
+    @SerializedName("summary") val summary: String? = null,
+    @SerializedName("content") val content: String? = null,
+    @SerializedName("category") val category: String? = null,
+    @SerializedName("difficulty") val difficulty: String? = null
+)
+
+data class QuizQuestionDto(
+    @SerializedName("id") val id: Long = 0,
+    @SerializedName("questionText") val questionText: String = "",
+    @SerializedName("questionType") val questionType: String = "",
+    @SerializedName("options") val options: Map<String, String>? = null,
+    @SerializedName("points") val points: Int = 10,
+    @SerializedName("orderIndex") val orderIndex: Int = 0
+)
+
+data class QuizDto(
+    @SerializedName("id") val id: Long = 0,
+    @SerializedName("title") val title: String = "",
+    @SerializedName("questions") val questions: List<QuizQuestionDto>? = null,
+    @SerializedName("passingScore") val passingScore: Int = 70
+)
+
+data class QuizSubmitRequest(
+    @SerializedName("quizId") val quizId: Long,
+    @SerializedName("answers") val answers: Map<String, Any>,
+    @SerializedName("timeTakenSec") val timeTakenSec: Int? = null
+)
+
+data class QuizResultDto(
+    @SerializedName("score") val score: Int = 0,
+    @SerializedName("passed") val passed: Boolean = false,
+    @SerializedName("pointsEarned") val pointsEarned: Int = 0
+)
+
+data class ReportRequest(
+    @SerializedName("url") val url: String,
+    @SerializedName("description") val description: String = ""
+)
+
+data class ReportDto(
+    @SerializedName("id") val id: Long = 0,
+    @SerializedName("status") val status: String? = null
+)
+
 data class ApiError(
     @SerializedName("status") val status: Int = 0,
     @SerializedName("error") val error: String? = null,

@@ -28,4 +28,9 @@
         android:id="@+id/settings_fragment"
         android:name="com.phishware.android.ui.settings.SettingsFragment"
         android:label="@string/nav_guard" />
+
+    <fragment
+        android:id="@+id/education_fragment"
+        android:name="com.phishware.android.ui.education.EducationFragment"
+        android:label="@string/nav_education" />
 </navigation>

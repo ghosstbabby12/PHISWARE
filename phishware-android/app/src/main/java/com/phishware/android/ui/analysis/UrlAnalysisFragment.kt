@@ -11,8 +11,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.phishware.android.R
 import com.phishware.android.data.model.UrlAnalysisResponse
+import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentUrlAnalysisBinding
 import com.phishware.android.viewmodel.UrlAnalysisViewModel
+import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 
@@ -23,6 +25,8 @@ class UrlAnalysisFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val viewModel: UrlAnalysisViewModel by viewModels()
+    @Inject lateinit var repository: PhishwareRepository
+    private var lastUrl: String? = null
 
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View {
         _binding = FragmentUrlAnalysisBinding.inflate(inflater, container, false)
@@ -43,6 +47,20 @@ class UrlAnalysisFragment : Fragment() {
         binding.btnAnalyze.setOnClickListener {
             val url = binding.etUrl.text.toString()
             viewModel.analyzeUrl(url)
+        }
+        binding.btnReport.setOnClickListener {
+            val url = lastUrl ?: binding.etUrl.text.toString()
+            if (url.isBlank()) return@setOnClickListener
+            viewLifecycleOwner.lifecycleScope.launch {
+                repository.reportUrl(url).onSuccess {
+                    Snackbar.make(binding.root, "Reporte enviado ✅ (id ${it.id})", Snackbar.LENGTH_LONG).show()
+                }.onFailure { Snackbar.make(binding.root, it.message ?: "Error", Snackbar.LENGTH_LONG).show() }
+            }
+        }
+        viewLifecycleOwner.lifecycleScope.launch {
+            repository.getDashboard().onSuccess { d ->
+                binding.tvDash.text = "📊 ${d.totalAnalyses} análisis · ⛔ ${d.threatsDetected} amenazas · ⭐ Nv.${d.userLevel} (${d.userPoints} pts)"
+            }.onFailure { binding.tvDash.text = "📊 Sin conexión" }
         }
 
         viewLifecycleOwner.lifecycleScope.launch {
@@ -74,6 +92,7 @@ class UrlAnalysisFragment : Fragment() {
     }
 
     private fun showResult(result: UrlAnalysisResponse) {
+        lastUrl = result.originalUrl ?: binding.etUrl.text.toString()
         binding.cardResult.visibility = View.VISIBLE
 
         val (colorRes, icon, label) = when (result.riskLevel) {

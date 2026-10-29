@@ -37,6 +37,18 @@ class MainActivity : AppCompatActivity() {
         binding.bottomNavigation.setupWithNavController(navController)
 
         handleIntent(intent)
+        // Aviso Ley 1581 antes de proteger correo/WhatsApp
+        lifecycleScope.launch {
+            try {
+                if (!guard.consent.first()) {
+                    com.google.android.material.dialog.MaterialAlertDialogBuilder(this@MainActivity)
+                        .setTitle("Aviso de privacidad")
+                        .setMessage("PHISHWARE puede analizar enlaces de SMS, notificaciones de correo (Gmail/Outlook) y WhatsApp/Telegram.\n\nSolo se extrae la URL para analizarla. Nunca se envía ni se guarda el cuerpo del mensaje, tus contactos ni tus claves. No hacemos nada con tu información personal.\n\nActívalo en Protección cuando quieras.")
+                        .setPositiveButton("Entendido", null)
+                        .show()
+                }
+            } catch (_: Exception) { }
+        }
         // Arranca proteccion si ya habia consentimiento + sesion
         lifecycleScope.launch {
             try {

@@ -22,6 +22,7 @@ class GuardPreferences @Inject constructor(
         private val KEY_GUARD = booleanPreferencesKey("guard_enabled")
         private val KEY_SMS = booleanPreferencesKey("guard_sms")
         private val KEY_NOTIF = booleanPreferencesKey("guard_notifications")
+        private val KEY_NOTIF_LISTENER = booleanPreferencesKey("guard_notif_listener")
         private val KEY_LAST_PREFIX = "last_scan_"
     }
 
@@ -29,11 +30,13 @@ class GuardPreferences @Inject constructor(
     val guardEnabled: Flow<Boolean> = context.dataStore.data.map { it[KEY_GUARD] != false }
     val smsEnabled: Flow<Boolean> = context.dataStore.data.map { it[KEY_SMS] != false }
     val notificationsEnabled: Flow<Boolean> = context.dataStore.data.map { it[KEY_NOTIF] != false }
+    val notificationsListenerEnabled: Flow<Boolean> = context.dataStore.data.map { it[KEY_NOTIF_LISTENER] != false }
 
     suspend fun setConsent(v: Boolean) = context.dataStore.edit { it[KEY_CONSENT] = v }
     suspend fun setGuard(v: Boolean) = context.dataStore.edit { it[KEY_GUARD] = v }
     suspend fun setSms(v: Boolean) = context.dataStore.edit { it[KEY_SMS] = v }
     suspend fun setNotifications(v: Boolean) = context.dataStore.edit { it[KEY_NOTIF] = v }
+    suspend fun setNotifListener(v: Boolean) = context.dataStore.edit { it[KEY_NOTIF_LISTENER] = v }
 
     suspend fun isActive(): Boolean {
         val p = context.dataStore.data.first()

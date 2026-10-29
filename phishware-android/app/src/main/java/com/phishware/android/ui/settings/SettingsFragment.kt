@@ -14,6 +14,7 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import com.phishware.android.data.local.GuardPreferences
 import com.phishware.android.databinding.FragmentSettingsBinding
+import com.phishware.android.notifications.NotificationHelper
 import com.phishware.android.service.LinkGuardService
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
@@ -27,6 +28,7 @@ class SettingsFragment : Fragment() {
     private var _binding: FragmentSettingsBinding? = null
     private val binding get() = _binding!!
     @Inject lateinit var guard: GuardPreferences
+    @Inject lateinit var notifications: NotificationHelper
 
     private val reqPerms = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()) { res ->
@@ -49,6 +51,7 @@ class SettingsFragment : Fragment() {
             binding.swGuard.isChecked = guard.guardEnabled.first()
             binding.swSms.isChecked = guard.smsEnabled.first()
             binding.swNotif.isChecked = guard.notificationsEnabled.first()
+            binding.swNotifListener.isChecked = guard.notificationsListenerEnabled.first()
             refresh()
         }
         binding.swConsent.setOnCheckedChangeListener { _, v ->
@@ -59,6 +62,8 @@ class SettingsFragment : Fragment() {
             lifecycleScope.launch { guard.setSms(v); refresh() } }
         binding.swNotif.setOnCheckedChangeListener { _, v ->
             lifecycleScope.launch { guard.setNotifications(v); refresh() } }
+        binding.swNotifListener.setOnCheckedChangeListener { _, v ->
+            lifecycleScope.launch { guard.setNotifListener(v); refresh() } }
         binding.btnPermissions.setOnClickListener { requestAll() }
         binding.btnBattery.setOnClickListener {
             try {
@@ -74,6 +79,22 @@ class SettingsFragment : Fragment() {
             } catch (_: Exception) {
                 Snackbar.make(binding.root, "Ajustes > Batería > Sin restricción para PHISHWARE", Snackbar.LENGTH_LONG).show()
             }
+        }
+        binding.btnNotifAccess.setOnClickListener {
+            try {
+                startActivity(android.content.Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))
+            } catch (_: Exception) {
+                Snackbar.make(binding.root, "Ajustes > Notificaciones > Acceso a notificaciones > activa PHISHWARE", Snackbar.LENGTH_LONG).show()
+            }
+        }
+        binding.btnTestNotif.setOnClickListener {
+            notifications.showThreat(
+                url = "https://nequi-verificacion.tk/login",
+                domain = "nequi-verificacion.tk",
+                riskLevel = "DANGEROUS",
+                score = 85.0,
+                firstTip = "Prueba: si ves este banner arriba estilo iPhone, las notificaciones ya funcionan"
+            )
         }
         binding.btnStart.setOnClickListener {
             lifecycleScope.launch {

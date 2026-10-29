@@ -64,8 +64,8 @@ class NotificationHelper @Inject constructor(
     fun showThreat(url: String, domain: String, riskLevel: String, score: Double, firstTip: String?) {
         ensureChannels()
         val (title, icon) = when (riskLevel) {
-            "DANGEROUS" -> "⛔ Posible phishing bloqueado" to android.R.drawable.ic_dialog_alert
-            "SUSPICIOUS" -> "⚠️ Enlace sospechoso" to android.R.drawable.ic_dialog_info
+            "DANGEROUS" -> "Posible phishing bloqueado" to R.drawable.ic_alert
+            "SUSPICIOUS" -> "Enlace sospechoso" to R.drawable.ic_analyze
             else -> return // SAFE no notifica (evita ruido)
         }
         val open = PendingIntent.getActivity(
@@ -94,15 +94,22 @@ class NotificationHelper @Inject constructor(
         )
         val text = "$domain · riesgo ${"%.0f".format(score)}/100" +
             (firstTip?.let { "\n• $it" } ?: "")
+        // Estilo iPhone: banner arriba (heads-up) con sonido + vibración + acciones
         val notif = NotificationCompat.Builder(context, CHANNEL_THREATS)
             .setSmallIcon(icon)
+            .setColor(0xFFDC2626.toInt())
             .setContentTitle(title)
             .setContentText(text)
-            .setStyle(NotificationCompat.BigTextStyle().bigText("$text\n$url"))
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setCategory(NotificationCompat.CATEGORY_ALARM)
-            .setVisibility(NotificationCompat.VISIBILITY_PRIVATE)
+            .setSubText("PHISHWARE")
+            .setStyle(NotificationCompat.BigTextStyle().bigText("$text\n$url").setBigContentTitle(title))
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setWhen(System.currentTimeMillis())
+            .setShowWhen(true)
             .setAutoCancel(true)
+            .setOnlyAlertOnce(false)
             .setContentIntent(open)
             .addAction(0, "Ver", open)
             .addAction(0, "Reportar", report)

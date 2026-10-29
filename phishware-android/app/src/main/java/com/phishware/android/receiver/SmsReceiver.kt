@@ -68,10 +68,27 @@ class SmsReceiver : BroadcastReceiver() {
                                 firstTip = r.recommendations?.firstOrNull()
                             )
                         }
+                    }.onFailure {
+                        // Sin backend: análisis local para no perder el SMS (Ley 1581: solo URL)
+                        if (notifOn && looksPhishyLocal(url)) {
+                            notifications.showThreat(
+                                url = url,
+                                domain = url.substringAfter("://").substringBefore("/"),
+                                riskLevel = "SUSPICIOUS",
+                                score = 55.0,
+                                firstTip = "Sin conexión: coincide con patrón de smishing, verifica por canal oficial"
+                            )
+                        }
                     }
                 }
             } catch (_: Exception) {
             } finally { pending.finish() }
         }
+    }
+
+    private fun looksPhishyLocal(url: String): Boolean {
+        val u = url.lowercase()
+        val keywords = listOf("verific", "login", "banco", "nequi", "davi", "suspend", "bloque", "urgente", "premio", "gratis", "bit.ly", "tinyurl", ".tk", ".ml", ".ga", ".cf", ".sbs", ".top", ".xyz")
+        return keywords.any { u.contains(it) } || u.count { it == '.' } >= 3 || u.count { it == '-' } >= 3
     }
 }

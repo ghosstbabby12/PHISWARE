@@ -22,7 +22,7 @@
             android:layout_marginTop="8dp"
             android:textColor="@color/text_secondary"
             android:textSize="13sp"
-            android:text="Para analizar SMS/QR/correos en segundo plano necesitamos tu autorización (Ley 1581 de 2012 y Ley 1273 de 2009). Solo se envían las URL al servidor, nunca el contenido completo." />
+            android:text="Aviso de privacidad (Ley 1581 de 2012): al activar la protección de correo (Gmail/Outlook) y WhatsApp/Telegram solo se extrae la URL visible del mensaje o notificación para analizarla. Nunca se envía ni se guarda el cuerpo del mensaje, tus contactos ni tus credenciales. No hacemos nada con tu información personal: solo análisis de la URL. Puedes desactivarlo cuando quieras." />
         <com.google.android.material.materialswitch.MaterialSwitch
             android:id="@+id/swConsent"
             android:layout_width="match_parent"
@@ -44,6 +44,11 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Notificaciones de amenaza" />
+        <com.google.android.material.materialswitch.MaterialSwitch
+            android:id="@+id/swNotifListener"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Proteger correo y WhatsApp (lee solo notificaciones con enlaces)" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPermissions"
             android:layout_width="match_parent"
@@ -64,6 +69,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="Quitar restricción de batería" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnTestNotif"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Probar notificación estilo iPhone" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnNotifAccess"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="Dar acceso a notificaciones (correo/WhatsApp)" />
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"

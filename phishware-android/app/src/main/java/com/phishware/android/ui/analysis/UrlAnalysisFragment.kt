@@ -8,6 +8,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import com.phishware.android.R
 import com.phishware.android.data.model.UrlAnalysisResponse
@@ -47,6 +48,9 @@ class UrlAnalysisFragment : Fragment() {
         binding.btnAnalyze.setOnClickListener {
             val url = binding.etUrl.text.toString()
             viewModel.analyzeUrl(url)
+        }
+        binding.btnQr.setOnClickListener {
+            runCatching { findNavController().navigate(com.phishware.android.R.id.qr_scanner_fragment) }
         }
         binding.btnReport.setOnClickListener {
             val url = lastUrl ?: binding.etUrl.text.toString()

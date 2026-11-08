@@ -1,20 +1,23 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_blue">#2563EB</color>
-    <color name="primary_dark">#1D4ED8</color>
+    <!-- Proton Vault palette -->
+    <color name="primary_blue">#7A1E2B</color>
+    <color name="primary_dark">#5F1420</color>
     <color name="success_green">#16A34A</color>
     <color name="warning_amber">#D97706</color>
     <color name="danger_red">#DC2626</color>
-    <color name="background_dark">#0F172A</color>
-    <color name="surface_dark">#1E293B</color>
-    <color name="text_primary">#F8FAFC</color>
-    <color name="text_secondary">#94A3B8</color>
-    <color name="border_color">#334155</color>
-    <color name="ic_launcher_background">#1D4ED8</color>
-    <color name="proton_primary">#7F1D2D</color>
+    <color name="background_dark">#FFF5F6</color>
+    <color name="surface_dark">#FFFFFF</color>
+    <color name="text_primary">#3B0A12</color>
+    <color name="text_secondary">#9B6B72</color>
+    <color name="border_color">#F3D9DC</color>
+    <color name="ic_launcher_background">#7A1E2B</color>
+    <color name="proton_primary">#7A1E2B</color>
     <color name="proton_primary_dark">#5F1420</color>
-    <color name="proton_bg">#FFF1F2</color>
+    <color name="proton_bg">#FFF5F6</color>
     <color name="proton_card">#FFFFFF</color>
     <color name="proton_text">#3B0A12</color>
     <color name="proton_subtext">#9B6B72</color>
+    <color name="proton_pink">#FBDCE0</color>
+    <color name="proton_pill">#7A1E2B</color>
 </resources>

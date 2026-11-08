@@ -1,21 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Phishware" parent="Theme.Material3.Dark.NoActionBar">
-        <item name="colorPrimary">@color/primary_blue</item>
-        <item name="colorPrimaryDark">@color/primary_dark</item>
-        <item name="colorOnPrimary">@color/text_primary</item>
-        <item name="colorSecondary">@color/success_green</item>
-        <item name="colorOnSecondary">@color/background_dark</item>
-        <item name="android:colorBackground">@color/background_dark</item>
-        <item name="colorSurface">@color/surface_dark</item>
-        <item name="colorOnSurface">@color/text_primary</item>
-        <item name="colorOnSurfaceVariant">@color/text_secondary</item>
+    <style name="Theme.Phishware" parent="Theme.Material3.Light.NoActionBar">
+        <item name="colorPrimary">@color/proton_primary</item>
+        <item name="colorPrimaryDark">@color/proton_primary_dark</item>
+        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorSecondary">@color/proton_primary</item>
+        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="android:colorBackground">@color/proton_bg</item>
+        <item name="colorSurface">@color/proton_card</item>
+        <item name="colorOnSurface">@color/proton_text</item>
+        <item name="colorOnSurfaceVariant">@color/proton_subtext</item>
         <item name="colorError">@color/danger_red</item>
-        <item name="android:statusBarColor">@color/background_dark</item>
-        <item name="android:navigationBarColor">@color/background_dark</item>
+        <item name="android:statusBarColor">@color/proton_bg</item>
+        <item name="android:navigationBarColor">#FFFFFF</item>
+        <item name="android:windowLightStatusBar">true</item>
     </style>
 
     <style name="Theme.Phishware.Splash" parent="Theme.Phishware">
         <item name="android:windowBackground">@drawable/splash_background</item>
+    </style>
+
+    <style name="Phishware.PillButton" parent="Widget.Material3.Button">
+        <item name="cornerRadius">28dp</item>
+        <item name="backgroundTint">@color/proton_primary</item>
+        <item name="android:textColor">#FFFFFF</item>
+    </style>
+
+    <style name="Phishware.Card" parent="Widget.Material3.CardView.Elevated">
+        <item name="cardCornerRadius">20dp</item>
+        <item name="cardBackgroundColor">#FFFFFF</item>
+        <item name="cardElevation">2dp</item>
     </style>
 </resources>

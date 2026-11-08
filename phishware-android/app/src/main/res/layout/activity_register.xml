@@ -1,97 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/proton_bg"
     android:fillViewport="true">
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
         android:gravity="center_horizontal"
+        android:orientation="vertical"
         android:padding="24dp">
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
             android:text="@string/reg_title"
-            android:textColor="@color/text_primary"
-            android:textSize="24sp"
+            android:textColor="@color/proton_text"
+            android:textSize="26sp"
             android:textStyle="bold" />
-
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="24dp"
+            android:layout_marginBottom="20dp"
             android:text="@string/reg_subtitle"
-            android:textColor="@color/text_secondary"
+            android:textColor="@color/proton_subtext"
             android:textSize="14sp" />
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:hint="@string/reg_name_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etFirstName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:maxLines="1"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/proton_text" />
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="@string/reg_last_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etLastName"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPersonName"
                 android:maxLines="1"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/proton_text" />
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="@string/reg_user_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etUsername"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="text"
                 android:maxLines="1"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/proton_text" />
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:hint="@string/reg_email_hint"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox">
-
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etEmail"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textEmailAddress"
                 android:maxLines="1"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/proton_text" />
         </com.google.android.material.textfield.TextInputLayout>
-
         <com.google.android.material.textfield.TextInputLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -99,40 +89,37 @@
             android:hint="@string/reg_pass_hint"
             app:helperText="@string/reg_pass_help"
             style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
-            app:passwordToggleEnabled="true"
-            xmlns:app="http://schemas.android.com/apk/res-auto">
-
+            app:passwordToggleEnabled="true">
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/etPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
                 android:maxLines="1"
-                android:textColor="@color/text_primary" />
+                android:textColor="@color/proton_text" />
         </com.google.android.material.textfield.TextInputLayout>
-
         <ProgressBar
             android:id="@+id/progressBar"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:visibility="gone" />
-
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnRegister"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_height="60dp"
+            android:layout_marginTop="20dp"
             android:text="@string/btn_register"
-            android:textSize="16sp" />
-
+            android:textSize="16sp"
+            app:backgroundTint="@color/proton_primary"
+            app:cornerRadius="30dp" />
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnBack"
+            style="@style/Widget.Material3.Button.TextButton"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            style="@style/Widget.Material3.Button.TextButton"
             android:text="@string/reg_back"
-            android:textColor="@color/text_secondary" />
+            android:textColor="@color/proton_primary" />
     </LinearLayout>
 </ScrollView>

@@ -1,0 +1,22 @@
+{
+  "extensionName": { "message": "PHISWARE Link Guard", "description": "Extension name" },
+  "extensionDescription": { "message": "Detect malicious URLs in real time using your PHISWARE backend.", "description": "Extension description" },
+  "notifDangerTitle": { "message": "⚠️ PHISWARE: Dangerous Site", "description": "Danger notification title" },
+  "notifDangerBody": { "message": "$DOMAIN$ was classified as DANGEROUS.\nScore: $SCORE$/100", "description": "Danger notification body", "placeholders": { "domain": { "content": "$1" }, "score": { "content": "$2" } } },
+  "optionsInvalid": { "message": "Invalid URL: it must start with http:// or https://", "description": "Options invalid URL" },
+  "optionsPermissionDenied": { "message": "Permission denied for that origin.", "description": "Options permission denied" },
+  "optionsSaved": { "message": "Saved. The extension will use that backend.", "description": "Options saved" },
+  "overlayDanger": { "message": "🚨 Dangerous Site", "description": "Overlay dangerous label" },
+  "overlaySuspicious": { "message": "⚠️ Suspicious Site", "description": "Overlay suspicious label" },
+  "overlaySafe": { "message": "✅ Safe Site", "description": "Overlay safe label" },
+  "overlayScore": { "message": "Risk score:", "description": "Overlay score label" },
+  "overlayBack": { "message": "← Go back", "description": "Overlay back button" },
+  "overlayContinue": { "message": "Continue anyway", "description": "Overlay continue button" },
+  "overlayPrinciple": { "message": "Principle:", "description": "Overlay persuasion principle label" },
+  "popupBackendOn": { "message": "Backend connected", "description": "Popup backend connected" },
+  "popupBackendOff": { "message": "Backend offline", "description": "Popup backend offline" },
+  "popupNoData": { "message": "No data", "description": "Popup no data" },
+  "popupRisk": { "message": "Risk:", "description": "Popup risk label" },
+  "popupNoAlerts": { "message": "No alerts", "description": "Popup empty alerts" },
+  "popupUnknown": { "message": "unknown", "description": "Popup unknown domain" }
+}

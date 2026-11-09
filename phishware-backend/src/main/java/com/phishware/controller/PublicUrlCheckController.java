@@ -5,6 +5,7 @@ import com.phishware.entity.enums.RiskLevel;
 import com.phishware.security.IndicatorEducationCatalog;
 import com.phishware.security.NistThreatClassifier;
 import com.phishware.security.OfficialSealService;
+import com.phishware.service.CommunityReportService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/public/url")
@@ -24,6 +26,7 @@ import java.util.List;
 public class PublicUrlCheckController {
 
     private final NistThreatClassifier nistClassifier;
+    private final CommunityReportService communityReportService;
     private final OfficialSealService officialSealService;
 
     @GetMapping("/check")
@@ -103,4 +106,16 @@ public class PublicUrlCheckController {
         String persuasionPrinciple,
         String microlessonSlug
     ) {}
+
+    @GetMapping("/blocklist")
+    @Operation(summary = "Lista de bloqueo comunitaria",
+        description = "Dominios registrables con reportes CONFIRMED. Para la extensión (actualizar cada 30 min).")
+    public ResponseEntity<Map<String, Object>> blocklist() {
+        java.util.List<String> domains = communityReportService.confirmedDomains(500);
+        return ResponseEntity.ok(Map.of(
+            "domains", domains,
+            "count", domains.size(),
+            "updatedAt", java.time.Instant.now().toString()
+        ));
+    }
 }

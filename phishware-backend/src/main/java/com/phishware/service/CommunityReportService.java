@@ -25,6 +25,29 @@ public class CommunityReportService {
     private final UserRepository userRepository;
     private final GamificationService gamificationService;
 
+    @Transactional(readOnly = true)
+    public java.util.List<String> confirmedDomains(int limit) {
+        return reportRepository.findTop500ByStatusOrderByReviewedAtDesc("CONFIRMED")
+            .stream()
+            .map(CommunityReport::getReportedUrl)
+            .filter(java.util.Objects::nonNull)
+            .map(CommunityReportService::registrableDomainOf)
+            .filter(d -> !d.isBlank())
+            .distinct()
+            .limit(limit)
+            .toList();
+    }
+
+    static String registrableDomainOf(String reportedUrl) {
+        try {
+            String host = new java.net.URI(reportedUrl).getHost();
+            if (host == null || host.isBlank()) return "";
+            return com.phishware.security.DomainUtils.registrableDomain(host.toLowerCase());
+        } catch (Exception e) {
+            return "";
+        }
+    }
+
     @Transactional
     public ReportResponse createReport(ReportRequest request, @NonNull Long userId) {
         User user = userRepository.findById(userId)

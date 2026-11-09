@@ -1,0 +1,22 @@
+{
+  "extensionName": { "message": "PHISWARE Link Guard", "description": "Extension name" },
+  "extensionDescription": { "message": "Detecta URLs maliciosas en tiempo real usando tu backend PHISWARE.", "description": "Extension description" },
+  "notifDangerTitle": { "message": "⚠️ PHISWARE: Sitio Peligroso", "description": "Danger notification title" },
+  "notifDangerBody": { "message": "$DOMAIN$ fue clasificado como PELIGROSO.\nPuntuación: $SCORE$/100", "description": "Danger notification body", "placeholders": { "domain": { "content": "$1" }, "score": { "content": "$2" } } },
+  "optionsInvalid": { "message": "URL inválida: debe empezar por http:// o https://", "description": "Options invalid URL" },
+  "optionsPermissionDenied": { "message": "Permiso denegado para ese origen.", "description": "Options permission denied" },
+  "optionsSaved": { "message": "Guardado. La extensión usará ese backend.", "description": "Options saved" },
+  "overlayDanger": { "message": "🚨 Sitio Peligroso", "description": "Overlay dangerous label" },
+  "overlaySuspicious": { "message": "⚠️ Sitio Sospechoso", "description": "Overlay suspicious label" },
+  "overlaySafe": { "message": "✅ Sitio Seguro", "description": "Overlay safe label" },
+  "overlayScore": { "message": "Puntuación de riesgo:", "description": "Overlay score label" },
+  "overlayBack": { "message": "← Volver", "description": "Overlay back button" },
+  "overlayContinue": { "message": "Continuar de todos modos", "description": "Overlay continue button" },
+  "overlayPrinciple": { "message": "Principio:", "description": "Overlay persuasion principle label" },
+  "popupBackendOn": { "message": "Backend conectado", "description": "Popup backend connected" },
+  "popupBackendOff": { "message": "Backend sin conexión", "description": "Popup backend offline" },
+  "popupNoData": { "message": "Sin datos", "description": "Popup no data" },
+  "popupRisk": { "message": "Riesgo:", "description": "Popup risk label" },
+  "popupNoAlerts": { "message": "Sin alertas", "description": "Popup empty alerts" },
+  "popupUnknown": { "message": "desconocido", "description": "Popup unknown domain" }
+}

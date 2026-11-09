@@ -1,8 +1,17 @@
-// cambiar por la url del backend cuando este desplegado
-// en local usar localhost, en pruebas con otra pc usar su ip
-const BACKEND = 'http://localhost:8080/api/public/url/check';
+import { classifyLocal } from './heuristics.js';
+
+const DEFAULT_BACKEND_ROOT = 'http://localhost:8080/api';
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
+const BLOCKLIST_ALARM = 'phishware-blocklist-refresh';
+const MAX_DNR_RULES = 100;
 const cache = new Map();
+
+// ── Configurable backend ────────────────────────────────────────────────────
+
+async function backendRoot() {
+  const { backendRoot } = await chrome.storage.sync.get({ backendRoot: DEFAULT_BACKEND_ROOT });
+  return String(backendRoot || DEFAULT_BACKEND_ROOT).replace(/\/$/, '');
+}
 
 // ── Badge helpers ─────────────────────────────────────────────────────────────
 
@@ -35,14 +44,92 @@ function cacheSet(url, data) {
   }
 }
 
-// ── API call ──────────────────────────────────────────────────────────────────
+// ── Community blocklist (refreshed every 30 min) ──────────────────────────────
+
+let blockedDomains = new Set();
+
+async function refreshBlocklist() {
+  try {
+    const root = await backendRoot();
+    const res = await fetch(`${root}/public/blocklist`, { signal: AbortSignal.timeout(10000) });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+    const data = await res.json();
+    const domains = Array.isArray(data.domains) ? data.domains.filter(d => typeof d === 'string') : [];
+    blockedDomains = new Set(domains.map(d => d.toLowerCase()));
+    await chrome.storage.local.set({ blocklist: [...blockedDomains], blocklistUpdatedAt: Date.now() });
+    await applyBlockingRules([...blockedDomains].slice(0, MAX_DNR_RULES));
+  } catch (e) {
+    const stored = await chrome.storage.local.get({ blocklist: [] });
+    blockedDomains = new Set(stored.blocklist);
+  }
+}
+
+async function applyBlockingRules(domains) {
+  try {
+    const existing = await chrome.declarativeNetRequest.getDynamicRules();
+    const removeRuleIds = existing.map(r => r.id);
+    const addRules = domains.map((domain, i) => ({
+      id: i + 1,
+      priority: 1,
+      action: { type: 'block' },
+      condition: { urlFilter: `||${domain}^`, resourceTypes: ['main_frame'] },
+    }));
+    await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds, addRules });
+  } catch (e) {
+    // declarativeNetRequest may be unavailable in some contexts; in-page interception still applies
+  }
+}
+
+chrome.runtime.onInstalled.addListener(() => {
+  chrome.alarms.create(BLOCKLIST_ALARM, { periodInMinutes: 30 });
+  refreshBlocklist();
+});
+
+chrome.runtime.onStartup.addListener(() => {
+  refreshBlocklist();
+});
+
+chrome.alarms.onAlarm.addListener(alarm => {
+  if (alarm.name === BLOCKLIST_ALARM) refreshBlocklist();
+});
+
+function blocklistedDomain(url) {
+  try {
+    const host = new URL(url).hostname.toLowerCase();
+    for (const domain of blockedDomains) {
+      if (host === domain || host.endsWith('.' + domain)) return domain;
+    }
+  } catch { /* ignore */ }
+  return null;
+}
+
+// ── API call with offline fail-safe ───────────────────────────────────────────
 
 async function checkUrl(url) {
   const cached = cacheGet(url);
   if (cached) return cached;
 
+  const blocked = blocklistedDomain(url);
+  if (blocked) {
+    const result = {
+      classification: 'DANGEROUS',
+      riskScore: 95,
+      isThreat: true,
+      domain: new URL(url).hostname,
+      indicators: [`COMMUNITY_CONFIRMED: reported and confirmed by the community (${blocked})`],
+      recommendations: ['This domain was confirmed as phishing by the community. Do not continue.'],
+      explainedIndicators: [{ type: 'COMMUNITY_CONFIRMED', description: 'Community-confirmed phishing domain', persuasionPrinciple: 'NONE', microlessonSlug: null }],
+      officialSeal: { official: false, brand: null, officialDomain: null },
+      source: 'COMMUNITY_BLOCKLIST',
+      offline: false,
+    };
+    cacheSet(url, result);
+    return result;
+  }
+
   try {
-    const res = await fetch(`${BACKEND}?url=${encodeURIComponent(url)}`, {
+    const root = await backendRoot();
+    const res = await fetch(`${root}/public/url/check?url=${encodeURIComponent(url)}`, {
       signal: AbortSignal.timeout(8000),
     });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
@@ -50,7 +137,10 @@ async function checkUrl(url) {
     cacheSet(url, data);
     return data;
   } catch (e) {
-    return null;
+    // Backend unreachable — fail safe with local heuristics instead of letting through
+    const local = classifyLocal(url);
+    cacheSet(url, local);
+    return local;
   }
 }
 
@@ -72,8 +162,8 @@ async function checkTabUrl(tabId, url) {
     chrome.notifications.create(`page_${tabId}_${Date.now()}`, {
       type: 'basic',
       iconUrl: 'icons/icon48.png',
-      title: '⚠️ PHISWARE: Sitio Peligroso',
-      message: `${result.domain} fue clasificado como PELIGROSO.\nPuntuación: ${Math.round(result.riskScore)}/100`,
+      title: chrome.i18n.getMessage('notifDangerTitle'),
+      message: chrome.i18n.getMessage('notifDangerBody', [result.domain, String(Math.round(result.riskScore))]),
       priority: 2,
     });
   }

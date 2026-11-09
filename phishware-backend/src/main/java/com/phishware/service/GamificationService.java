@@ -14,6 +14,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class GamificationService {
 
     private final UserRepository userRepository;
+    private final BadgeService badgeService;
 
     @Async
     @Transactional
@@ -29,6 +30,8 @@ public class GamificationService {
         user.setPoints(newPoints);
         user.setLevel(newLevel);
         userRepository.save(user);
+
+        badgeService.evaluateAnalysisBadges(user);
 
         log.debug("Usuario {} ganó {} puntos. Total: {} - Nivel: {}",
             user.getUsername(), pointsEarned, newPoints, newLevel);

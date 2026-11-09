@@ -1,7 +1,12 @@
 import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query'
-import { AlertTriangle, Check, Flag, ShieldCheck, X } from 'lucide-react'
+import { AlertTriangle, BarChart3, Check, Flag, ShieldCheck, X } from 'lucide-react'
+import { Bar, BarChart, Cell, Pie, PieChart, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { reportService } from '@/services/reportService'
+import { adminService } from '@/services/gamificationService'
 import { ReportResponse, ReportSeverity } from '@/types/report.types'
+import { useLang } from '@/i18n/LanguageContext'
+
+const RISK_COLORS: Record<string, string> = { SAFE: '#16845B', SUSPICIOUS: '#C78316', DANGEROUS: '#C6283D' }
 
 const severityStyles: Record<ReportSeverity, string> = {
   LOW: 'text-ink-700 dark:text-ink-200 bg-ink-100 dark:bg-dark-800',
@@ -34,13 +39,14 @@ function ReportRow({ report, onReview, isReviewing }: {
   onReview: (status: 'CONFIRMED' | 'REJECTED') => void
   isReviewing: boolean
 }) {
+  const { t } = useLang()
   return (
     <article className="bg-ink-50 dark:bg-dark-900 border border-ink-200 dark:border-dark-800 rounded-xl p-4 space-y-3 transition-colors hover:border-primary-600">
       <div className="flex flex-col lg:flex-row lg:items-start lg:justify-between gap-3">
         <div className="min-w-0">
           <p className="font-medium text-ink-900 dark:text-ink-50 break-all">{report.reportedUrl}</p>
           <p className="text-xs text-ink-500 dark:text-ink-300 mt-1">
-            Reportado por {report.reportedBy} · {new Date(report.createdAt).toLocaleDateString()}
+            {t.admin.byUser} {report.reportedBy} · {new Date(report.createdAt).toLocaleDateString()}
           </p>
         </div>
         <div className="flex items-center gap-2 shrink-0">
@@ -51,10 +57,10 @@ function ReportRow({ report, onReview, isReviewing }: {
       {report.description && <p className="text-sm text-ink-500 dark:text-ink-300">{report.description}</p>}
       <div className="flex gap-2 pt-1">
         <button type="button" disabled={isReviewing} onClick={() => onReview('CONFIRMED')} className="btn-primary inline-flex items-center gap-2 text-sm">
-          <Check className="w-4 h-4" /> Confirmar
+          <Check className="w-4 h-4" /> {t.admin.confirm}
         </button>
         <button type="button" disabled={isReviewing} onClick={() => onReview('REJECTED')} className="btn-secondary inline-flex items-center gap-2 text-sm">
-          <X className="w-4 h-4" /> Rechazar
+          <X className="w-4 h-4" /> {t.admin.reject}
         </button>
       </div>
     </article>
@@ -62,10 +68,15 @@ function ReportRow({ report, onReview, isReviewing }: {
 }
 
 export default function AdminDashboardPage() {
+  const { t } = useLang()
   const queryClient = useQueryClient()
   const { data, isLoading, isError } = useQuery({
     queryKey: ['admin', 'pending-reports'],
     queryFn: () => reportService.getPendingReports(0, 50),
+  })
+  const statsQuery = useQuery({
+    queryKey: ['admin', 'stats'],
+    queryFn: adminService.getStats,
   })
   const reviewMutation = useMutation({
     mutationFn: ({ id, status }: { id: number; status: 'CONFIRMED' | 'REJECTED' }) => reportService.reviewReport(id, status),
@@ -75,35 +86,85 @@ export default function AdminDashboardPage() {
   const reports = data?.content ?? []
   const critical = reports.filter((report) => report.severity === 'CRITICAL').length
   const high = reports.filter((report) => report.severity === 'HIGH').length
+  const stats = statsQuery.data
+  const riskData = stats
+    ? Object.entries(stats.byRiskLevel).map(([name, value]) => ({ name, value }))
+    : []
 
   return (
     <div className="space-y-6 animate-fade-in">
       <div>
-        <h1 className="text-2xl font-bold text-ink-900 dark:text-ink-50 flex items-center gap-2"><ShieldCheck className="w-6 h-6 text-primary-700" /> Panel de administracion</h1>
-        <p className="text-ink-500 dark:text-ink-300 mt-1">Revisa los reportes comunitarios y ayuda a mantener segura la plataforma.</p>
+        <h1 className="text-2xl font-bold text-ink-900 dark:text-ink-50 flex items-center gap-2"><ShieldCheck className="w-6 h-6 text-primary-700" /> {t.admin.title}</h1>
+        <p className="text-ink-500 dark:text-ink-300 mt-1">{t.admin.sub}</p>
       </div>
 
-      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-        <SummaryCard label="Pendientes" value={data?.totalElements ?? 0} icon={Flag} tone="bg-primary-100 text-primary-700" />
-        <SummaryCard label="Severidad alta" value={high} icon={AlertTriangle} tone="bg-orange-500/10 text-orange-700" />
-        <SummaryCard label="Criticos" value={critical} icon={ShieldCheck} tone="bg-danger-500/10 text-danger-600" />
+      <div className="grid grid-cols-1 sm:grid-cols-4 gap-4">
+        <SummaryCard label={t.admin.pending} value={data?.totalElements ?? 0} icon={Flag} tone="bg-primary-100 text-primary-700" />
+        <SummaryCard label={t.admin.highSev} value={high} icon={AlertTriangle} tone="bg-orange-500/10 text-orange-700" />
+        <SummaryCard label={t.admin.critical} value={critical} icon={ShieldCheck} tone="bg-danger-500/10 text-danger-600" />
+        <SummaryCard label={t.admin.analyses} value={stats?.totalAnalyses ?? 0} icon={BarChart3} tone="bg-success-500/10 text-success-600" />
+      </div>
+
+      <section className="card" aria-label={t.admin.totals}>
+        <h2 className="text-lg font-semibold text-ink-900 dark:text-ink-50 mb-1">{t.admin.totals}</h2>
+        {statsQuery.isError && <p className="text-sm text-danger-600">{t.admin.statsFail}</p>}
+        {stats && (
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 mt-3 text-center">
+            <div><p className="text-2xl font-bold text-ink-900 dark:text-ink-50 tabular-nums">{stats.totalUsers}</p><p className="text-xs text-ink-500 dark:text-ink-300">{t.admin.users}</p></div>
+            <div><p className="text-2xl font-bold text-ink-900 dark:text-ink-50 tabular-nums">{stats.totalAnalyses}</p><p className="text-xs text-ink-500 dark:text-ink-300">{t.admin.analyses}</p></div>
+            <div><p className="text-2xl font-bold text-ink-900 dark:text-ink-50 tabular-nums">{stats.phishingDetected}</p><p className="text-xs text-ink-500 dark:text-ink-300">{t.admin.phishing}</p></div>
+            <div><p className="text-2xl font-bold text-ink-900 dark:text-ink-50 tabular-nums">{stats.pendingReports}</p><p className="text-xs text-ink-500 dark:text-ink-300">{t.admin.pending}</p></div>
+          </div>
+        )}
+      </section>
+
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <section className="card" aria-label={t.admin.byDay}>
+          <h2 className="text-lg font-semibold text-ink-900 dark:text-ink-50 mb-3">{t.admin.byDay}</h2>
+          <div className="h-56" role="img" aria-label={t.admin.byDay}>
+            <ResponsiveContainer width="100%" height="100%">
+              <BarChart data={stats?.analysesPerDay ?? []} margin={{ top: 0, right: 8, left: -18, bottom: 0 }}>
+                <XAxis dataKey="day" tick={{ fontSize: 10 }} interval="preserveStartEnd" />
+                <YAxis tick={{ fontSize: 11 }} allowDecimals={false} />
+                <Tooltip />
+                <Bar dataKey="count" fill="#790D2B" radius={[4, 4, 0, 0]} />
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
+
+        <section className="card" aria-label={t.admin.byRisk}>
+          <h2 className="text-lg font-semibold text-ink-900 dark:text-ink-50 mb-3">{t.admin.byRisk}</h2>
+          <div className="h-56" role="img" aria-label={t.admin.byRisk}>
+            <ResponsiveContainer width="100%" height="100%">
+              <PieChart>
+                <Pie data={riskData} dataKey="value" nameKey="name" outerRadius={80} label>
+                  {riskData.map((entry, i) => (
+                    <Cell key={i} fill={RISK_COLORS[entry.name] ?? '#686873'} />
+                  ))}
+                </Pie>
+                <Tooltip />
+              </PieChart>
+            </ResponsiveContainer>
+          </div>
+        </section>
       </div>
 
       <section className="card">
         <div className="flex items-center justify-between gap-3 mb-4">
           <div>
-            <h2 className="text-lg font-semibold text-ink-900 dark:text-ink-50">Cola de revision</h2>
-            <p className="text-sm text-ink-500 dark:text-ink-300">Los reportes se actualizan despues de cada decision.</p>
+            <h2 className="text-lg font-semibold text-ink-900 dark:text-ink-50">{t.admin.queue}</h2>
+            <p className="text-sm text-ink-500 dark:text-ink-300">{t.admin.queueSub}</p>
           </div>
-          <span className="text-xs text-ink-500 dark:text-ink-300">{reports.length} visibles</span>
+          <span className="text-xs text-ink-500 dark:text-ink-300">{t.admin.visible(reports.length)}</span>
         </div>
-        {isLoading && <p className="text-ink-500 dark:text-ink-300 py-8 text-center">Cargando reportes...</p>}
-        {isError && <p className="text-danger-600 py-8 text-center">No se pudo cargar la cola de reportes.</p>}
+        {isLoading && <p className="text-ink-500 dark:text-ink-300 py-8 text-center">{t.admin.loading}</p>}
+        {isError && <p className="text-danger-600 py-8 text-center">{t.admin.loadFail}</p>}
         {!isLoading && !isError && reports.length === 0 && (
           <div className="py-10 text-center">
             <ShieldCheck className="w-10 h-10 text-success-500 mx-auto mb-3" />
-            <p className="text-ink-900 dark:text-ink-50 font-medium">Todo al día</p>
-            <p className="text-sm text-ink-500 dark:text-ink-300 mt-1">No hay reportes pendientes de revision.</p>
+            <p className="text-ink-900 dark:text-ink-50 font-medium">{t.admin.emptyTitle}</p>
+            <p className="text-sm text-ink-500 dark:text-ink-300 mt-1">{t.admin.emptySub}</p>
           </div>
         )}
         <div className="space-y-3">

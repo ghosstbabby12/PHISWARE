@@ -8,6 +8,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 
 public interface UrlAnalysisRepository extends JpaRepository<UrlAnalysis, Long> {
@@ -56,6 +57,22 @@ public interface UrlAnalysisRepository extends JpaRepository<UrlAnalysis, Long> 
     // Admin stats
     long countByRiskLevel(RiskLevel riskLevel);
 
+    @Query("""
+        SELECT DISTINCT CAST(u.analyzedAt AS LocalDate)
+        FROM UrlAnalysis u
+        WHERE u.user.id = :userId
+        ORDER BY 1 DESC
+        """)
+    java.util.List<LocalDate> findAnalysisDatesDesc(@Param("userId") Long userId);
+
+    @Query(value = """
+        SELECT TO_CHAR(analyzed_at, 'YYYY-MM-DD') as day, COUNT(*) as count
+        FROM url_analysis
+        WHERE analyzed_at >= NOW() - INTERVAL '14 days'
+        GROUP BY TO_CHAR(analyzed_at, 'YYYY-MM-DD')
+        ORDER BY day
+        """, nativeQuery = true)
+    java.util.List<Object[]> countAnalysesPerDayLast14Days();
     long countByIsPhishingTrue();
 
     @Query(value = """

@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Check, ChevronDown, Copy, ListTree, RotateCcw } from 'lucide-react'
+import { Check, ChevronDown, Copy, ListTree, RotateCcw, ShieldAlert } from 'lucide-react'
 import clsx from 'clsx'
 import { UrlAnalysisResponse } from '@/types/analysis.types'
 import ThreatVerdict from './ThreatVerdict'
@@ -43,6 +43,7 @@ export default function AnalysisResult({ result, onAnalyzeAnother }: Props) {
         score={result.riskScore}
         analysisTimeMs={result.analysisTimeMs}
         analyzedAt={result.analyzedAt}
+        officialSeal={result.officialSeal}
       />
 
       <div className="card">
@@ -75,6 +76,16 @@ export default function AnalysisResult({ result, onAnalyzeAnother }: Props) {
               </li>
             ))}
           </ul>
+          <a
+            href="https://caivirtual.policia.gov.co"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="btn-secondary text-sm mt-4 inline-flex"
+            title={t.analysis.reportCaiSub}
+          >
+            <ShieldAlert className="w-4 h-4 text-danger-500" aria-hidden />
+            {t.analysis.reportCai}
+          </a>
         </section>
       )}
 

@@ -1,45 +1,46 @@
-import clsx from 'clsx'
+import { Bar, BarChart, Cell, ResponsiveContainer, Tooltip, XAxis, YAxis } from 'recharts'
 import { useLang } from '@/i18n/LanguageContext'
 
 interface Props {
   breakdown?: Record<string, number>
 }
 
-const sourceLabels = (t: { analysis: { sources: Record<string, string> } }) => t.analysis.sources
-
 function barColor(value: number): string {
-  if (value >= 70) return 'bg-danger-500'
-  if (value >= 30) return 'bg-warning-500'
-  return 'bg-success-500'
+  if (value >= 70) return '#C6283D'
+  if (value >= 30) return '#C78316'
+  return '#16845B'
 }
 
-/** Aporte por fuente SOLO si el backend lo incluyó en esta respuesta. */
+/** Aporte por fuente SOLO si el backend lo incluyó en esta respuesta (barras con recharts). */
 export default function ScoreBreakdown({ breakdown }: Props) {
   const { t } = useLang()
   if (!breakdown || Object.keys(breakdown).length === 0) return null
 
-  const labels = sourceLabels(t)
-  const entries = Object.entries(breakdown).sort((a, b) => b[1] - a[1])
+  const labels = t.analysis.sources as Record<string, string>
+  const entries = Object.entries(breakdown)
+    .sort((a, b) => b[1] - a[1])
+    .map(([source, value]) => ({
+      source: labels[source] ?? source,
+      value: Number(value) || 0,
+    }))
 
   return (
     <div className="mt-5">
       <h4 className="text-sm font-semibold text-ink-900 dark:text-ink-50">{t.analysis.fromBreakdown}</h4>
       <p className="text-xs text-ink-500 dark:text-ink-300 mb-3 mt-0.5">{t.analysis.fromBreakdownSub}</p>
-      <div className="space-y-2.5">
-        {entries.map(([source, value]) => (
-          <div key={source}>
-            <div className="flex justify-between text-xs text-ink-500 dark:text-ink-300 mb-1">
-              <span>{labels[source] ?? source}</span>
-              <span className="font-semibold text-ink-900 dark:text-ink-50 tabular-nums">{Number(value).toFixed(0)} / 100</span>
-            </div>
-            <div className="h-1.5 bg-ink-100 dark:bg-dark-800 rounded-full overflow-hidden">
-              <div
-                className={clsx('h-full rounded-full', barColor(Number(value)))}
-                style={{ width: `${Math.min(Math.max(Number(value) || 0, 0), 100)}%` }}
-              />
-            </div>
-          </div>
-        ))}
+      <div className="h-56" role="img" aria-label={t.analysis.fromBreakdown}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart data={entries} layout="vertical" margin={{ top: 0, right: 24, left: 8, bottom: 0 }}>
+            <XAxis type="number" domain={[0, 100]} hide />
+            <YAxis type="category" dataKey="source" width={120} tick={{ fontSize: 11 }} />
+            <Tooltip formatter={(v) => [`${Number(v).toFixed(0)} / 100`, t.analysis.score]} />
+            <Bar dataKey="value" radius={[0, 6, 6, 0]} background={{ fill: 'currentColor', opacity: 0.08 }}>
+              {entries.map((e, i) => (
+                <Cell key={i} fill={barColor(e.value)} />
+              ))}
+            </Bar>
+          </BarChart>
+        </ResponsiveContainer>
       </div>
     </div>
   )

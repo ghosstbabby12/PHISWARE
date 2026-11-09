@@ -8,6 +8,14 @@ export interface ThreatResponse {
   severity: Severity
   source: string
   detectedAt: string
+  persuasionPrinciple?: string | null
+  microlessonSlug?: string | null
+}
+
+export interface OfficialSeal {
+  official: boolean
+  brand: string | null
+  officialDomain: string | null
 }
 
 export interface UrlAnalysisResponse {
@@ -25,6 +33,7 @@ export interface UrlAnalysisResponse {
   riskMessage: string
   recommendations: string[]
   scoreBreakdown?: Record<string, number>
+  officialSeal?: OfficialSeal | null
 }
 
 export interface UrlAnalysisRequest {

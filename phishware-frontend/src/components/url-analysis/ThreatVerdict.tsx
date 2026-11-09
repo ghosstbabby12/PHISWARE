@@ -1,6 +1,6 @@
-import { AlertTriangle, CheckCircle, XCircle } from 'lucide-react'
+import { AlertTriangle, CheckCircle, ShieldCheck, XCircle } from 'lucide-react'
 import clsx from 'clsx'
-import { RiskLevel } from '@/types/analysis.types'
+import { OfficialSeal, RiskLevel } from '@/types/analysis.types'
 import RiskBadge from '@/components/common/RiskBadge'
 import { useLang } from '@/i18n/LanguageContext'
 
@@ -12,6 +12,7 @@ export default function ThreatVerdict({
   score,
   analysisTimeMs,
   analyzedAt,
+  officialSeal,
 }: {
   level: RiskLevel
   message: string
@@ -20,6 +21,7 @@ export default function ThreatVerdict({
   score: number
   analysisTimeMs: number
   analyzedAt: string
+  officialSeal?: OfficialSeal | null
 }) {
   const { t, lang } = useLang()
   const Icon = level === 'SAFE' ? CheckCircle : level === 'SUSPICIOUS' ? AlertTriangle : XCircle
@@ -48,6 +50,12 @@ export default function ThreatVerdict({
           <div className="flex flex-wrap items-center gap-2.5">
             <h2 className="text-lg font-bold text-ink-900 dark:text-ink-50">{message}</h2>
             <RiskBadge level={level} />
+            {officialSeal?.official && (
+              <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-xs font-semibold bg-success-500/10 text-success-600 border border-success-500/25">
+                <ShieldCheck className="w-3.5 h-3.5" aria-hidden />
+                {t.analysis.sealOfficial(officialSeal.brand ?? '')}
+              </span>
+            )}
           </div>
           <p className="text-sm text-ink-500 dark:text-ink-300 font-mono break-all mt-1">{url}</p>
           <dl className="flex flex-wrap gap-x-5 gap-y-1 mt-2 text-xs text-ink-500 dark:text-ink-300">

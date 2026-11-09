@@ -47,10 +47,22 @@ import java.util.stream.Collectors;
 public class UrlAnalysisService {
 
     // Confianza de cada fuente local: qué tanto creemos en su score (las heurísticas tienen falsos positivos)
-    private static final double URL_HEURISTIC_CONFIDENCE = 0.75;
-    private static final double CONTENT_CONFIDENCE       = 0.85;
-    private static final double DOMAIN_AGE_CONFIDENCE    = 0.70;
-    private static final double PHISHING_THRESHOLD       = 70.0;
+    public static final double URL_HEURISTIC_CONFIDENCE = 0.75;
+    public static final double CONTENT_CONFIDENCE       = 0.85;
+    public static final double DOMAIN_AGE_CONFIDENCE    = 0.70;
+    public static final double PHISHING_THRESHOLD       = 70.0;
+    public static final double DANGEROUS_THRESHOLD      = 50.0;
+    public static final double SUSPICIOUS_THRESHOLD     = 20.0;
+    public static final String COMBINATION_FORMULA      = "riesgo = 1 - Π(1 - p_i)";
+
+    /** Real confidences used by {@link #calculateCombinedRisk} (same values, single source of truth). */
+    public static Map<String, Double> sourceConfidences() {
+        Map<String, Double> confidences = new LinkedHashMap<>();
+        confidences.put("urlHeuristic", URL_HEURISTIC_CONFIDENCE);
+        confidences.put("pageContent", CONTENT_CONFIDENCE);
+        confidences.put("domainAge", DOMAIN_AGE_CONFIDENCE);
+        return confidences;
+    }
 
     private final UrlAnalysisRepository analysisRepository;
     private final UserRepository         userRepository;
@@ -260,19 +272,19 @@ public class UrlAnalysisService {
         if (score >= PHISHING_THRESHOLD) isPhishing = true;
 
         // Recomendaciones base según nivel
-        if (score >= 50) {
+        if (score >= DANGEROUS_THRESHOLD) {
             recommendations.add("No ingrese credenciales ni datos personales en este sitio.");
             recommendations.add("Cierre esta pestaña inmediatamente.");
-        } else if (score >= 20) {
+        } else if (score >= SUSPICIOUS_THRESHOLD) {
             recommendations.add("Proceda con precaución — verifique la URL antes de continuar.");
         } else {
             recommendations.add("El sitio parece seguro según los análisis realizados.");
         }
 
         RiskLevel level;
-        if (score >= 50) {
+        if (score >= DANGEROUS_THRESHOLD) {
             level = RiskLevel.DANGEROUS;
-        } else if (score >= 20) {
+        } else if (score >= SUSPICIOUS_THRESHOLD) {
             level = RiskLevel.SUSPICIOUS;
         } else {
             level = RiskLevel.SAFE;

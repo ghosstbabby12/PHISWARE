@@ -1,6 +1,7 @@
 package com.phishware.controller;
 
 import com.phishware.service.GoogleSafeBrowsingService;
+import com.phishware.service.UrlAnalysisService;
 import com.phishware.service.VirusTotalService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -43,7 +44,13 @@ public class SystemController {
                 "description", vtOk ? "Activo — 70+ motores antivirus" : "Sin configurar — solo heurística local"
             ),
             "analysisMode", mode,
-            "heuristicWeight", (gsbOk && vtOk) ? "10%" : (gsbOk || vtOk) ? "30-40%" : "100%"
+            "sourceConfidences", UrlAnalysisService.sourceConfidences(),
+            "combination", UrlAnalysisService.COMBINATION_FORMULA,
+            "thresholds", Map.of(
+                "dangerous", UrlAnalysisService.DANGEROUS_THRESHOLD,
+                "suspicious", UrlAnalysisService.SUSPICIOUS_THRESHOLD,
+                "phishing", UrlAnalysisService.PHISHING_THRESHOLD
+            )
         ));
     }
 }

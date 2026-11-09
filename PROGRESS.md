@@ -23,10 +23,10 @@ Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, 
 - Nota: la migración de microlecciones se creó como **V7** (no V9) para no dejar huecos V7/V8 en la cadena Flyway.
 
 ## FASE 4 – Frontend (14-17)
-- [ ] 14. `feat(web)`: theme light/dark/system
-- [ ] 15. `feat(web)`: i18n ES/EN completo + i18n:check + códigos de error
-- [ ] 16. `feat(web)`: explained alert + microlesson + seal + CAI Virtual
-- [ ] 17. `feat(web)`: badges/streaks/admin stats + 10 tests
+- [x] 14. `feat(web)` (`8e2af03`): theme light/dark/system + toggle + dark variants
+- [x] 15. `feat(web)` (`475c53b` + `d8ba09f` parcial): i18n ES/EN completo (398 claves) + i18n:check + códigos de error
+- [x] 16. `feat(web)` (`d8ba09f`): alerta explicada + microlección + sello + CAI Virtual + noisy-OR con recharts
+- [x] 17. `feat(web)` (`f6b4b56`): badges/streaks/admin stats (backend+frontend) + 17 tests vitest
 
 ## FASE 5 – Extensión (18-19)
 - [ ] 18. `feat(extension)`: heurística offline + fail-safe + blocklist

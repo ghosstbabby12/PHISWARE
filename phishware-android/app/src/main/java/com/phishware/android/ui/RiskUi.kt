@@ -1,9 +1,12 @@
 package com.phishware.android.ui
 
 import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
 import android.text.SpannableStringBuilder
 import android.text.Spanned
 import android.text.style.ForegroundColorSpan
+import android.widget.TextView
+import androidx.core.graphics.ColorUtils
 
 /**
  * Puntos de estado monocromos (●) con el color semántico del sistema,
@@ -31,5 +34,27 @@ object RiskUi {
         )
         sb.append(text.orEmpty())
         return sb
+    }
+
+    /** Pinta un TextView como chip de estado (fondo tintado suave + texto del color semántico). */
+    fun applyBadge(view: TextView, level: String?, label: String) {
+        val color = Color.parseColor(colorFor(level))
+        view.text = label
+        view.setTextColor(color)
+        view.background = GradientDrawable().apply {
+            cornerRadius = 999f
+            setColor(ColorUtils.setAlphaComponent(color, 31))
+        }
+    }
+
+    /** Variante sólida (texto blanco) para usarse sobre fondos oscuros, p. ej. el carrusel destacado. */
+    fun applySolidChip(view: TextView, level: String?, label: String) {
+        val color = Color.parseColor(colorFor(level))
+        view.text = label
+        view.setTextColor(Color.WHITE)
+        view.background = GradientDrawable().apply {
+            cornerRadius = 999f
+            setColor(color)
+        }
     }
 }

@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
     <style name="Theme.Phishware" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/proton_primary</item>
         <item name="colorPrimaryDark">@color/proton_primary_dark</item>
-        <item name="colorOnPrimary">#FFFFFF</item>
+        <item name="colorOnPrimary">@color/proton_on_brand</item>
         <item name="colorSecondary">@color/proton_primary</item>
-        <item name="colorOnSecondary">#FFFFFF</item>
+        <item name="colorOnSecondary">@color/proton_on_brand</item>
         <item name="android:colorBackground">@color/proton_bg</item>
         <item name="colorSurface">@color/proton_card</item>
         <item name="colorOnSurface">@color/proton_text</item>
@@ -14,5 +14,6 @@
         <item name="android:statusBarColor">@color/proton_bg</item>
         <item name="android:navigationBarColor">@color/proton_bg</item>
         <item name="android:windowLightStatusBar">false</item>
+        <item name="android:windowLightNavigationBar" tools:targetApi="o_mr1">false</item>
     </style>
 </resources>

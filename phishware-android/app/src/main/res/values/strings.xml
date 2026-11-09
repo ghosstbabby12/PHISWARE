@@ -40,7 +40,7 @@
     <string name="reg_error">Could not create the account. Check the data.</string>
 
     <string name="dash_hello">Hello</string>
-    <string name="dash_vault_ok">Your vault is safe</string>
+    <string name="dash_vault_ok">You\'re protected</string>
     <string name="dash_no_conn">No connection</string>
     <string name="dash_total">Total analyses</string>
     <string name="dash_level_fmt">Level %1$d · %2$d pts</string>
@@ -55,6 +55,7 @@
     <string name="dash_reco">Recommendations</string>
     <string name="dash_loading">Loading…</string>
     <string name="dash_recent_empty">No analyses yet. Analyze your first link.</string>
+    <string name="dash_recent_title">Recent scans</string>
 
     <string name="btn_analyze">Analyze URL</string>
     <string name="hint_url">Enter a suspicious URL or link…</string>
@@ -99,6 +100,10 @@
     <string name="edu_error_fmt">Error: %1$s</string>
     <string name="edu_view_first">View first lesson</string>
     <string name="edu_take_quiz">Take quiz</string>
+    <string name="edu_featured">Featured lessons</string>
+    <string name="edu_all">All lessons</string>
+    <string name="edu_read_btn">Read</string>
+    <string name="edu_quiz_btn">Quiz</string>
     <string name="edu_no_quiz">This module has no quiz yet</string>
     <string name="edu_quiz_score_fmt">Score: %1$d %2$s (+%3$d pts)</string>
     <string name="edu_quiz_passed">Passed</string>
@@ -201,20 +206,20 @@
     <string name="consent_title">Privacy notice</string>
     <string name="consent_msg">PHISHWARE can analyze links from SMS, email notifications (Gmail/Outlook) and WhatsApp/Telegram.\n\nOnly the URL is extracted for analysis. The message body, your contacts and your keys are never sent or stored. We do nothing with your personal information.\n\nEnable it in Protection whenever you want.</string>
     <string name="consent_ok">Got it</string>
-    <string name="vault_brand">Phishware Vault</string>
-    <string name="vault_t1">Your Links,</string>
-    <string name="vault_t2">Safely Secured</string>
-    <string name="vault_tag">Encrypted. Private. Always yours.</string>
-    <string name="vault_f1">End-to-end Encryption</string>
-    <string name="vault_f2">Zero-knowledge Privacy</string>
-    <string name="vault_f3">Secure Sync Everywhere</string>
+    <string name="vault_brand">PHISHWARE</string>
+    <string name="vault_t1">Check before</string>
+    <string name="vault_t2">you click</string>
+    <string name="vault_tag">Real-time detection. Education. Background protection.</string>
+    <string name="vault_f1">Real-time scan</string>
+    <string name="vault_f2">Multi-source intel</string>
+    <string name="vault_f3">History &amp; alerts</string>
     <string name="dash_morning">Good morning,</string>
     <string name="dash_total_stored">Total stored</string>
     <string name="dash_score_title">Security Score</string>
     <string name="dash_very_strong">Very Strong</string>
     <string name="dash_view_all">View All</string>
     <string name="analysis_overview_title">Security Overview</string>
-    <string name="analysis_overview_sub">Monitor your vault health</string>
+    <string name="analysis_overview_sub">Risk breakdown for this link</string>
     <string name="guard_lang_es">Spanish</string>
     <string name="guard_lang_en">English</string>
     <string name="dash_search_hint">Paste or type a URL to analyze…</string>

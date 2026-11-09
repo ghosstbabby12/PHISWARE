@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import com.phishware.android.R
@@ -21,6 +22,12 @@ class EducationFragment : Fragment() {
     private val binding get() = _binding!!
     @Inject lateinit var repository: PhishwareRepository
 
+    private val featuredAdapter = EducationFeaturedAdapter { openDetail(it.slug) }
+    private val allAdapter = EducationAdapter(
+        onRead = { openDetail(it.slug) },
+        onQuiz = { openQuiz(it.slug) }
+    )
+
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View {
         _binding = FragmentEducationBinding.inflate(i, c, false)
         return binding.root
@@ -28,20 +35,35 @@ class EducationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.btnRefresh.setOnClickListener { load() }
+        binding.rvFeatured.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvFeatured.adapter = featuredAdapter
+        binding.rvAll.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvAll.adapter = allAdapter
+        binding.swipeRefresh.setOnRefreshListener { load() }
         load()
     }
 
     private fun load() {
-        binding.tvList.text = getString(R.string.edu_loading_lessons)
         lifecycleScope.launch {
             repository.getEducation(0, 20).onSuccess { page ->
-                if (page.content.isEmpty()) { binding.tvList.text = getString(R.string.edu_empty); return@launch }
-                binding.tvList.text = page.content.joinToString("\n\n") { "📘 ${it.title}\n${it.summary.orEmpty()}\n[${it.slug}]" }
-                // Tap largo simulado: primer slug con quiz
-                binding.btnQuiz.setOnClickListener { openQuiz(page.content.firstOrNull()?.slug.orEmpty()) }
-                binding.btnDetail.setOnClickListener { openDetail(page.content.firstOrNull()?.slug.orEmpty()) }
-            }.onFailure { binding.tvList.text = getString(R.string.edu_error_fmt, it.message ?: "") }
+                binding.swipeRefresh.isRefreshing = false
+                if (page.content.isEmpty()) {
+                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmpty.text = getString(R.string.edu_empty)
+                    binding.rvFeatured.visibility = View.GONE
+                    binding.rvAll.visibility = View.GONE
+                } else {
+                    binding.tvEmpty.visibility = View.GONE
+                    binding.rvFeatured.visibility = View.VISIBLE
+                    binding.rvAll.visibility = View.VISIBLE
+                    featuredAdapter.submitList(page.content.take(5))
+                    allAdapter.submitList(page.content)
+                }
+            }.onFailure {
+                binding.swipeRefresh.isRefreshing = false
+                binding.tvEmpty.visibility = View.VISIBLE
+                binding.tvEmpty.text = getString(R.string.edu_error_fmt, it.message ?: "")
+            }
         }
     }
 

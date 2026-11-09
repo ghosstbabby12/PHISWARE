@@ -1,0 +1,38 @@
+@startuml Diagrama_Contexto_PHISHWARE
+title Diagrama de contexto - PHISHWARE
+skinparam defaultFontName Arial
+skinparam defaultFontSize 13
+skinparam rectangle {
+  BackgroundColor #F5C99B
+  BorderColor Black
+}
+skinparam circle {
+  BackgroundColor #CDE9F6
+  BorderColor Black
+}
+
+rectangle "Usuarios" as U
+rectangle "Fuentes de\ninteligencia" as F
+rectangle "Administrador" as A
+rectangle "Canales de\nmensajeria" as C
+
+circle "<size:20><b>PHISHWARE</b></size>\n \n " as P
+
+U --> P : URLs sospechosas\ny reportes
+P --> U : Veredictos, alertas,\nlecciones y puntos
+
+F --> P : Consultas de\nreputacion
+P --> F : Veredictos, consensos\ny antiguedad de dominio
+
+A --> P : Criterios de moderacion\ny contenido educativo
+P --> A : Reportes\ncomunarios y metricas
+
+C --> P : Mensajes con enlaces\n(SMS, WhatsApp, correo)
+P --> C : Advertencias\nde phishing
+
+' Posicionamiento similar al ejemplo de referencia
+U -[hidden]r- A
+F -[hidden]r- C
+U -[hidden]d- F
+A -[hidden]d- C
+@enduml

@@ -1,23 +1,46 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <!-- Proton Vault palette -->
-    <color name="primary_blue">#7A1E2B</color>
-    <color name="primary_dark">#5F1420</color>
-    <color name="success_green">#16A34A</color>
-    <color name="warning_amber">#D97706</color>
-    <color name="danger_red">#DC2626</color>
-    <color name="background_dark">#FFF5F6</color>
+    <!-- PHISHWARE brand palette (DESIGN.md) - light theme -->
+    <color name="brand_wine">#790D2B</color>
+    <color name="brand_hover">#5F0A22</color>
+    <color name="brand_active">#4D071B</color>
+    <color name="brand_raspberry">#B42345</color>
+    <color name="rose_wash">#F8E9EE</color>
+    <color name="canvas">#F7F7FA</color>
+    <color name="surface">#FFFFFF</color>
+    <color name="surface_raised">#FFFFFF</color>
+    <color name="ink">#17171C</color>
+    <color name="muted_ink">#686873</color>
+    <color name="border">#E7E4E8</color>
+    <color name="safe_green">#16845B</color>
+    <color name="warning_amber_c">#C78316</color>
+    <color name="danger_red_c">#C6283D</color>
+    <color name="badge_safe_bg">#1A16845B</color>
+    <color name="badge_warning_bg">#1FC78316</color>
+    <color name="badge_danger_bg">#1FC6283D</color>
+    <color name="badge_info_bg">#1A790D2B</color>
+
+    <!-- Legacy names kept so existing layouts/Kotlin keep working, now mapped onto the brand palette above -->
+    <color name="primary_blue">#790D2B</color>
+    <color name="primary_dark">#5F0A22</color>
+    <color name="success_green">#16845B</color>
+    <color name="warning_amber">#C78316</color>
+    <color name="danger_red">#C6283D</color>
+    <color name="background_dark">#F7F7FA</color>
     <color name="surface_dark">#FFFFFF</color>
-    <color name="text_primary">#3B0A12</color>
-    <color name="text_secondary">#9B6B72</color>
-    <color name="border_color">#F3D9DC</color>
-    <color name="ic_launcher_background">#7A1E2B</color>
-    <color name="proton_primary">#7A1E2B</color>
-    <color name="proton_primary_dark">#5F1420</color>
-    <color name="proton_bg">#FFF5F6</color>
+    <color name="text_primary">#17171C</color>
+    <color name="text_secondary">#686873</color>
+    <color name="border_color">#E7E4E8</color>
+    <color name="ic_launcher_background">#790D2B</color>
+    <color name="proton_primary">#790D2B</color>
+    <color name="proton_primary_dark">#5F0A22</color>
+    <color name="proton_bg">#F7F7FA</color>
     <color name="proton_card">#FFFFFF</color>
-    <color name="proton_text">#3B0A12</color>
-    <color name="proton_subtext">#9B6B72</color>
-    <color name="proton_pink">#FBDCE0</color>
-    <color name="proton_pill">#7A1E2B</color>
+    <color name="proton_card_raised">#F8E9EE</color>
+    <color name="proton_text">#17171C</color>
+    <color name="proton_subtext">#686873</color>
+    <color name="proton_pink">#F8E9EE</color>
+    <color name="proton_pill">#B42345</color>
+    <color name="proton_on_brand">#FFFFFF</color>
+    <color name="proton_on_brand_muted">#F2C9D3</color>
 </resources>

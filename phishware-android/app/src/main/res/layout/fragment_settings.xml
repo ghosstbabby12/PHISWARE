@@ -10,79 +10,113 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:padding="20dp">
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            app:cardBackgroundColor="@color/proton_primary"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp">
+
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:background="@drawable/bg_hero_gradient"
                 android:orientation="vertical"
                 android:padding="20dp">
-                <TextView
-                    android:layout_width="wrap_content"
+                <LinearLayout
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/guard_title"
-                    android:textColor="#FFFFFF"
-                    android:textSize="22sp"
-                    android:textStyle="bold" />
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:contentDescription="@null"
+                        android:src="@drawable/ic_shield" />
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="@string/guard_title"
+                        android:textColor="#FFFFFF"
+                        android:textSize="22sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
                 <TextView
                     android:id="@+id/tvConsent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="6dp"
+                    android:layout_marginTop="8dp"
                     android:text="@string/guard_consent_long"
-                    android:textColor="#FFD9DE"
-                    android:textSize="12sp" />
+                    android:textColor="@color/proton_on_brand_muted"
+                    android:textSize="12sp"
+                    android:lineSpacingExtra="2dp" />
             </LinearLayout>
-        </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.card.MaterialCardView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="2dp">
+            app:cardBackgroundColor="@color/proton_card"
+            app:cardCornerRadius="18dp"
+            app:cardElevation="0dp"
+            app:strokeColor="@color/border_color"
+            app:strokeWidth="1dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="16dp">
+                android:paddingStart="16dp"
+                android:paddingTop="6dp"
+                android:paddingEnd="16dp"
+                android:paddingBottom="6dp">
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/swConsent"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
-                    android:text="@string/guard_consent" />
+                    android:layout_marginTop="6dp"
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/guard_consent"
+                    android:textColor="@color/proton_text" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border_color" />
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/swGuard"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/guard_bg" />
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/guard_bg"
+                    android:textColor="@color/proton_text" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border_color" />
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/swSms"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/guard_sms" />
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/guard_sms"
+                    android:textColor="@color/proton_text" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border_color" />
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/swNotif"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/guard_notif" />
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/guard_notif"
+                    android:textColor="@color/proton_text" />
+                <View android:layout_width="match_parent" android:layout_height="1dp" android:background="@color/border_color" />
                 <com.google.android.material.materialswitch.MaterialSwitch
                     android:id="@+id/swNotifListener"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:text="@string/guard_notif_listener" />
+                    android:paddingTop="10dp"
+                    android:paddingBottom="10dp"
+                    android:text="@string/guard_notif_listener"
+                    android:textColor="@color/proton_text" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPermissions"
             android:layout_width="match_parent"
             android:layout_height="52dp"
-            android:layout_marginTop="12dp"
+            android:layout_marginTop="14dp"
             android:text="@string/guard_grant"
             app:backgroundTint="@color/proton_primary"
             app:cornerRadius="26dp" />
@@ -114,19 +148,20 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:text="@string/guard_notif_access" />
+
         <TextView
             android:id="@+id/tvLangTitle"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="22dp"
             android:text="@string/guard_lang_title"
             android:textColor="@color/proton_text"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLangEs"
@@ -135,9 +170,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/guard_lang_es" />
-            <Space
-                android:layout_width="8dp"
-                android:layout_height="wrap_content" />
+            <Space android:layout_width="8dp" android:layout_height="wrap_content" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnLangEn"
                 style="@style/Widget.Material3.Button.OutlinedButton"
@@ -146,18 +179,19 @@
                 android:layout_weight="1"
                 android:text="@string/guard_lang_en" />
         </LinearLayout>
+
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="20dp"
+            android:layout_marginTop="22dp"
             android:text="@string/guard_theme_title"
             android:textColor="@color/proton_text"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:textStyle="bold" />
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="10dp"
             android:orientation="horizontal">
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnThemeLight"
@@ -166,9 +200,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/guard_theme_light" />
-            <Space
-                android:layout_width="8dp"
-                android:layout_height="wrap_content" />
+            <Space android:layout_width="8dp" android:layout_height="wrap_content" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnThemeDark"
                 style="@style/Widget.Material3.Button.OutlinedButton"
@@ -176,9 +208,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/guard_theme_dark" />
-            <Space
-                android:layout_width="8dp"
-                android:layout_height="wrap_content" />
+            <Space android:layout_width="8dp" android:layout_height="wrap_content" />
             <com.google.android.material.button.MaterialButton
                 android:id="@+id/btnThemeSystem"
                 style="@style/Widget.Material3.Button.OutlinedButton"
@@ -187,13 +217,17 @@
                 android:layout_weight="1"
                 android:text="@string/guard_theme_system" />
         </LinearLayout>
+
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"
             style="@style/Widget.Material3.Button.OutlinedButton"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
-            android:text="@string/guard_logout" />
+            android:layout_marginTop="22dp"
+            android:text="@string/guard_logout"
+            app:strokeColor="@color/danger_red"
+            android:textColor="@color/danger_red" />
+
         <TextView
             android:id="@+id/tvStatus"
             android:layout_width="match_parent"

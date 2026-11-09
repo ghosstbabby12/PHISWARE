@@ -40,7 +40,7 @@
     <string name="reg_error">No se pudo crear la cuenta. Revisa los datos.</string>
 
     <string name="dash_hello">Hola</string>
-    <string name="dash_vault_ok">Tu vault está seguro</string>
+    <string name="dash_vault_ok">Estás protegido</string>
     <string name="dash_no_conn">Sin conexión</string>
     <string name="dash_total">Análisis totales</string>
     <string name="dash_level_fmt">Nivel %1$d · %2$d pts</string>
@@ -55,6 +55,7 @@
     <string name="dash_reco">Recomendaciones</string>
     <string name="dash_loading">Cargando…</string>
     <string name="dash_recent_empty">Sin análisis todavía. Analiza tu primer enlace.</string>
+    <string name="dash_recent_title">Análisis recientes</string>
 
     <string name="btn_analyze">Analizar URL</string>
     <string name="hint_url">Ingresa URL o enlace sospechoso…</string>
@@ -99,6 +100,10 @@
     <string name="edu_error_fmt">Error: %1$s</string>
     <string name="edu_view_first">Ver primera lección</string>
     <string name="edu_take_quiz">Hacer quiz</string>
+    <string name="edu_featured">Lecciones destacadas</string>
+    <string name="edu_all">Todas las lecciones</string>
+    <string name="edu_read_btn">Leer</string>
+    <string name="edu_quiz_btn">Quiz</string>
     <string name="edu_no_quiz">Este módulo aún no tiene quiz</string>
     <string name="edu_quiz_score_fmt">Puntaje: %1$d %2$s (+%3$d pts)</string>
     <string name="edu_quiz_passed">Aprobado</string>
@@ -201,20 +206,20 @@
     <string name="consent_title">Aviso de privacidad</string>
     <string name="consent_msg">PHISHWARE puede analizar enlaces de SMS, notificaciones de correo (Gmail/Outlook) y WhatsApp/Telegram.\n\nSolo se extrae la URL para analizarla. Nunca se envía ni se guarda el cuerpo del mensaje, tus contactos ni tus claves. No hacemos nada con tu información personal.\n\nActívalo en Protección cuando quieras.</string>
     <string name="consent_ok">Entendido</string>
-    <string name="vault_brand">Phishware Vault</string>
-    <string name="vault_t1">Tus enlaces,</string>
-    <string name="vault_t2">siempre seguros</string>
-    <string name="vault_tag">Cifrado. Privado. Siempre tuyos.</string>
-    <string name="vault_f1">Cifrado de extremo a extremo</string>
-    <string name="vault_f2">Privacidad de conocimiento cero</string>
-    <string name="vault_f3">Sincronización segura</string>
+    <string name="vault_brand">PHISHWARE</string>
+    <string name="vault_t1">Verifica antes</string>
+    <string name="vault_t2">de hacer clic</string>
+    <string name="vault_tag">Detección en tiempo real. Educación. Protección en segundo plano.</string>
+    <string name="vault_f1">Análisis en tiempo real</string>
+    <string name="vault_f2">Multi-fuente (GSB, VT, RDAP)</string>
+    <string name="vault_f3">Historial y alertas</string>
     <string name="dash_morning">Buenos días,</string>
     <string name="dash_total_stored">Total guardado</string>
     <string name="dash_score_title">Puntaje de seguridad</string>
     <string name="dash_very_strong">Muy fuerte</string>
     <string name="dash_view_all">Ver todo</string>
     <string name="analysis_overview_title">Resumen de seguridad</string>
-    <string name="analysis_overview_sub">Supervisa la salud de tu vault</string>
+    <string name="analysis_overview_sub">Desglose de riesgo de este enlace</string>
     <string name="guard_lang_es">Español</string>
     <string name="guard_lang_en">Inglés</string>
     <string name="dash_search_hint">Pega o escribe una URL para analizar…</string>

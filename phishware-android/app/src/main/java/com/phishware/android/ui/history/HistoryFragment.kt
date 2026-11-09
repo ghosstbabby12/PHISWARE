@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.phishware.android.R
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentHistoryBinding
@@ -19,6 +21,17 @@ class HistoryFragment : Fragment() {
     private val binding get() = _binding!!
     @Inject lateinit var repository: PhishwareRepository
     private var onlyDanger = false
+    private val adapter = HistoryAdapter { item ->
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(item.domain ?: item.originalUrl.orEmpty())
+            .setMessage(
+                "${item.riskLevel} · ${"%.0f".format(item.riskScore)}/100\n\n" +
+                    (item.riskMessage ?: "") +
+                    (if (!item.recommendations.isNullOrEmpty()) "\n\n" + item.recommendations.orEmpty().joinToString("\n") { "• $it" } else "")
+            )
+            .setPositiveButton(getString(R.string.common_close), null)
+            .show()
+    }
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View {
         _binding = FragmentHistoryBinding.inflate(i, c, false)
@@ -27,33 +40,37 @@ class HistoryFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.rvHistory.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvHistory.adapter = adapter
         binding.btnFilterDanger.setOnClickListener {
             onlyDanger = !onlyDanger
             binding.btnFilterDanger.text = if (onlyDanger) getString(R.string.hist_show_all) else getString(R.string.hist_danger_only)
             load()
         }
         binding.btnRefresh.setOnClickListener { load() }
+        binding.swipeRefresh.setOnRefreshListener { load() }
         load()
     }
 
     private fun load() {
-        binding.tvList.text = getString(R.string.hist_loading)
+        binding.tvEmpty.visibility = View.GONE
         lifecycleScope.launch {
-            val res = repository.getHistory(0, 20, if (onlyDanger) "DANGEROUS" else null)
+            val res = repository.getHistory(0, 30, if (onlyDanger) "DANGEROUS" else null)
+            binding.swipeRefresh.isRefreshing = false
             res.onSuccess { page ->
-                if (page.content.isEmpty()) binding.tvList.text = getString(R.string.hist_empty)
-                else {
-                    val sb = android.text.SpannableStringBuilder()
-                    page.content.forEachIndexed { i, r ->
-                        if (i > 0) sb.append("\n\n")
-                        sb.append(com.phishware.android.ui.RiskUi.dotLine(
-                            r.riskLevel,
-                            "[${r.riskLevel}] ${"%.0f".format(r.riskScore)}/100\n${r.domain ?: r.originalUrl}\n${r.analyzedAt ?: ""}"
-                        ))
-                    }
-                    binding.tvList.text = sb
+                if (page.content.isEmpty()) {
+                    binding.rvHistory.visibility = View.GONE
+                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmpty.text = getString(R.string.hist_empty)
+                } else {
+                    binding.rvHistory.visibility = View.VISIBLE
+                    adapter.submitList(page.content)
                 }
-            }.onFailure { binding.tvList.text = getString(R.string.hist_error_fmt, it.message ?: "") }
+            }.onFailure {
+                binding.rvHistory.visibility = View.GONE
+                binding.tvEmpty.visibility = View.VISIBLE
+                binding.tvEmpty.text = getString(R.string.hist_error_fmt, it.message ?: "")
+            }
         }
     }
 

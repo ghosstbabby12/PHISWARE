@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.phishware.android.R
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentAlertsBinding
@@ -19,6 +21,18 @@ class AlertsFragment : Fragment() {
     private var _binding: FragmentAlertsBinding? = null
     private val binding get() = _binding!!
     @Inject lateinit var repository: PhishwareRepository
+    private val adapter = AlertAdapter { alert ->
+        if (!alert.isRead) {
+            lifecycleScope.launch { repository.markAlertRead(alert.id); load() }
+        }
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(alert.title)
+            .setMessage(
+                alert.message + (if (alert.recommendations.isNotEmpty()) "\n\n" + alert.recommendations.joinToString("\n") { "• $it" } else "")
+            )
+            .setPositiveButton(getString(R.string.common_close), null)
+            .show()
+    }
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View {
         _binding = FragmentAlertsBinding.inflate(i, c, false)
@@ -27,36 +41,38 @@ class AlertsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.rvAlerts.layoutManager = LinearLayoutManager(requireContext())
+        binding.rvAlerts.adapter = adapter
         binding.btnReadAll.setOnClickListener {
             lifecycleScope.launch {
                 repository.markAllAlertsRead()
                 load()
             }
         }
+        binding.swipeRefresh.setOnRefreshListener { load() }
         load()
     }
 
     private fun load() {
-        binding.tvList.text = getString(R.string.alerts_loading)
         lifecycleScope.launch {
             repository.getUnreadAlertCount().onSuccess { binding.tvUnread.text = getString(R.string.alerts_unread_fmt, it) }
-            repository.getAlerts(0, 20)
-                .onSuccess { page ->
-                    if (page.content.isEmpty()) binding.tvList.text = getString(R.string.alerts_empty)
-                    else {
-                        val sb = android.text.SpannableStringBuilder()
-                        page.content.forEachIndexed { i, a ->
-                            if (i > 0) sb.append("\n\n")
-                            val read = if (a.isRead) "" else getString(R.string.alerts_new)
-                            sb.append(com.phishware.android.ui.RiskUi.dotLine(
-                                a.severity,
-                                "[${a.severity}]${read}\n${a.title}\n${a.message.take(160)}"
-                            ))
-                        }
-                        binding.tvList.text = sb
-                    }
+            val res = repository.getAlerts(0, 30)
+            binding.swipeRefresh.isRefreshing = false
+            res.onSuccess { page ->
+                if (page.content.isEmpty()) {
+                    binding.rvAlerts.visibility = View.GONE
+                    binding.tvEmpty.visibility = View.VISIBLE
+                    binding.tvEmpty.text = getString(R.string.alerts_empty)
+                } else {
+                    binding.rvAlerts.visibility = View.VISIBLE
+                    binding.tvEmpty.visibility = View.GONE
+                    adapter.submitList(page.content)
                 }
-                .onFailure { binding.tvList.text = getString(R.string.alerts_error_fmt, it.message ?: "") }
+            }.onFailure {
+                binding.rvAlerts.visibility = View.GONE
+                binding.tvEmpty.visibility = View.VISIBLE
+                binding.tvEmpty.text = getString(R.string.alerts_error_fmt, it.message ?: "")
+            }
         }
     }
 

@@ -22,7 +22,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="4dp"
-            android:layout_marginBottom="12dp"
+            android:layout_marginBottom="14dp"
             android:text="@string/analysis_sub"
             android:textColor="@color/proton_subtext"
             android:textSize="13sp" />
@@ -31,10 +31,12 @@
             android:id="@+id/cardDash"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="12dp"
-            app:cardBackgroundColor="#FFFFFF"
+            android:layout_marginBottom="14dp"
+            app:cardBackgroundColor="@color/proton_card"
             app:cardCornerRadius="16dp"
-            app:cardElevation="2dp">
+            app:cardElevation="0dp"
+            app:strokeColor="@color/border_color"
+            app:strokeWidth="1dp">
             <TextView
                 android:id="@+id/tvDash"
                 android:layout_width="match_parent"
@@ -57,7 +59,7 @@
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:hint="@string/hint_url"
-                app:hintTextColor="#E8B4BB"
+                app:hintTextColor="@color/proton_on_brand_muted"
                 style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
                 app:boxStrokeWidth="0dp"
                 app:boxStrokeWidthFocused="0dp">
@@ -68,7 +70,7 @@
                     android:inputType="textUri"
                     android:maxLines="1"
                     android:textColor="#FFFFFF"
-                    android:textColorHint="#E8B4BB" />
+                    android:textColorHint="@color/proton_on_brand_muted" />
             </com.google.android.material.textfield.TextInputLayout>
         </LinearLayout>
 
@@ -88,7 +90,8 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
-            android:text="@string/analysis_qr_btn" />
+            android:text="@string/analysis_qr_btn"
+            app:icon="@drawable/ic_qr" />
 
         <ProgressBar
             android:id="@+id/progressBar"
@@ -104,31 +107,61 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:visibility="gone"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="20dp"
-            app:cardElevation="2dp"
+            app:cardBackgroundColor="@color/proton_card"
+            app:cardCornerRadius="22dp"
+            app:cardElevation="0dp"
             app:strokeColor="@color/border_color"
             app:strokeWidth="1dp">
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="18dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/analysis_overview_title" android:textColor="@color/proton_text" android:textSize="16sp" android:textStyle="bold" />
+                android:padding="20dp">
+                <TextView
+                    android:id="@+id/tvRiskLevel"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:paddingTop="12dp"
+                    android:paddingBottom="12dp"
+                    android:textSize="18sp"
+                    android:textStyle="bold"
+                    android:textColor="@color/proton_primary" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:text="@string/analysis_overview_title" android:textColor="@color/proton_text" android:textSize="16sp" android:textStyle="bold" />
                 <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/analysis_overview_sub" android:textColor="@color/proton_subtext" android:textSize="12sp" />
-                <TextView android:id="@+id/tvRiskLevel" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/proton_primary" />
-                <TextView android:id="@+id/tvRiskMessage" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/proton_text" android:textSize="14sp" />
-                <TextView android:id="@+id/tvDomain" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/proton_subtext" android:textSize="13sp" />
-                <TextView android:id="@+id/tvScore" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="@color/proton_subtext" android:textSize="13sp" />
+                <TextView android:id="@+id/tvRiskMessage" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/proton_text" android:textSize="14sp" android:lineSpacingExtra="2dp" />
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="1dp"
+                    android:layout_marginTop="16dp"
+                    android:background="@color/border_color" />
+
+                <TextView android:id="@+id/tvDomain" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="14dp" android:fontFamily="monospace" android:textColor="@color/proton_subtext" android:textSize="13sp" />
+                <TextView android:id="@+id/tvScore" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="6dp" android:textColor="@color/proton_subtext" android:textSize="13sp" />
                 <TextView android:id="@+id/tvAnalysisTime" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:textColor="@color/proton_subtext" android:textSize="12sp" />
-                <TextView android:id="@+id/tvThreats" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:textColor="@color/danger_red" android:textSize="14sp" android:textStyle="bold" />
-                <TextView android:id="@+id/tvRecommendations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/warning_amber" android:textSize="13sp" />
+
+                <TextView
+                    android:id="@+id/tvThreats"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    android:background="@color/badge_danger_bg"
+                    android:paddingStart="12dp"
+                    android:paddingTop="8dp"
+                    android:paddingEnd="12dp"
+                    android:paddingBottom="8dp"
+                    android:textColor="@color/danger_red"
+                    android:textSize="13sp"
+                    android:textStyle="bold" />
+                <TextView android:id="@+id/tvRecommendations" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="12dp" android:lineSpacingExtra="4dp" android:textColor="@color/warning_amber" android:textSize="13sp" />
+
                 <com.google.android.material.button.MaterialButton
                     android:id="@+id/btnReport"
                     style="@style/Widget.Material3.Button.OutlinedButton"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="12dp"
+                    android:layout_marginTop="16dp"
                     android:text="@string/analysis_report_btn" />
             </LinearLayout>
         </com.google.android.material.card.MaterialCardView>

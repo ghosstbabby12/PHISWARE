@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -14,6 +13,7 @@ import com.phishware.android.R
 import com.phishware.android.data.model.UrlAnalysisResponse
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentUrlAnalysisBinding
+import com.phishware.android.ui.RiskUi
 import com.phishware.android.viewmodel.UrlAnalysisViewModel
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
@@ -106,16 +106,13 @@ class UrlAnalysisFragment : Fragment() {
         lastUrl = result.originalUrl ?: binding.etUrl.text.toString()
         binding.cardResult.visibility = View.VISIBLE
 
-        val (colorRes, label) = when (result.riskLevel) {
-            "SAFE"       -> Pair(R.color.success_green, getString(R.string.risk_safe))
-            "SUSPICIOUS" -> Pair(R.color.warning_amber, getString(R.string.risk_suspicious))
-            "DANGEROUS"  -> Pair(R.color.danger_red,    getString(R.string.risk_dangerous))
-            else         -> Pair(R.color.primary_blue,  getString(R.string.analysis_analyzed))
+        val label = when (result.riskLevel) {
+            "SAFE"       -> getString(R.string.risk_safe)
+            "SUSPICIOUS" -> getString(R.string.risk_suspicious)
+            "DANGEROUS"  -> getString(R.string.risk_dangerous)
+            else         -> getString(R.string.analysis_analyzed)
         }
-
-        val color = ContextCompat.getColor(requireContext(), colorRes)
-        binding.tvRiskLevel.text = "● $label"
-        binding.tvRiskLevel.setTextColor(color)
+        RiskUi.applyBadge(binding.tvRiskLevel, result.riskLevel, label)
         binding.tvRiskMessage.text = result.riskMessage.orEmpty()
         binding.tvDomain.text = getString(R.string.analysis_domain_fmt, result.domain.orEmpty())
         binding.tvScore.text = getString(R.string.analysis_score_fmt, result.riskScore)
@@ -124,7 +121,7 @@ class UrlAnalysisFragment : Fragment() {
         val threats = result.threats.orEmpty()
         if (threats.isNotEmpty()) {
             binding.tvThreats.visibility = View.VISIBLE
-            binding.tvThreats.text = getString(R.string.analysis_threats_fmt, threats.size)
+            RiskUi.applyBadge(binding.tvThreats, result.riskLevel, getString(R.string.analysis_threats_fmt, threats.size))
         } else {
             binding.tvThreats.visibility = View.GONE
         }

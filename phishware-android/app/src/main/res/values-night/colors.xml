@@ -1,22 +1,45 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="primary_blue">#2563EB</color>
-    <color name="primary_dark">#3B82F6</color>
+    <!-- PHISHWARE brand palette (DESIGN.md) - dark theme -->
+    <color name="brand_wine">#790D2B</color>
+    <color name="brand_hover">#B42345</color>
+    <color name="brand_active">#D13A5C</color>
+    <color name="brand_raspberry">#E0607E</color>
+    <color name="rose_wash">#2A1620</color>
+    <color name="canvas">#020617</color>
+    <color name="surface">#0F172A</color>
+    <color name="surface_raised">#1E293B</color>
+    <color name="ink">#F1F5F9</color>
+    <color name="muted_ink">#94A3B8</color>
+    <color name="border">#26314B</color>
+    <color name="safe_green">#22C55E</color>
+    <color name="warning_amber_c">#F59E0B</color>
+    <color name="danger_red_c">#F87171</color>
+    <color name="badge_safe_bg">#2616A34A</color>
+    <color name="badge_warning_bg">#26D97706</color>
+    <color name="badge_danger_bg">#26DC2626</color>
+    <color name="badge_info_bg">#26E0607E</color>
+
+    <color name="primary_blue">#E0607E</color>
+    <color name="primary_dark">#B42345</color>
     <color name="success_green">#22C55E</color>
     <color name="warning_amber">#F59E0B</color>
     <color name="danger_red">#F87171</color>
-    <color name="background_dark">#0B0F1A</color>
-    <color name="surface_dark">#151B2E</color>
+    <color name="background_dark">#020617</color>
+    <color name="surface_dark">#0F172A</color>
     <color name="text_primary">#F1F5F9</color>
     <color name="text_secondary">#94A3B8</color>
     <color name="border_color">#26314B</color>
-    <color name="ic_launcher_background">#0B0F1A</color>
+    <color name="ic_launcher_background">#020617</color>
     <color name="proton_primary">#E0607E</color>
-    <color name="proton_primary_dark">#A62B3D</color>
-    <color name="proton_bg">#12101A</color>
-    <color name="proton_card">#1E1B2E</color>
-    <color name="proton_text">#F6EFF2</color>
-    <color name="proton_subtext">#B79CA6</color>
-    <color name="proton_pink">#3A2340</color>
+    <color name="proton_primary_dark">#B42345</color>
+    <color name="proton_bg">#020617</color>
+    <color name="proton_card">#0F172A</color>
+    <color name="proton_card_raised">#1E293B</color>
+    <color name="proton_text">#F1F5F9</color>
+    <color name="proton_subtext">#94A3B8</color>
+    <color name="proton_pink">#2A1620</color>
     <color name="proton_pill">#E0607E</color>
+    <color name="proton_on_brand">#FFFFFF</color>
+    <color name="proton_on_brand_muted">#F2C9D3</color>
 </resources>

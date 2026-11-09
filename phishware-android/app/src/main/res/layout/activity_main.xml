@@ -9,8 +9,9 @@
         android:id="@+id/topBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="?attr/colorSurface"
-        app:titleCentered="false" />
+        android:background="@color/proton_bg"
+        app:titleCentered="false"
+        app:titleTextColor="@color/proton_text" />
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/nav_host_fragment"
@@ -21,12 +22,19 @@
         app:defaultNavHost="true"
         app:navGraph="@navigation/nav_graph" />
 
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/border_color" />
+
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottomNavigation"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="#FFFFFF"
+        android:background="@color/proton_card"
         app:itemIconTint="@color/bottom_nav_color"
         app:itemTextColor="@color/bottom_nav_color"
+        app:itemActiveIndicatorStyle="@style/Phishware.NavIndicator"
+        app:labelVisibilityMode="labeled"
         app:menu="@menu/menu_bottom_nav" />
 </LinearLayout>

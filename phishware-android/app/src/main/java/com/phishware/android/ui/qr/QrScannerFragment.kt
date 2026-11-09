@@ -26,6 +26,7 @@ import com.phishware.android.data.model.UrlAnalysisResponse
 import com.phishware.android.databinding.FragmentQrScannerBinding
 import com.phishware.android.notifications.NotificationHelper
 import com.phishware.android.security.UrlExtractor
+import com.phishware.android.ui.RiskUi
 import com.phishware.android.viewmodel.UrlAnalysisViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -262,6 +263,8 @@ class QrScannerFragment : Fragment() {
         scanningPaused = true
         stopCamera()
         binding.cardResult.visibility = View.VISIBLE
+        binding.tvRiskLevel.background = null
+        binding.tvRiskLevel.setTextColor(resources.getColor(R.color.proton_primary, null))
         binding.tvRiskLevel.text = getString(R.string.qr_no_url_title)
         binding.tvDetail.text = (raw?.take(300) ?: "") + "\n\n" + getString(R.string.qr_no_url_detail)
         binding.btnOpenAnalysis.visibility = View.GONE
@@ -297,7 +300,7 @@ class QrScannerFragment : Fragment() {
             "DANGEROUS" -> getString(R.string.qr_status_dang)
             else -> getString(R.string.analysis_analyzed)
         }
-        binding.tvRiskLevel.text = "$label · ${"%.0f".format(r.riskScore)}/100"
+        RiskUi.applyBadge(binding.tvRiskLevel, r.riskLevel, "$label · ${"%.0f".format(r.riskScore)}/100")
         binding.tvDetail.text = "${r.domain.orEmpty()}\n${r.riskMessage.orEmpty()}\n" +
             r.recommendations.orEmpty().take(2).joinToString("\n") { "• $it" }
         setStatus(getString(R.string.qr_analysis_ready_fmt, label))

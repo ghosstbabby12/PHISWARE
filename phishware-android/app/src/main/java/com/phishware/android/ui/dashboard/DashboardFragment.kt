@@ -7,11 +7,11 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.findNavController
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.phishware.android.R
 import com.phishware.android.data.local.SessionManager
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentDashboardBinding
-import com.phishware.android.ui.RiskUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -23,6 +23,7 @@ class DashboardFragment : Fragment() {
     private val binding get() = _binding!!
     @Inject lateinit var repository: PhishwareRepository
     @Inject lateinit var session: SessionManager
+    private val recentAdapter = RecentScanAdapter()
 
     override fun onCreateView(i: LayoutInflater, c: ViewGroup?, s: Bundle?): View {
         _binding = FragmentDashboardBinding.inflate(i, c, false)
@@ -31,10 +32,16 @@ class DashboardFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        binding.rvRecent.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+        binding.rvRecent.adapter = recentAdapter
+
         binding.btnGoAnalyze.setOnClickListener { runCatching { findNavController().navigate(R.id.url_analysis_fragment) } }
         binding.btnGoQr.setOnClickListener { runCatching { findNavController().navigate(R.id.qr_scanner_fragment) } }
         binding.btnGoHistory.setOnClickListener { runCatching { findNavController().navigate(R.id.history_fragment) } }
         binding.searchPill.setOnClickListener { runCatching { findNavController().navigate(R.id.url_analysis_fragment) } }
+        binding.btnAlerts.setOnClickListener { runCatching { findNavController().navigate(R.id.alerts_fragment) } }
+        binding.tvViewAll.setOnClickListener { runCatching { findNavController().navigate(R.id.history_fragment) } }
+        binding.swipeRefresh.setOnRefreshListener { load() }
         load()
     }
 
@@ -50,22 +57,29 @@ class DashboardFragment : Fragment() {
                 binding.tvDanger.text = d.dangerousUrls.toString()
                 binding.tvSusp.text = d.suspiciousUrls.toString()
                 binding.tvSafe.text = d.safeUrls.toString()
-                binding.tvScore.text = if (d.totalAnalyses > 0L) "${d.threatsDetected}" else "0"
+                val safePct = if (d.totalAnalyses > 0L) ((d.safeUrls * 100) / d.totalAnalyses).toInt() else 100
+                binding.tvScore.text = safePct.toString()
+                binding.progressScore.progress = safePct
                 binding.tvUsername.text = getString(R.string.dash_threats_fmt, d.threatsDetected, d.unreadAlerts)
             }.onFailure {
                 binding.tvUsername.text = getString(R.string.dash_no_conn)
             }
-            repository.getHistory(0, 3).onSuccess { page ->
+            repository.getHistory(0, 8).onSuccess { page ->
+                binding.swipeRefresh.isRefreshing = false
                 if (page.content.isEmpty()) {
-                    binding.tvRecent.text = getString(R.string.dash_recent_empty)
+                    binding.rvRecent.visibility = View.GONE
+                    binding.tvRecentEmpty.visibility = View.VISIBLE
+                    binding.tvRecentEmpty.text = getString(R.string.dash_recent_empty)
                 } else {
-                    val sb = android.text.SpannableStringBuilder()
-                    page.content.forEachIndexed { i, it ->
-                        if (i > 0) sb.append("\n\n")
-                        sb.append(RiskUi.dotLine(it.riskLevel, it.domain ?: it.originalUrl))
-                    }
-                    binding.tvRecent.text = sb
+                    binding.rvRecent.visibility = View.VISIBLE
+                    binding.tvRecentEmpty.visibility = View.GONE
+                    recentAdapter.submitList(page.content)
                 }
+            }.onFailure {
+                binding.swipeRefresh.isRefreshing = false
+                binding.rvRecent.visibility = View.GONE
+                binding.tvRecentEmpty.visibility = View.VISIBLE
+                binding.tvRecentEmpty.text = getString(R.string.dash_no_conn)
             }
         }
     }

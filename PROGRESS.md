@@ -9,10 +9,10 @@ Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, 
 - [x] 4. `fix(rate-limit)` (`bf64089`): X-Forwarded-For solo desde trusted-proxies + test
 
 ## FASE 2 – Bugs del motor (5-8)
-- [ ] 5. `fix(virustotal)`: polling de GET /analyses/{id}
-- [ ] 6. `perf(analysis)`: CompletableFuture sin join bloqueante
-- [ ] 7. `fix(system)`: confianzas reales en /system/api-status
-- [ ] 8. `feat(auth)`: refresh token
+- [x] 5. `fix(virustotal)` (`5e1b944`): polling de GET /analyses/{id} + tests
+- [x] 6. `perf(analysis)` (`acf9321`): CompletableFuture.allOf sin joins secuenciales
+- [x] 7. `fix(system)` (`78766b8`): confianzas reales en /system/api-status
+- [x] 8. `feat(auth)` (`9982e55`): refresh token con rotación + tests
 
 ## FASE 3 – Innovaciones del motor (9-13)
 - [ ] 9. `feat(engine)`: persuasionPrinciple + IndicatorEducationCatalog + V9 + response

@@ -45,8 +45,11 @@ Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, 
 - [x] 26. `docs` (`8a9971b`): README/ARCHITECTURE/OWASP_NIST_MAPPING/CHANGELOG/ISO
 
 ## FASE 8 – Documento de grado (27-30)
-- [ ] 27-30. `docs(thesis)`: copia v1.1, correcciones, alineación, comparativa, biblio
-- Nota: `docs/thesis/` NO existe en el repo; los .docx están en `C:\phsiware trabajo final\` (fuera del repo).
+Trabajado DIRECTO sobre `C:\phsiware trabajo final\CTG_Camila_Jesus_FINAL.docx` (fuera del repo, SIN commits por indicación del usuario).
+- [x] 27. `docs(thesis)`: inconsistencias ya saneadas en la pasada anterior (nombre único, sin palabras pegadas, NIST CSF 2.0, ISO versionada, referencias cruzadas, Anexos sin duplicados, 3.5.1/3.5.2 completos, Ley 1978 = 25 de julio, Ley 527 = DO 21 de agosto) — verificado de nuevo: 0 restos.
+- [x] 28. `docs(thesis)`: alineación v1.1 — 1.8/2.4.3 con escucha de notificaciones, 2.1.6 con motor de 6 fuentes + noisy-OR + umbrales, 2.2.3 con fusión tardía, 2.2.9.1 con Top 10:2025 + ASVS 5.0 vigentes, 4.1 con tabla Regla→Técnica→Cialdini→NIST (41 indicadores verificados contra el código), 4.2 con stack real (Java 17, Spring Boot 3.5, React 18+TS, Kotlin MVVM/Hilt), 4.3/4.4/4.5 con dataset real + HEURISTIC_ONLY, cap. 5 con rama/tag/CI/Docker.
+- [x] 29. `docs(thesis)`: nueva sección 2.1.7 + Tabla 1 comparativa + recomendación SHAP (6) + conclusiones cuantitativas con [PENDIENTE] amarillos (sin cifras inventadas).
+- [x] 30. `docs(thesis)`: bibliografía APA completa (HIBP agregada, placeholders/duplicados eliminados), 24 tablas numeradas en orden, referencias cruzadas al día (Tabla 16, Tabla 24), todo lo nuevo/modificado en amarillo.
 
 ## Commits
 (none yet)

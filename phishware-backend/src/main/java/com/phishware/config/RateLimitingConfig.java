@@ -53,7 +53,8 @@ public class RateLimitingConfig {
             "/auth/login",
             "/auth/register",
             "/analysis",
-            "/public/url"
+            "/public/url",
+            "/security/password-check"
         );
 
         public RateLimitFilter(int maxRequestsPerMinute, java.util.List<String> trustedProxies) {

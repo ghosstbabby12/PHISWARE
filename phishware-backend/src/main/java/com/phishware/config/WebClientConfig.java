@@ -23,16 +23,19 @@ public class WebClientConfig {
     private final String virusTotalBaseUrl;
     private final String virusTotalApiKey;
     private final String rdapBaseUrl;
+    private final String hibpBaseUrl;
 
     public WebClientConfig(
             @Value("${app.google-safe-browsing.base-url}") String googleSafeBrowsingBaseUrl,
             @Value("${app.virus-total.base-url}") String virusTotalBaseUrl,
             @Value("${app.virus-total.api-key}") String virusTotalApiKey,
-            @Value("${app.rdap.base-url:https://rdap.org}") String rdapBaseUrl) {
+            @Value("${app.rdap.base-url:https://rdap.org}") String rdapBaseUrl,
+            @Value("${app.hibp.base-url:https://api.haveibeenpwned.com}") String hibpBaseUrl) {
         this.googleSafeBrowsingBaseUrl = googleSafeBrowsingBaseUrl;
         this.virusTotalBaseUrl         = virusTotalBaseUrl;
         this.virusTotalApiKey          = virusTotalApiKey;
         this.rdapBaseUrl               = rdapBaseUrl;
+        this.hibpBaseUrl               = hibpBaseUrl;
     }
 
     @NonNull
@@ -71,6 +74,16 @@ public class WebClientConfig {
             .baseUrl(rdapBaseUrl)
             .defaultHeader(HttpHeaders.ACCEPT, "application/rdap+json, application/json")
             .clientConnector(new ReactorClientHttpConnector(buildHttpClient().followRedirect(true)))
+            .build();
+    }
+
+    // HIBP k-anonymity: solo recibe prefijos SHA-1, nunca contraseñas completas
+    @Bean("hibpClient")
+    public WebClient hibpClient() {
+        return WebClient.builder()
+            .baseUrl(hibpBaseUrl)
+            .defaultHeader(HttpHeaders.USER_AGENT, "PhishWare-PasswordCheck")
+            .clientConnector(new ReactorClientHttpConnector(buildHttpClient()))
             .build();
     }
 }

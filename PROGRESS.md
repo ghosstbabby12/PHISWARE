@@ -15,11 +15,12 @@ Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, 
 - [x] 8. `feat(auth)` (`9982e55`): refresh token con rotación + tests
 
 ## FASE 3 – Innovaciones del motor (9-13)
-- [ ] 9. `feat(engine)`: persuasionPrinciple + IndicatorEducationCatalog + V9 + response
-- [ ] 10. `feat(engine)`: official site seal
-- [ ] 11. `feat(engine)`: favicon similarity
-- [ ] 12. `feat(engine)`: community CONFIRMED feed
-- [ ] 13. `feat(engine)`: password-check k-anonymity
+- [x] 9. `feat(engine)` (`1b27718`): persuasionPrinciple + catalog + V7 microlecciones + respuestas explicadas
+- [x] 10. `feat(engine)` (`87b2cba`): sello oficial contra BrandCatalog
+- [x] 11. `feat(engine)` (`5f149ba`): señal de favicon + hash SHA-256 en evidencia
+- [x] 12. `feat(engine)` (`a1a11ed`): feed con reportes COMMUNITY CONFIRMED (confianza 0.9)
+- [x] 13. `feat(engine)` (`cf185ff`): password-check k-anonimato (HIBP range API)
+- Nota: la migración de microlecciones se creó como **V7** (no V9) para no dejar huecos V7/V8 en la cadena Flyway.
 
 ## FASE 4 – Frontend (14-17)
 - [ ] 14. `feat(web)`: theme light/dark/system

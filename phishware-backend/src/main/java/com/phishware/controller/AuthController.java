@@ -1,6 +1,7 @@
 package com.phishware.controller;
 
 import com.phishware.dto.request.LoginRequest;
+import com.phishware.dto.request.RefreshRequest;
 import com.phishware.dto.request.RegisterRequest;
 import com.phishware.dto.response.AuthResponse;
 import com.phishware.service.AuthService;
@@ -38,6 +39,15 @@ public class AuthController {
         String ip = getClientIp(httpRequest);
         return ResponseEntity.status(HttpStatus.CREATED)
             .body(authService.register(request, ip));
+    }
+
+    @PostMapping("/refresh")
+    @Operation(summary = "Renovar sesión", description = "Rota el par access/refresh token con un refresh token válido")
+    public ResponseEntity<AuthResponse> refresh(
+            @Valid @RequestBody RefreshRequest request,
+            HttpServletRequest httpRequest) {
+        String ip = getClientIp(httpRequest);
+        return ResponseEntity.ok(authService.refresh(request.getRefreshToken(), ip));
     }
 
     private String getClientIp(HttpServletRequest request) {

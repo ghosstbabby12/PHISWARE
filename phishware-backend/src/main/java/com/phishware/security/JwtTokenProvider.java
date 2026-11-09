@@ -22,6 +22,9 @@ public class JwtTokenProvider {
     @Value("${app.jwt.expiration-ms}")
     private long jwtExpirationMs;
 
+    @Value("${app.jwt.refresh-expiration-ms}")
+    private long refreshExpirationMs;
+
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(jwtSecret.getBytes(java.nio.charset.StandardCharsets.UTF_8));
     }
@@ -36,8 +39,20 @@ public class JwtTokenProvider {
             .claim("userId", user.getId())
             .claim("email", user.getEmail())
             .claim("roles", roles)
+            .claim("type", "access")
             .issuedAt(new Date())
             .expiration(new Date(System.currentTimeMillis() + jwtExpirationMs))
+            .signWith(getSigningKey())
+            .compact();
+    }
+
+    public String generateRefreshToken(User user) {
+        return Jwts.builder()
+            .subject(user.getUsername())
+            .claim("userId", user.getId())
+            .claim("type", "refresh")
+            .issuedAt(new Date())
+            .expiration(new Date(System.currentTimeMillis() + refreshExpirationMs))
             .signWith(getSigningKey())
             .compact();
     }
@@ -52,8 +67,8 @@ public class JwtTokenProvider {
 
     public boolean validateToken(String token) {
         try {
-            parseClaims(token);
-            return true;
+            Claims claims = parseClaims(token);
+            return !"refresh".equals(claims.get("type", String.class));
         } catch (MalformedJwtException e) {
             log.warn("JWT token malformado: {}", e.getMessage());
         } catch (ExpiredJwtException e) {
@@ -70,6 +85,23 @@ public class JwtTokenProvider {
         return false;
     }
 
+    public boolean validateRefreshToken(String token) {
+        if (!isSignatureValid(token)) {
+            return false;
+        }
+        return "refresh".equals(parseClaims(token).get("type", String.class));
+    }
+
+    private boolean isSignatureValid(String token) {
+        try {
+            parseClaims(token);
+            return true;
+        } catch (JwtException | IllegalArgumentException e) {
+            log.warn("Refresh token inválido: {}", e.getMessage());
+            return false;
+        }
+    }
+
     private Claims parseClaims(String token) {
         return Jwts.parser()
             .verifyWith(getSigningKey())
@@ -80,5 +112,9 @@ public class JwtTokenProvider {
 
     public long getExpirationMs() {
         return jwtExpirationMs;
+    }
+
+    public long getRefreshExpirationMs() {
+        return refreshExpirationMs;
     }
 }

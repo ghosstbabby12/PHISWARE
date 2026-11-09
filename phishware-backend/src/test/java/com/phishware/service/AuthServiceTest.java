@@ -108,4 +108,38 @@ class AuthServiceTest {
             .isInstanceOf(IllegalArgumentException.class)
             .hasMessageContaining("email");
     }
+
+    @Test
+    @DisplayName("Refresh válido rota el par de tokens")
+    void refresh_WithValidToken_ShouldRotateTokenPair() {
+        User user = User.builder().id(7L).username("rot").email("rot@example.com").build();
+
+        when(tokenProvider.validateRefreshToken("refresh-ok")).thenReturn(true);
+        when(tokenProvider.getUserIdFromToken("refresh-ok")).thenReturn(7L);
+        when(userRepository.findById(7L)).thenReturn(Optional.of(user));
+        when(tokenProvider.generateToken(user)).thenReturn("access-new");
+        when(tokenProvider.generateRefreshToken(user)).thenReturn("refresh-new");
+        when(tokenProvider.getExpirationMs()).thenReturn(86400000L);
+        when(tokenProvider.getRefreshExpirationMs()).thenReturn(604800000L);
+
+        AuthResponse response = authService.refresh("refresh-ok", "127.0.0.1");
+
+        assertThat(response.getAccessToken()).isEqualTo("access-new");
+        assertThat(response.getRefreshToken()).isEqualTo("refresh-new");
+        assertThat(response.getRefreshExpiresIn()).isEqualTo(604800000L);
+        verify(auditLogService).log(eq(user), eq("USER_TOKEN_REFRESH"), eq("User"),
+            eq(7L), eq(true), isNull(), eq("127.0.0.1"));
+    }
+
+    @Test
+    @DisplayName("Refresh inválido debe fallar sin tocar la base de datos")
+    void refresh_WithInvalidToken_ShouldThrowException() {
+        when(tokenProvider.validateRefreshToken("refresh-bad")).thenReturn(false);
+
+        assertThatThrownBy(() -> authService.refresh("refresh-bad", "127.0.0.1"))
+            .isInstanceOf(IllegalArgumentException.class)
+            .hasMessageContaining("Refresh token");
+
+        verify(userRepository, never()).findById(any());
+    }
 }

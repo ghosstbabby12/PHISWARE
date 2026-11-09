@@ -79,11 +79,28 @@ public class AuthService {
         return buildAuthResponse(user, token);
     }
 
+    @Transactional
+    public AuthResponse refresh(String refreshToken, String ipAddress) {
+        if (!tokenProvider.validateRefreshToken(refreshToken)) {
+            throw new IllegalArgumentException("Refresh token inválido o expirado");
+        }
+        Long userId = tokenProvider.getUserIdFromToken(refreshToken);
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Usuario no encontrado"));
+
+        auditLogService.log(user, "USER_TOKEN_REFRESH", "User", user.getId(), true, null, ipAddress);
+
+        String token = tokenProvider.generateToken(user);
+        return buildAuthResponse(user, token);
+    }
+
     private AuthResponse buildAuthResponse(User user, String token) {
         return AuthResponse.builder()
             .accessToken(token)
             .tokenType("Bearer")
             .expiresIn(tokenProvider.getExpirationMs())
+            .refreshToken(tokenProvider.generateRefreshToken(user))
+            .refreshExpiresIn(tokenProvider.getRefreshExpirationMs())
             .userId(user.getId())
             .username(user.getUsername())
             .email(user.getEmail())

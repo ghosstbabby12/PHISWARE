@@ -134,7 +134,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="Español" />
+                android:text="@string/guard_lang_es" />
             <Space
                 android:layout_width="8dp"
                 android:layout_height="wrap_content" />
@@ -144,7 +144,48 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="English" />
+                android:text="@string/guard_lang_en" />
+        </LinearLayout>
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="@string/guard_theme_title"
+            android:textColor="@color/proton_text"
+            android:textSize="16sp"
+            android:textStyle="bold" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:orientation="horizontal">
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnThemeLight"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/guard_theme_light" />
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnThemeDark"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/guard_theme_dark" />
+            <Space
+                android:layout_width="8dp"
+                android:layout_height="wrap_content" />
+            <com.google.android.material.button.MaterialButton
+                android:id="@+id/btnThemeSystem"
+                style="@style/Widget.Material3.Button.OutlinedButton"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/guard_theme_system" />
         </LinearLayout>
         <com.google.android.material.button.MaterialButton
             android:id="@+id/btnLogout"

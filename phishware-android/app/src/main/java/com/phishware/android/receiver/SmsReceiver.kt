@@ -87,7 +87,8 @@ class SmsReceiver : BroadcastReceiver() {
                                 domain = url.substringAfter("://").substringBefore("/"),
                                 riskLevel = textRisk.level,
                                 score = textRisk.score,
-                                firstTip = tip
+                                firstTip = tip,
+                                principle = textRisk.principles.firstOrNull()
                             )
                         }
                     }

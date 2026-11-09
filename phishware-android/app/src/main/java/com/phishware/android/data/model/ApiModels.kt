@@ -45,7 +45,8 @@ data class UrlAnalysisResponse(
     @SerializedName("analysisTimeMs") val analysisTimeMs: Int? = null,
     @SerializedName("analyzedAt") val analyzedAt: String? = null,
     @SerializedName("riskMessage") val riskMessage: String? = null,
-    @SerializedName("recommendations") val recommendations: List<String>? = null
+    @SerializedName("recommendations") val recommendations: List<String>? = null,
+    @SerializedName("officialSeal") val officialSeal: OfficialSeal? = null
 )
 
 data class ThreatResponse(
@@ -53,7 +54,15 @@ data class ThreatResponse(
     @SerializedName("threatType") val threatType: String,
     @SerializedName("description") val description: String,
     @SerializedName("severity") val severity: String,
-    @SerializedName("source") val source: String
+    @SerializedName("source") val source: String,
+    @SerializedName("persuasionPrinciple") val persuasionPrinciple: String? = null,
+    @SerializedName("microlessonSlug") val microlessonSlug: String? = null
+)
+
+data class OfficialSeal(
+    @SerializedName("official") val official: Boolean = false,
+    @SerializedName("brand") val brand: String? = null,
+    @SerializedName("officialDomain") val officialDomain: String? = null
 )
 
 data class DashboardResponse(
@@ -120,5 +129,6 @@ data class ApiError(
     @SerializedName("error") val error: String? = null,
     @SerializedName("message") val message: String? = null,
     @SerializedName("path") val path: String? = null,
-    @SerializedName("fieldErrors") val fieldErrors: Map<String, String>? = null
+    @SerializedName("fieldErrors") val fieldErrors: Map<String, String>? = null,
+    @SerializedName("code") val code: String? = null
 )

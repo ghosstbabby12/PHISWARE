@@ -31,7 +31,7 @@
                     android:id="@+id/tvGreeting"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Good morning,"
+                    android:text="@string/dash_morning"
                     android:textColor="@color/proton_text"
                     android:textSize="13sp" />
                 <TextView
@@ -73,7 +73,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
                 android:layout_weight="1"
-                android:text="Search passwords…"
+                android:text="@string/dash_search_hint"
                 android:textColor="#E8B4BB"
                 android:textSize="13sp" />
             <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚙" android:textColor="#FFFFFF" />
@@ -115,7 +115,7 @@
                         android:id="@+id/tvLevel"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Total stored"
+                        android:text="@string/dash_total_stored"
                         android:textColor="#FFD9DE"
                         android:textSize="12sp" />
                 </LinearLayout>
@@ -138,7 +138,7 @@
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Security Score"
+                        android:text="@string/dash_score_title"
                         android:textColor="@color/proton_text"
                         android:textSize="13sp"
                         android:textStyle="bold" />
@@ -156,7 +156,7 @@
                         android:layout_height="wrap_content"
                         android:background="@drawable/bg_search_pill"
                         android:padding="2dp"
-                        android:text="Very Strong"
+                        android:text="@string/dash_very_strong"
                         android:textColor="#FFFFFF"
                         android:textSize="0sp"
                         android:visibility="gone" />
@@ -249,7 +249,7 @@
                 android:textColor="@color/proton_text"
                 android:textSize="15sp"
                 android:textStyle="bold" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="View All" android:textColor="@color/proton_primary" android:textSize="12sp" />
+            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dash_view_all" android:textColor="@color/proton_primary" android:textSize="12sp" />
         </LinearLayout>
 
         <LinearLayout
@@ -304,7 +304,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="16dp"
-                android:text="Cargando…"
+                android:text="@string/dash_loading"
                 android:textColor="@color/proton_subtext"
                 android:textSize="13sp" />
         </com.google.android.material.card.MaterialCardView>

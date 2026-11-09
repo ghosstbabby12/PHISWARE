@@ -109,6 +109,9 @@ class SettingsFragment : Fragment() {
         }
         binding.btnLangEs.setOnClickListener { applyLocale("es") }
         binding.btnLangEn.setOnClickListener { applyLocale("en") }
+        binding.btnThemeLight.setOnClickListener { applyTheme("light") }
+        binding.btnThemeDark.setOnClickListener { applyTheme("dark") }
+        binding.btnThemeSystem.setOnClickListener { applyTheme("system") }
         binding.btnLogout.setOnClickListener { confirmLogout() }
         binding.btnStart.setOnClickListener {
             lifecycleScope.launch {
@@ -126,6 +129,16 @@ class SettingsFragment : Fragment() {
 
     private fun applyLocale(tag: String) {
         AppCompatDelegate.setApplicationLocales(LocaleListCompat.forLanguageTags(tag))
+    }
+
+    private fun applyTheme(mode: String) {
+        val nightMode = when (mode) {
+            "light" -> AppCompatDelegate.MODE_NIGHT_NO
+            "dark" -> AppCompatDelegate.MODE_NIGHT_YES
+            else -> AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM
+        }
+        lifecycleScope.launch { guard.setTheme(mode) }
+        AppCompatDelegate.setDefaultNightMode(nightMode)
     }
 
     private fun confirmLogout() {

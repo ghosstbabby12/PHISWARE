@@ -62,12 +62,16 @@ class PhishNotificationListener : NotificationListenerService() {
                     repository.analyzeUrl(url).onSuccess { r ->
                         val level = r.riskLevel ?: "SAFE"
                         if (level != "SAFE") {
+                            val top = r.threats?.firstOrNull()
                             notifications.showThreat(
                                 url = r.originalUrl ?: url,
                                 domain = r.domain ?: url,
                                 riskLevel = level,
                                 score = r.riskScore,
-                                firstTip = r.recommendations?.firstOrNull()
+                                firstTip = r.recommendations?.firstOrNull(),
+                                principle = top?.persuasionPrinciple,
+                                microlessonSlug = top?.microlessonSlug,
+                                sealBrand = r.officialSeal?.takeIf { it.official }?.brand
                             )
                         }
                     }

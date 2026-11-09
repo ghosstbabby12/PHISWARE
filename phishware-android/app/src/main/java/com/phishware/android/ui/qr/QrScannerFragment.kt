@@ -303,9 +303,16 @@ class QrScannerFragment : Fragment() {
         setStatus(getString(R.string.qr_analysis_ready_fmt, label))
         if (r.riskLevel == "DANGEROUS" || r.riskLevel == "SUSPICIOUS") {
             try {
+                val top = r.threats?.firstOrNull()
                 notifications.showThreat(
-                    r.originalUrl ?: lastUrl ?: "", r.domain ?: "",
-                    r.riskLevel ?: "SUSPICIOUS", r.riskScore, r.recommendations?.firstOrNull()
+                    url = r.originalUrl ?: lastUrl ?: "",
+                    domain = r.domain ?: "",
+                    riskLevel = r.riskLevel ?: "SUSPICIOUS",
+                    score = r.riskScore,
+                    firstTip = r.recommendations?.firstOrNull(),
+                    principle = top?.persuasionPrinciple,
+                    microlessonSlug = top?.microlessonSlug,
+                    sealBrand = r.officialSeal?.takeIf { it.official }?.brand
                 )
             } catch (_: Exception) { }
         }

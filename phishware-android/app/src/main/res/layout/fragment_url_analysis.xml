@@ -114,8 +114,8 @@
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
                 android:padding="18dp">
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Security Overview" android:textColor="@color/proton_text" android:textSize="16sp" android:textStyle="bold" />
-                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="Monitor your vault health" android:textColor="@color/proton_subtext" android:textSize="12sp" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/analysis_overview_title" android:textColor="@color/proton_text" android:textSize="16sp" android:textStyle="bold" />
+                <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/analysis_overview_sub" android:textColor="@color/proton_subtext" android:textSize="12sp" />
                 <TextView android:id="@+id/tvRiskLevel" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textSize="24sp" android:textStyle="bold" android:textColor="@color/proton_primary" />
                 <TextView android:id="@+id/tvRiskMessage" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/proton_text" android:textSize="14sp" />
                 <TextView android:id="@+id/tvDomain" android:layout_width="match_parent" android:layout_height="wrap_content" android:layout_marginTop="8dp" android:textColor="@color/proton_subtext" android:textSize="13sp" />

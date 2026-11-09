@@ -61,7 +61,16 @@ class NotificationHelper @Inject constructor(
             .build()
     }
 
-    fun showThreat(url: String, domain: String, riskLevel: String, score: Double, firstTip: String?) {
+    fun showThreat(
+        url: String,
+        domain: String,
+        riskLevel: String,
+        score: Double,
+        firstTip: String?,
+        principle: String? = null,
+        microlessonSlug: String? = null,
+        sealBrand: String? = null
+    ) {
         ensureChannels()
         val (title, icon) = when (riskLevel) {
             "DANGEROUS" -> context.getString(R.string.notif_threat_danger) to R.drawable.ic_alert
@@ -92,8 +101,18 @@ class NotificationHelper @Inject constructor(
             },
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
-        val text = "$domain · riesgo ${"%.0f".format(score)}/100" +
-            (firstTip?.let { "\n• $it" } ?: "")
+        val lines = mutableListOf("$domain · riesgo ${"%.0f".format(score)}/100")
+        firstTip?.let { lines.add("• $it") }
+        if (!principle.isNullOrBlank() && principle != "NONE") {
+            lines.add("• " + context.getString(R.string.notif_principle_fmt, principle))
+        }
+        if (!microlessonSlug.isNullOrBlank()) {
+            lines.add("• " + context.getString(R.string.notif_lesson_fmt, microlessonSlug))
+        }
+        if (!sealBrand.isNullOrBlank()) {
+            lines.add(context.getString(R.string.notif_seal_fmt, sealBrand))
+        }
+        val text = lines.joinToString("\n")
         // Estilo iPhone: banner arriba (heads-up) con sonido + vibración + acciones
         val notif = NotificationCompat.Builder(context, CHANNEL_THREATS)
             .setSmallIcon(icon)

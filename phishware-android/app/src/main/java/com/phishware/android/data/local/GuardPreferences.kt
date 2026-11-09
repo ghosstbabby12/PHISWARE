@@ -23,8 +23,11 @@ class GuardPreferences @Inject constructor(
         private val KEY_SMS = booleanPreferencesKey("guard_sms")
         private val KEY_NOTIF = booleanPreferencesKey("guard_notifications")
         private val KEY_NOTIF_LISTENER = booleanPreferencesKey("guard_notif_listener")
+        private val KEY_THEME = stringPreferencesKey("ui_theme")
         private val KEY_LAST_PREFIX = "last_scan_"
     }
+
+    val theme: Flow<String> = context.dataStore.data.map { it[KEY_THEME] ?: "system" }
 
     val consent: Flow<Boolean> = context.dataStore.data.map { it[KEY_CONSENT] == true }
     val guardEnabled: Flow<Boolean> = context.dataStore.data.map { it[KEY_GUARD] != false }
@@ -37,6 +40,8 @@ class GuardPreferences @Inject constructor(
     suspend fun setSms(v: Boolean) = context.dataStore.edit { it[KEY_SMS] = v }
     suspend fun setNotifications(v: Boolean) = context.dataStore.edit { it[KEY_NOTIF] = v }
     suspend fun setNotifListener(v: Boolean) = context.dataStore.edit { it[KEY_NOTIF_LISTENER] = v }
+
+    suspend fun setTheme(v: String) = context.dataStore.edit { it[KEY_THEME] = v }
 
     suspend fun isActive(): Boolean {
         val p = context.dataStore.data.first()

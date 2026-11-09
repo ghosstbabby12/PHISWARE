@@ -29,7 +29,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Phishware Vault"
+                android:text="@string/vault_brand"
                 android:textColor="@color/proton_text"
                 android:textSize="16sp"
                 android:textStyle="bold" />
@@ -39,13 +39,13 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="28dp"
-            android:text="Your Links,"
+            android:text="@string/vault_t1"
             android:textColor="@color/proton_text"
             android:textSize="28sp" />
         <TextView
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:text="Safely Secured"
+            android:text="@string/vault_t2"
             android:textColor="@color/proton_primary"
             android:textSize="28sp"
             android:textStyle="bold" />
@@ -53,7 +53,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="6dp"
-            android:text="Encrypted. Private. Always yours."
+            android:text="@string/vault_tag"
             android:textColor="@color/proton_subtext"
             android:textSize="13sp" />
 
@@ -78,7 +78,7 @@
                 app:cardElevation="2dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:padding="12dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔒" android:textSize="22sp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="End-to-end Encryption" android:textColor="@color/proton_text" android:textSize="11sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/vault_f1" android:textColor="@color/proton_text" android:textSize="11sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <Space android:layout_width="8dp" android:layout_height="wrap_content" />
@@ -91,7 +91,7 @@
                 app:cardElevation="2dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:padding="12dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="👆" android:textSize="22sp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="Zero-knowledge Privacy" android:textColor="@color/proton_text" android:textSize="11sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/vault_f2" android:textColor="@color/proton_text" android:textSize="11sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
             <Space android:layout_width="8dp" android:layout_height="wrap_content" />
@@ -104,7 +104,7 @@
                 app:cardElevation="2dp">
                 <LinearLayout android:layout_width="match_parent" android:layout_height="wrap_content" android:gravity="center" android:orientation="vertical" android:padding="12dp">
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="🔄" android:textSize="22sp" />
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="Secure Sync Everywhere" android:textColor="@color/proton_text" android:textSize="11sp" />
+                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:gravity="center" android:text="@string/vault_f3" android:textColor="@color/proton_text" android:textSize="11sp" />
                 </LinearLayout>
             </com.google.android.material.card.MaterialCardView>
         </LinearLayout>

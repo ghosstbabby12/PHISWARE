@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="primary_blue">#2563EB</color>
+    <color name="primary_dark">#3B82F6</color>
+    <color name="success_green">#22C55E</color>
+    <color name="warning_amber">#F59E0B</color>
+    <color name="danger_red">#F87171</color>
+    <color name="background_dark">#0B0F1A</color>
+    <color name="surface_dark">#151B2E</color>
+    <color name="text_primary">#F1F5F9</color>
+    <color name="text_secondary">#94A3B8</color>
+    <color name="border_color">#26314B</color>
+    <color name="ic_launcher_background">#0B0F1A</color>
+    <color name="proton_primary">#E0607E</color>
+    <color name="proton_primary_dark">#A62B3D</color>
+    <color name="proton_bg">#12101A</color>
+    <color name="proton_card">#1E1B2E</color>
+    <color name="proton_text">#F6EFF2</color>
+    <color name="proton_subtext">#B79CA6</color>
+    <color name="proton_pink">#3A2340</color>
+    <color name="proton_pill">#E0607E</color>
+</resources>

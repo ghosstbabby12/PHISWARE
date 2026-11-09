@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <style name="Theme.Phishware" parent="Theme.Material3.Light.NoActionBar">
+    <style name="Theme.Phishware" parent="Theme.Material3.DayNight.NoActionBar">
         <item name="colorPrimary">@color/proton_primary</item>
         <item name="colorPrimaryDark">@color/proton_primary_dark</item>
         <item name="colorOnPrimary">#FFFFFF</item>

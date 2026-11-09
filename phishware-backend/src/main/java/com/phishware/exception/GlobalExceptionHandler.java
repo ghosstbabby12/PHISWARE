@@ -63,17 +63,16 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(UsernameNotFoundException.class)
     public ResponseEntity<ApiErrorResponse> handleUserNotFound(
             UsernameNotFoundException ex, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(buildFieldError(
-            401, "Unauthorized", "usernameOrEmail",
-            "No existe ninguna cuenta con ese usuario o email", request.getRequestURI()
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(buildError(
+            401, "Unauthorized", "Credenciales inválidas", request.getRequestURI()
         ));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ApiErrorResponse> handleBadCredentials(
             BadCredentialsException ex, HttpServletRequest request) {
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(buildFieldError(
-            401, "Unauthorized", "password", "Contraseña incorrecta", request.getRequestURI()
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(buildError(
+            401, "Unauthorized", "Credenciales inválidas", request.getRequestURI()
         ));
     }
 

@@ -52,8 +52,8 @@ public class SecurityConfig {
     public DaoAuthenticationProvider authenticationProvider() {
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider(userDetailsService);
         provider.setPasswordEncoder(passwordEncoder());
-        // Permite distinguir "usuario no existe" de "contraseña incorrecta" en el login
-        provider.setHideUserNotFoundExceptions(false);
+        // Never reveal whether the username exists: both cases surface as BadCredentialsException
+        provider.setHideUserNotFoundExceptions(true);
         return provider;
     }
 

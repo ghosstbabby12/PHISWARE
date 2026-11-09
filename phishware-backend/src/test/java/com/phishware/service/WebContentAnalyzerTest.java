@@ -52,6 +52,7 @@ class WebContentAnalyzerTest {
         assertThat(has(r, "NULL_LINKS")).isTrue();
         assertThat(has(r, "SENSITIVE_DATA_REQUEST")).isTrue();
         assertThat(has(r, "OBFUSCATED_SCRIPT")).isTrue();
+        assertThat(has(r, "MISSING_BRAND_FAVICON")).isTrue();
         assertThat(r.score()).isEqualTo(100.0);
     }
 

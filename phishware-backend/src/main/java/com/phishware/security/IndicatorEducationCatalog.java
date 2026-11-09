@@ -72,6 +72,7 @@ public final class IndicatorEducationCatalog {
         Map.entry("ANTI_INSPECTION", NONE_REF),
         Map.entry("AUTO_REDIRECT", URGENCY_REF),
         Map.entry("HIDDEN_IFRAME", NONE_REF),
+        Map.entry("MISSING_BRAND_FAVICON", TRUST_REF),
         Map.entry("URGENCY_LANGUAGE", URGENCY_REF),
         Map.entry("VERY_NEW_DOMAIN", URGENCY_REF),
         Map.entry("NEW_DOMAIN", URGENCY_REF),

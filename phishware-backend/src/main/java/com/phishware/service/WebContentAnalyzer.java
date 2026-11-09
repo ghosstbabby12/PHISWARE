@@ -246,9 +246,23 @@ public class WebContentAnalyzer {
         evidence.put("nullLinks", nullLinks);
         evidence.put("externalLinks", externalLinks);
 
+        // ── 3b. Favicon: hash para comparar la identidad visual ────────────
+        // Los sitios oficiales casi siempre publican favicon; un kit que
+        // suplanta una marca y pide credenciales sin favicon es más sospechoso.
+        Optional<FaviconInfo> favicon = fetchFavicon(doc, fetch.finalUrl());
+        favicon.ifPresent(f -> {
+            evidence.put("faviconUrl", f.url());
+            evidence.put("faviconSha256", f.sha256Hex());
+        });
+
         if (brand.isPresent() && !BrandCatalog.isOfficialFor(brand.get(), finalHost)) {
             String name = brand.get().name();
             evidence.put("brandDetected", name);
+            if (favicon.isEmpty() && asksCredentials) {
+                indicators.add(new ThreatIndicator("MISSING_BRAND_FAVICON",
+                    "La página dice ser \"" + name + "\" y pide credenciales, pero no publica ningún favicon como los sitios oficiales",
+                    Severity.MEDIUM, 10.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
+            }
             if (asksCredentials) {
                 indicators.add(new ThreatIndicator("BRAND_IMPERSONATION",
                     "La página se presenta como \"" + name + "\" y pide credenciales, pero está alojada en " + finalHost,
@@ -330,6 +344,48 @@ public class WebContentAnalyzer {
         }
 
         return ContentAnalysisResult.of(indicators, evidence);
+    }
+
+    /** Localiza y descarga el favicon de la página (vía SafePageFetcher, con protección SSRF). */
+    Optional<FaviconInfo> fetchFavicon(Document doc, String pageUrl) {
+        if (fetcher == null) {
+            return Optional.empty();
+        }
+        String href = doc.select("link[rel~=icon]").stream()
+            .map(e -> e.absUrl("href"))
+            .filter(u -> !u.isBlank())
+            .findFirst()
+            .orElseGet(() -> resolveAgainst(pageUrl, "/favicon.ico"));
+        if (href.isBlank()) {
+            return Optional.empty();
+        }
+        try {
+            SafePageFetcher.FetchResult icon = fetcher.fetch(href);
+            if (!icon.isSuccess() || icon.body() == null || icon.body().length == 0
+                    || icon.body().length > 500_000) {
+                return Optional.empty();
+            }
+            java.security.MessageDigest digest = java.security.MessageDigest.getInstance("SHA-256");
+            byte[] hash = digest.digest(icon.body());
+            StringBuilder hex = new StringBuilder();
+            for (byte b : hash) {
+                hex.append(String.format("%02x", b));
+            }
+            return Optional.of(new FaviconInfo(icon.finalUrl(), hex.toString()));
+        } catch (IllegalArgumentException | java.security.NoSuchAlgorithmException e) {
+            log.debug("No se pudo obtener el favicon de {}: {}", pageUrl, e.getMessage());
+            return Optional.empty();
+        }
+    }
+
+    record FaviconInfo(String url, String sha256Hex) {}
+
+    private static String resolveAgainst(String pageUrl, String path) {
+        try {
+            return URI.create(pageUrl).resolve(path).toString();
+        } catch (IllegalArgumentException e) {
+            return "";
+        }
     }
 
     private Optional<String> findAutoRedirect(Document doc, String scripts) {

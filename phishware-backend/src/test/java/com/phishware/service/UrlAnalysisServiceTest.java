@@ -7,8 +7,10 @@ import com.phishware.entity.enums.RiskLevel;
 import com.phishware.repository.AlertRepository;
 import com.phishware.repository.UrlAnalysisRepository;
 import com.phishware.repository.UserRepository;
+import com.phishware.dto.response.OfficialSeal;
 import com.phishware.security.InputSanitizerService;
 import com.phishware.security.NistThreatClassifier;
+import com.phishware.security.OfficialSealService;
 import com.phishware.security.OwaspComplianceValidator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
@@ -42,6 +44,7 @@ class UrlAnalysisServiceTest {
     @Mock private InputSanitizerService inputSanitizer;
     @Mock private NistThreatClassifier nistClassifier;
     @Mock private OwaspComplianceValidator owaspValidator;
+    @Mock private OfficialSealService officialSealService;
 
     @InjectMocks
     private UrlAnalysisService urlAnalysisService;
@@ -75,6 +78,8 @@ class UrlAnalysisServiceTest {
             .thenReturn(WebContentAnalyzer.ContentAnalysisResult.unavailable("test"));
         lenient().when(domainAgeService.check(any()))
             .thenReturn(DomainAgeService.DomainAgeResult.unavailable());
+        lenient().when(officialSealService.check(any()))
+            .thenReturn(OfficialSeal.none());
 
         lenient().when(nistClassifier.classify(any(), any()))
             .thenReturn(new NistThreatClassifier.HeuristicResult(

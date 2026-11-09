@@ -18,6 +18,7 @@ public class UrlAnalysisResponse {
     private UUID uuid;
     private String originalUrl;
     private String domain;
+    private OfficialSeal officialSeal;
     private RiskLevel riskLevel;
     private BigDecimal riskScore;
     private boolean isPhishing;

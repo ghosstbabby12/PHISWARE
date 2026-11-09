@@ -18,6 +18,7 @@ import com.phishware.repository.UserRepository;
 import com.phishware.security.IndicatorEducationCatalog;
 import com.phishware.security.InputSanitizerService;
 import com.phishware.security.NistThreatClassifier;
+import com.phishware.security.OfficialSealService;
 import com.phishware.security.OwaspComplianceValidator;
 import jakarta.annotation.PreDestroy;
 import lombok.RequiredArgsConstructor;
@@ -78,6 +79,7 @@ public class UrlAnalysisService {
     private final InputSanitizerService     inputSanitizer;
     private final NistThreatClassifier      nistClassifier;
     private final OwaspComplianceValidator  owaspValidator;
+    private final OfficialSealService       officialSealService;
 
     // Las fuentes externas (APIs, scraping, RDAP) se consultan en paralelo
     private final ExecutorService analysisExecutor = Executors.newFixedThreadPool(16);
@@ -458,6 +460,7 @@ public class UrlAnalysisService {
             .riskMessage(riskMessage)
             .recommendations(recommendations)
             .scoreBreakdown(extractBreakdown(analysis))
+            .officialSeal(officialSealService.check(analysis.getDomain()))
             .build();
     }
 

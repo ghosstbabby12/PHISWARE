@@ -1,8 +1,10 @@
 package com.phishware.controller;
 
+import com.phishware.dto.response.OfficialSeal;
 import com.phishware.entity.enums.RiskLevel;
 import com.phishware.security.IndicatorEducationCatalog;
 import com.phishware.security.NistThreatClassifier;
+import com.phishware.security.OfficialSealService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -22,6 +24,7 @@ import java.util.List;
 public class PublicUrlCheckController {
 
     private final NistThreatClassifier nistClassifier;
+    private final OfficialSealService officialSealService;
 
     @GetMapping("/check")
     @Operation(summary = "Verificación rápida heurística", description = "Análisis local sin APIs externas. Usado por la extensión PHISWARE.")
@@ -65,7 +68,8 @@ public class PublicUrlCheckController {
             result.riskLevel() != RiskLevel.SAFE,
             indicatorDescriptions,
             result.recommendations(),
-            explained
+            explained,
+            officialSealService.check(domain)
         ));
     }
 
@@ -89,7 +93,8 @@ public class PublicUrlCheckController {
         boolean isThreat,
         List<String> indicators,
         List<String> recommendations,
-        List<ExplainedIndicator> explainedIndicators
+        List<ExplainedIndicator> explainedIndicators,
+        OfficialSeal officialSeal
     ) {}
 
     public record ExplainedIndicator(

@@ -6,7 +6,7 @@ services:
     environment:
       POSTGRES_DB: phishware_db
       POSTGRES_USER: phishware
-      POSTGRES_PASSWORD: phishware2024
+      POSTGRES_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en tu archivo .env (copia phishware-backend/.env.example)}
     ports:
       - "5432:5432"
     volumes:

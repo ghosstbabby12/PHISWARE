@@ -458,7 +458,7 @@ Usuario       Frontend          Backend           Google Safe     VirusTotal
 # Crear base de datos
 psql -U postgres
 CREATE DATABASE phishware_db;
-CREATE USER phishware WITH PASSWORD 'phishware2024';
+CREATE USER phishware WITH PASSWORD 'cambia_esta_clave';
 GRANT ALL PRIVILEGES ON DATABASE phishware_db TO phishware;
 \q
 ```
@@ -470,10 +470,10 @@ Las migraciones Flyway se ejecutan automáticamente al iniciar el backend.
 ```bash
 cd phishware-backend
 
-# Configurar variables de entorno (o editar application.yml)
+# Configurar variables de entorno (ver phishware-backend/.env.example)
 export DB_USERNAME=phishware
-export DB_PASSWORD=phishware2024
-export JWT_SECRET=phishware-super-secret-key-min-256-bits-long
+export DB_PASSWORD=cambia_esta_clave
+export JWT_SECRET=cambia_este_secreto_min_32_chars
 export GOOGLE_SAFE_BROWSING_KEY=tu_api_key
 export VIRUSTOTAL_KEY=tu_api_key
 
@@ -521,8 +521,8 @@ npm run build
 | Variable | Descripción | Valor por defecto |
 |----------|-------------|-------------------|
 | `DB_USERNAME` | Usuario PostgreSQL | `phishware` |
-| `DB_PASSWORD` | Contraseña PostgreSQL | `phishware2024` |
-| `JWT_SECRET` | Clave secreta JWT (min 32 chars) | *ver application.yml* |
+| `DB_PASSWORD` | Contraseña PostgreSQL | *Sin valor por defecto (requerida)* |
+| `JWT_SECRET` | Clave secreta JWT (min 32 chars) | *Sin valor por defecto (requerida)* |
 | `GOOGLE_SAFE_BROWSING_KEY` | API Key Google Safe Browsing | **Requerida** |
 | `VIRUSTOTAL_KEY` | API Key VirusTotal | **Requerida** |
 

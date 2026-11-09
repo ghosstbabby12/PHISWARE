@@ -5,7 +5,7 @@ spring:
   datasource:
     url: jdbc:postgresql://localhost:5432/phishware_db
     username: ${DB_USERNAME:phishware}
-    password: ${DB_PASSWORD:phishware2024}
+    password: ${DB_PASSWORD}
     driver-class-name: org.postgresql.Driver
     hikari:
       maximum-pool-size: 10
@@ -43,7 +43,7 @@ server:
 # JWT Configuration
 app:
   jwt:
-    secret: ${JWT_SECRET:phishware-super-secret-key-2024-must-be-at-least-256-bits-long-for-hs256}
+    secret: ${JWT_SECRET}
     expiration-ms: 86400000       # 24 horas
     refresh-expiration-ms: 604800000  # 7 días
 

@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
+    "i18n:check": "node scripts/i18n-check.mjs",
     "lint": "eslint . --ext ts,tsx --report-unused-disable-directives --max-warnings 0"
   },
   "dependencies": {

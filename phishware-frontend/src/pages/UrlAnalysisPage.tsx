@@ -9,45 +9,13 @@ import UrlInputForm from '@/components/url-analysis/UrlInputForm'
 import AnalysisResult from '@/components/url-analysis/AnalysisResult'
 import QrScanner from '@/components/url-analysis/QrScanner'
 import QrContentCard from '@/components/url-analysis/QrContentCard'
-import { parseQrContent, QrContent } from '@/utils/qrContent'
+import { parseQrContent, QrContent, type QrStrings } from '@/utils/qrContent'
 import { useLang } from '@/i18n/LanguageContext'
-
-const TIPS = {
-  es: [
-    'Verifica que la URL use HTTPS y el dominio sea correcto.',
-    'Busca errores ortográficos en el dominio (paypa1.com, amaz0n.com).',
-    'Los sitios legítimos nunca te piden contraseñas por correo o SMS.',
-    'URLs muy largas o con parámetros extraños son señal de alerta.',
-    'Usa esta herramienta antes de ingresar datos en un sitio desconocido.',
-  ],
-  en: [
-    'Check that the URL uses HTTPS and the domain is correct.',
-    'Look for typos in the domain (paypa1.com, amaz0n.com).',
-    'Legitimate sites never ask for passwords by email or SMS.',
-    'Very long URLs or odd parameters are a warning sign.',
-    'Use this tool before entering data on an unfamiliar site.',
-  ],
-}
-
-const QR_TIPS = {
-  es: [
-    'Revisa que el QR no sea una calcomanía pegada encima del original (en parqueaderos, restaurantes o cajeros).',
-    'Desconfía de QR que llegan por correo o carta pidiendo pagar, verificar tu cuenta o reclamar un premio.',
-    'Un QR puede llevarte a cualquier sitio: analiza el enlace antes de abrirlo o ingresar datos.',
-    'Nunca escanees un QR para iniciar sesión si no lo generaste tú desde el sitio oficial.',
-  ],
-  en: [
-    'Check the QR is not a sticker placed over the original (parking lots, restaurants or ATMs).',
-    'Distrust QR codes arriving by mail or letter asking you to pay, verify your account or claim a prize.',
-    'A QR can take you anywhere: analyze the link before opening it or entering data.',
-    'Never scan a QR to log in unless you generated it yourself from the official site.',
-  ],
-}
 
 type Tab = 'url' | 'qr'
 
 export default function UrlAnalysisPage() {
-  const { t, lang } = useLang()
+  const { t } = useLang()
   const [result, setResult] = useState<UrlAnalysisResponse | null>(null)
   const [tab, setTab] = useState<Tab>('url')
   const [qrContent, setQrContent] = useState<QrContent | null>(null)
@@ -77,7 +45,21 @@ export default function UrlAnalysisPage() {
   }
 
   function handleQrDecoded(text: string) {
-    const content = parseQrContent(text)
+    const dict: QrStrings = {
+      network: t.qr.network,
+      unnamed: t.qr.unnamed,
+      security: t.qr.security,
+      openValue: t.qr.openValue,
+      recipient: t.qr.recipient,
+      message: t.qr.message,
+      number: t.qr.number,
+      name: t.qr.name,
+      coords: t.qr.coords,
+      openWifiWarning: t.qr.openWifiWarning,
+      shortNumberWarning: t.qr.shortNumberWarning,
+      kinds: t.qr.kinds,
+    }
+    const content = parseQrContent(text, dict)
     setQrContent(content)
     setResult(null)
     setAnalyzedUrl(null)
@@ -104,7 +86,7 @@ export default function UrlAnalysisPage() {
     document.getElementById('url-input')?.focus({ preventScroll: true })
   }
 
-  const tips = (tab === 'qr' ? QR_TIPS : TIPS)[lang]
+  const tips = tab === 'qr' ? t.analysis.qrTips : t.analysis.tips
 
   return (
     <div className="max-w-3xl mx-auto space-y-6 animate-fade-in" ref={topRef}>
@@ -152,7 +134,7 @@ export default function UrlAnalysisPage() {
             isAnalyzing={isPending}
           />
           <button type="button" onClick={resetQr} className="btn-secondary inline-flex items-center gap-2">
-            <RotateCcw className="w-4 h-4" /> {lang === 'es' ? 'Escanear otro QR' : 'Scan another QR'}
+            <RotateCcw className="w-4 h-4" /> {t.qr.scanAnother}
           </button>
         </>
       ) : (

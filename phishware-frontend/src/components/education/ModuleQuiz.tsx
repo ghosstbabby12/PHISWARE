@@ -5,6 +5,7 @@ import toast from 'react-hot-toast'
 import { educationService } from '@/services/educationService'
 import { getErrorMessage } from '@/services/api'
 import { QuizQuestion, QuizResult } from '@/types/education.types'
+import { useLang } from '@/i18n/LanguageContext'
 
 type Phase = 'intro' | 'answering' | 'result'
 type Answers = Record<number, string[]>
@@ -20,6 +21,7 @@ function QuestionCard({ question, selected, onChange }: {
   selected: string[]
   onChange: (value: string[]) => void
 }) {
+  const { t } = useLang()
   const multiple = question.questionType === 'MULTIPLE_CHOICE'
 
   function toggle(key: string) {
@@ -30,7 +32,7 @@ function QuestionCard({ question, selected, onChange }: {
   return (
     <div>
       <p className="text-ink-900 dark:text-ink-50 font-medium leading-relaxed">{question.questionText}</p>
-      {multiple && <p className="text-xs text-ink-500 dark:text-ink-300 mt-1">Puedes seleccionar varias opciones</p>}
+      {multiple && <p className="text-xs text-ink-500 dark:text-ink-300 mt-1">{t.quiz.selectMultiple}</p>}
       <div className="mt-4 space-y-2">
         {Object.entries(question.options).map(([key, label]) => {
           const active = selected.includes(key)
@@ -64,6 +66,7 @@ function ResultView({ result, questions, onRetry }: {
   questions: QuizQuestion[]
   onRetry: () => void
 }) {
+  const { t } = useLang()
   const byId = new Map(questions.map(q => [q.id, q]))
   return (
     <div className="space-y-5">
@@ -72,14 +75,14 @@ function ResultView({ result, questions, onRetry }: {
       }`}>
         <p className={`text-4xl font-bold tabular-nums ${result.passed ? 'text-success-600' : 'text-warning-600'}`}>{result.score}%</p>
         <p className="text-ink-900 dark:text-ink-50 font-semibold mt-1">
-          {result.passed ? '¡Aprobaste este módulo!' : `Necesitas ${result.passingScore}% para aprobar`}
+          {result.passed ? t.quiz.passed : t.quiz.needScore(result.passingScore)}
         </p>
         <p className="text-sm text-ink-500 dark:text-ink-300 mt-1">
-          {result.correctCount} de {result.totalQuestions} correctas · Intento #{result.attempts} · Mejor puntaje: {result.bestScore}%
+          {t.quiz.correctOf(result.correctCount, result.totalQuestions, result.attempts, result.bestScore)}
         </p>
         {result.pointsEarned > 0 && (
           <p className="inline-flex items-center gap-1.5 mt-3 text-sm font-medium text-primary-700">
-            <Award className="w-4 h-4" /> +{result.pointsEarned} puntos
+            <Award className="w-4 h-4" /> +{result.pointsEarned} {t.quiz.points}
           </p>
         )}
       </div>
@@ -100,11 +103,11 @@ function ResultView({ result, questions, onRetry }: {
                   <p className="text-ink-900 dark:text-ink-50 font-medium">{i + 1}. {q.questionText}</p>
                   {!f.correct && (
                     <p className="text-ink-500 dark:text-ink-300 mt-1">
-                      Tu respuesta: {f.selected.length ? f.selected.map(k => q.options[k]).join(', ') : 'sin responder'}
+                      {t.quiz.yourAnswer}: {f.selected.length ? f.selected.map(k => q.options[k]).join(', ') : t.quiz.unanswered}
                     </p>
                   )}
                   <p className="text-success-600 font-medium mt-1">
-                    Correcta: {f.correctAnswers.map(k => q.options[k]).join(', ')}
+                    {t.quiz.correctIs}: {f.correctAnswers.map(k => q.options[k]).join(', ')}
                   </p>
                   {f.explanation && <p className="text-ink-500 dark:text-ink-300 mt-2 leading-relaxed">{f.explanation}</p>}
                 </div>
@@ -115,13 +118,14 @@ function ResultView({ result, questions, onRetry }: {
       </div>
 
       <button type="button" onClick={onRetry} className="btn-secondary w-full inline-flex items-center justify-center gap-2">
-        <RotateCcw className="w-4 h-4" /> Intentar de nuevo
+        <RotateCcw className="w-4 h-4" /> {t.common.retry}
       </button>
     </div>
   )
 }
 
 export default function ModuleQuiz({ slug }: { slug: string }) {
+  const { t } = useLang()
   const queryClient = useQueryClient()
   const [phase, setPhase] = useState<Phase>('intro')
   const [current, setCurrent] = useState(0)
@@ -143,7 +147,7 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
       setPhase('result')
       queryClient.invalidateQueries({ queryKey: ['module-quiz', slug] })
       queryClient.invalidateQueries({ queryKey: ['quiz-progress'] })
-      if (data.firstTimePassed) toast.success(`¡Módulo aprobado! +${data.pointsEarned} puntos`)
+      if (data.firstTimePassed) toast.success(t.quiz.toastApproved(data.pointsEarned))
     },
     onError: (err) => toast.error(getErrorMessage(err)),
   })
@@ -187,12 +191,12 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
         <div>
           <h2 id="module-quiz-title" className="text-lg font-semibold text-ink-900 dark:text-ink-50 flex items-center gap-2">
             <ClipboardCheck className="w-5 h-5 text-primary-700" />
-            Evalúa lo que aprendiste
+            {t.quiz.evaluate}
           </h2>
           <p className="text-sm text-ink-500 dark:text-ink-300 mt-1">{quiz.title}</p>
         </div>
         {quiz.passed && phase !== 'result' && (
-          <span className="badge-safe flex-shrink-0">Aprobado · {quiz.bestScore}%</span>
+          <span className="badge-safe flex-shrink-0">{t.quiz.approved} · {quiz.bestScore}%</span>
         )}
       </div>
 
@@ -201,24 +205,24 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
           <div className="grid grid-cols-3 gap-3 text-center">
             <div className="rounded-lg bg-ink-50 dark:bg-dark-900 border divider p-3">
               <p className="text-xl font-bold text-ink-900 dark:text-ink-50">{questions.length}</p>
-              <p className="text-xs text-ink-500 dark:text-ink-300">preguntas</p>
+              <p className="text-xs text-ink-500 dark:text-ink-300">{t.quiz.questions}</p>
             </div>
             <div className="rounded-lg bg-ink-50 dark:bg-dark-900 border divider p-3">
               <p className="text-xl font-bold text-ink-900 dark:text-ink-50">{quiz.passingScore}%</p>
-              <p className="text-xs text-ink-500 dark:text-ink-300">para aprobar</p>
+              <p className="text-xs text-ink-500 dark:text-ink-300">{t.quiz.toPass}</p>
             </div>
             <div className="rounded-lg bg-ink-50 dark:bg-dark-900 border divider p-3">
               <p className="text-xl font-bold text-ink-900 dark:text-ink-50">{quiz.passed ? '✓' : `+${quiz.pointsReward}`}</p>
-              <p className="text-xs text-ink-500 dark:text-ink-300">{quiz.passed ? 'puntos obtenidos' : 'puntos'}</p>
+              <p className="text-xs text-ink-500 dark:text-ink-300">{quiz.passed ? t.quiz.earnedPoints : t.quiz.points}</p>
             </div>
           </div>
           {quiz.attempts > 0 && (
             <p className="text-sm text-ink-500 dark:text-ink-300">
-              Llevas {quiz.attempts} {quiz.attempts === 1 ? 'intento' : 'intentos'}. Tu mejor puntaje: {quiz.bestScore}%.
+              {t.quiz.attempts(quiz.attempts, quiz.bestScore)}
             </p>
           )}
           <button type="button" onClick={start} className="btn-primary w-full">
-            {quiz.attempts > 0 ? 'Volver a presentar el quiz' : 'Comenzar quiz'}
+            {quiz.attempts > 0 ? t.quiz.retry : t.quiz.start}
           </button>
         </div>
       )}
@@ -226,10 +230,10 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
       {phase === 'answering' && question && (
         <div className="space-y-5">
           <div className="flex items-center justify-between text-xs text-ink-500 dark:text-ink-300">
-            <span>Pregunta {current + 1} de {questions.length}</span>
+            <span>{t.quiz.questionOf(current + 1, questions.length)}</span>
             <span className={`flex items-center gap-1 tabular-nums ${remaining < 60 ? 'text-warning-600 font-semibold' : ''}`}>
               <Clock className="w-3.5 h-3.5" />
-              {remaining > 0 ? formatTime(remaining) : 'Tiempo sugerido agotado'}
+              {remaining > 0 ? formatTime(remaining) : t.quiz.timeUp}
             </span>
           </div>
           <div className="h-1.5 rounded-full bg-ink-100 dark:bg-dark-800 overflow-hidden">
@@ -249,11 +253,11 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
               disabled={current === 0}
               className="btn-ghost inline-flex items-center gap-1 disabled:opacity-40"
             >
-              <ChevronLeft className="w-4 h-4" /> Anterior
+              <ChevronLeft className="w-4 h-4" /> {t.quiz.prev}
             </button>
             {current < questions.length - 1 ? (
               <button type="button" onClick={() => setCurrent(c => c + 1)} className="btn-primary inline-flex items-center gap-1">
-                Siguiente <ChevronRight className="w-4 h-4" />
+                {t.quiz.next} <ChevronRight className="w-4 h-4" />
               </button>
             ) : (
               <button
@@ -261,15 +265,15 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
                 onClick={send}
                 disabled={submit.isPending || answeredCount < questions.length}
                 className="btn-primary disabled:opacity-50"
-                title={answeredCount < questions.length ? 'Responde todas las preguntas' : undefined}
+                title={answeredCount < questions.length ? t.quiz.answerAll : undefined}
               >
-                {submit.isPending ? 'Calificando...' : 'Enviar respuestas'}
+                {submit.isPending ? t.quiz.grading : t.quiz.send}
               </button>
             )}
           </div>
           {current === questions.length - 1 && answeredCount < questions.length && (
             <p className="text-xs text-warning-600 font-medium text-right">
-              Te faltan {questions.length - answeredCount} {questions.length - answeredCount === 1 ? 'pregunta' : 'preguntas'} por responder
+              {t.quiz.missing(questions.length - answeredCount)}
             </p>
           )}
         </div>

@@ -6,6 +6,21 @@
 
 export type QrKind = 'URL' | 'WIFI' | 'EMAIL' | 'PHONE' | 'SMS' | 'CONTACT' | 'LOCATION' | 'TEXT'
 
+export interface QrStrings {
+  network: string
+  unnamed: string
+  security: string
+  openValue: string
+  recipient: string
+  message: string
+  number: string
+  name: string
+  coords: string
+  openWifiWarning: string
+  shortNumberWarning: string
+  kinds: Record<QrKind, string>
+}
+
 export interface QrContent {
   kind: QrKind
   raw: string
@@ -63,7 +78,7 @@ function mecardField(raw: string, key: string): string | undefined {
   return match?.[1]?.replace(/\\(.)/g, '$1')
 }
 
-export function parseQrContent(raw: string): QrContent {
+export function parseQrContent(raw: string, dict: QrStrings): QrContent {
   const text = raw.trim()
   const upper = text.toUpperCase()
   const base: QrContent = { kind: 'TEXT', raw: text, urls: extractUrls(text), details: [], warnings: [] }
@@ -77,12 +92,10 @@ export function parseQrContent(raw: string): QrContent {
       kind: 'WIFI',
       urls: [],   // la clave WiFi nunca se envía a ningún servidor
       details: [
-        { label: 'Red', value: ssid || '(sin nombre)' },
-        { label: 'Seguridad', value: open ? 'Abierta (sin contraseña)' : security },
+        { label: dict.network, value: ssid || dict.unnamed },
+        { label: dict.security, value: open ? dict.openValue : security },
       ],
-      warnings: open
-        ? ['Es una red abierta: cualquiera puede ver tu tráfico. Evita ingresar contraseñas o datos bancarios en ella.']
-        : [],
+      warnings: open ? [dict.openWifiWarning] : [],
     }
   }
 
@@ -92,13 +105,13 @@ export function parseQrContent(raw: string): QrContent {
     const warnings: string[] = []
     // Números cortos de 4-6 dígitos suelen ser servicios con tarifa especial
     if (/^\d{4,6}$/.test(number.replace(/\D/g, ''))) {
-      warnings.push('El mensaje se envía a un número corto, que puede ser un servicio con cobro adicional.')
+      warnings.push(dict.shortNumberWarning)
     }
     return {
       ...base,
       kind: 'SMS',
       urls: extractUrls(message),
-      details: [{ label: 'Destinatario', value: number }, { label: 'Mensaje', value: message }],
+      details: [{ label: dict.recipient, value: number }, { label: dict.message, value: message }],
       warnings,
     }
   }
@@ -107,35 +120,25 @@ export function parseQrContent(raw: string): QrContent {
     const to = upper.startsWith('MAILTO:')
       ? decodeURIComponent(text.slice(7).split('?')[0])
       : mecardField(text, 'TO') ?? ''
-    return { ...base, kind: 'EMAIL', details: [{ label: 'Destinatario', value: to }] }
+    return { ...base, kind: 'EMAIL', details: [{ label: dict.recipient, value: to }] }
   }
 
   if (upper.startsWith('TEL:')) {
-    return { ...base, kind: 'PHONE', urls: [], details: [{ label: 'Número', value: text.slice(4) }] }
+    return { ...base, kind: 'PHONE', urls: [], details: [{ label: dict.number, value: text.slice(4) }] }
   }
 
   if (upper.startsWith('BEGIN:VCARD') || upper.startsWith('MECARD:')) {
     const name = upper.startsWith('MECARD:')
       ? mecardField(text, 'N')
       : text.match(/^FN:(.*)$/im)?.[1]
-    return { ...base, kind: 'CONTACT', details: name ? [{ label: 'Nombre', value: name.trim() }] : [] }
+    return { ...base, kind: 'CONTACT', details: name ? [{ label: dict.name, value: name.trim() }] : [] }
   }
 
   if (upper.startsWith('GEO:')) {
-    return { ...base, kind: 'LOCATION', urls: [], details: [{ label: 'Coordenadas', value: text.slice(4) }] }
+    return { ...base, kind: 'LOCATION', urls: [], details: [{ label: dict.coords, value: text.slice(4) }] }
   }
 
   if (base.urls.length > 0) return { ...base, kind: 'URL' }
   return base
 }
 
-export const QR_KIND_LABELS: Record<QrKind, string> = {
-  URL: 'Enlace',
-  WIFI: 'Red WiFi',
-  EMAIL: 'Correo electrónico',
-  PHONE: 'Llamada telefónica',
-  SMS: 'Mensaje SMS',
-  CONTACT: 'Contacto',
-  LOCATION: 'Ubicación',
-  TEXT: 'Texto',
-}

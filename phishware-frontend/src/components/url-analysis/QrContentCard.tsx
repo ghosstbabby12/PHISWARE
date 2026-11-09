@@ -1,5 +1,6 @@
 import { AlertTriangle, Mail, MapPin, MessageSquare, Phone, QrCode, Search, Type, User, Wifi, Link as LinkIcon } from 'lucide-react'
-import { QR_KIND_LABELS, QrContent, QrKind } from '@/utils/qrContent'
+import { QrContent, QrKind } from '@/utils/qrContent'
+import { useLang } from '@/i18n/LanguageContext'
 
 const KIND_ICONS: Record<QrKind, typeof QrCode> = {
   URL: LinkIcon, WIFI: Wifi, EMAIL: Mail, PHONE: Phone, SMS: MessageSquare,
@@ -15,6 +16,7 @@ interface Props {
 
 /** Contenido decodificado del QR. Nunca abre el destino: solo muestra y ofrece analizar. */
 export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnalyzing }: Props) {
+  const { t } = useLang()
   const Icon = KIND_ICONS[content.kind]
 
   return (
@@ -24,8 +26,8 @@ export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnaly
           <Icon className="w-5 h-5 text-primary-700" />
         </div>
         <div>
-          <p className="text-xs text-ink-500 dark:text-ink-300 font-medium">Contenido del código QR</p>
-          <p className="text-ink-900 dark:text-ink-50 font-semibold">{QR_KIND_LABELS[content.kind]}</p>
+          <p className="text-xs text-ink-500 dark:text-ink-300 font-medium">{t.qr.contentTitle}</p>
+          <p className="text-ink-900 dark:text-ink-50 font-semibold">{t.qr.kinds[content.kind]}</p>
         </div>
       </div>
 
@@ -54,11 +56,11 @@ export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnaly
 
       {content.urls.length === 0 ? (
         <p className="text-sm text-ink-500 dark:text-ink-300">
-          Este QR no contiene ningún enlace, así que no hay nada que analizar.
+          {t.qr.noLink}
         </p>
       ) : content.urls.length > 1 && (
         <div className="space-y-2">
-          <p className="text-sm text-ink-500 dark:text-ink-300">El QR contiene {content.urls.length} enlaces. Analiza cada uno sin abrirlos:</p>
+          <p className="text-sm text-ink-500 dark:text-ink-300">{t.qr.multiLinks(content.urls.length)}</p>
           {content.urls.map(url => (
             <div key={url} className="flex items-center gap-2 rounded-xl border divider px-3 py-2">
               <span className="flex-1 text-sm text-ink-900 dark:text-ink-50 font-mono truncate" title={url}>{url}</span>
@@ -69,7 +71,7 @@ export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnaly
                 className="btn-ghost text-xs inline-flex items-center gap-1 disabled:opacity-50 !text-primary-700"
               >
                 <Search className="w-3.5 h-3.5" />
-                {url === analyzedUrl ? 'Analizado' : 'Analizar'}
+                {url === analyzedUrl ? t.qr.analyzed : t.qr.analyze}
               </button>
             </div>
           ))}

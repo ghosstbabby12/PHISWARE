@@ -1,6 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import jsQR from 'jsqr'
 import { Camera, CameraOff, ImageUp, Loader2 } from 'lucide-react'
+import { useLang } from '@/i18n/LanguageContext'
+import type { Strings } from '@/i18n/translations'
 
 interface Props {
   onDecoded: (text: string) => void
@@ -21,16 +23,17 @@ function decodeCanvas(canvas: HTMLCanvasElement): string | null {
   return code?.data?.trim() ? code.data : null
 }
 
-function cameraErrorMessage(err: unknown): string {
+function cameraErrorMessage(t: Strings['qr'], err: unknown): string {
   const name = err instanceof DOMException ? err.name : ''
-  if (name === 'NotAllowedError') return 'Bloqueaste el acceso a la cámara. Actívalo en el candado de la barra de direcciones o sube una imagen del QR.'
-  if (name === 'NotFoundError' || name === 'OverconstrainedError') return 'No se encontró ninguna cámara en este dispositivo. Puedes subir una imagen del QR.'
-  if (name === 'NotReadableError') return 'La cámara está siendo usada por otra aplicación.'
-  if (!window.isSecureContext) return 'La cámara solo funciona en sitios HTTPS o en localhost.'
-  return 'No se pudo iniciar la cámara. Puedes subir una imagen del QR.'
+  if (name === 'NotAllowedError') return t.cameraDenied
+  if (name === 'NotFoundError' || name === 'OverconstrainedError') return t.cameraMissing
+  if (name === 'NotReadableError') return t.cameraBusy
+  if (!window.isSecureContext) return t.cameraInsecure
+  return t.cameraGeneric
 }
 
 export default function QrScanner({ onDecoded, disabled }: Props) {
+  const { t } = useLang()
   const videoRef = useRef<HTMLVideoElement>(null)
   const canvasRef = useRef<HTMLCanvasElement>(null)
   const streamRef = useRef<MediaStream | null>(null)
@@ -57,7 +60,7 @@ export default function QrScanner({ onDecoded, disabled }: Props) {
     setMessage(null)
     if (!navigator.mediaDevices?.getUserMedia) {
       setMode('error')
-      setMessage(cameraErrorMessage(null))
+      setMessage(cameraErrorMessage(t.qr, null))
       return
     }
     setStarting(true)
@@ -89,7 +92,7 @@ export default function QrScanner({ onDecoded, disabled }: Props) {
     } catch (err) {
       stopCamera()
       setMode('error')
-      setMessage(cameraErrorMessage(err))
+      setMessage(cameraErrorMessage(t.qr, err))
     } finally {
       setStarting(false)
     }
@@ -102,7 +105,7 @@ export default function QrScanner({ onDecoded, disabled }: Props) {
 
   async function decodeFile(file: File) {
     if (!file.type.startsWith('image/')) {
-      setMessage('El archivo debe ser una imagen (PNG, JPG, WEBP...).')
+      setMessage(t.qr.badFileType)
       return
     }
     setReadingImage(true)
@@ -121,10 +124,10 @@ export default function QrScanner({ onDecoded, disabled }: Props) {
       if (text) {
         onDecoded(text)
       } else {
-        setMessage('No se encontró un código QR en la imagen. Prueba con una foto más nítida y de frente.')
+        setMessage(t.qr.noQrInImage)
       }
     } catch {
-      setMessage('No se pudo leer la imagen.')
+      setMessage(t.qr.unreadableImage)
     } finally {
       URL.revokeObjectURL(url)
       setReadingImage(false)

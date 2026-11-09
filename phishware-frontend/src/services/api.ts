@@ -1,4 +1,5 @@
 import axios, { AxiosError, InternalAxiosRequestConfig } from 'axios'
+import { STRINGS, type Lang } from '@/i18n/translations'
 
 const BASE_URL = import.meta.env.VITE_API_URL ?? '/api'
 
@@ -34,6 +35,15 @@ api.interceptors.response.use(
   }
 )
 
+function currentLang(): Lang {
+  try {
+    const stored = localStorage.getItem('phishware_lang')
+    return stored === 'en' ? 'en' : 'es'
+  } catch {
+    return 'es'
+  }
+}
+
 export function getFieldErrors(error: unknown): Record<string, string> {
   if (axios.isAxiosError(error)) {
     const data = error.response?.data as { fieldErrors?: Record<string, string> } | undefined
@@ -44,11 +54,15 @@ export function getFieldErrors(error: unknown): Record<string, string> {
 
 export function getErrorMessage(error: unknown): string {
   if (axios.isAxiosError(error)) {
-    const data = error.response?.data as { message?: string; fieldErrors?: Record<string, string>; errors?: string[] } | undefined
+    const data = error.response?.data as { code?: string; message?: string; fieldErrors?: Record<string, string>; errors?: string[] } | undefined
+    const t = STRINGS[currentLang()]
+    if (data?.code && data.code in t.errors) {
+      return t.errors[data.code as keyof typeof t.errors]
+    }
     if (data?.fieldErrors) {
       return Object.values(data.fieldErrors).join(', ')
     }
     return data?.message ?? error.message
   }
-  return 'Ha ocurrido un error inesperado'
+  return STRINGS[currentLang()].errors.default
 }

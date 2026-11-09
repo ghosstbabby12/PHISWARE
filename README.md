@@ -1,6 +1,6 @@
 # PHISHWARE — Sistema de Detección y Prevención de Phishing
 
-> Proyecto Académico-Profesional | Arquitectura Full Stack | Java 21 · Spring Boot · React · Kotlin
+> Proyecto Académico-Profesional | Arquitectura Full Stack | Java 17 · Spring Boot · React · Kotlin
 
 ---
 
@@ -465,7 +465,19 @@ GRANT ALL PRIVILEGES ON DATABASE phishware_db TO phishware;
 
 Las migraciones Flyway se ejecutan automáticamente al iniciar el backend.
 
-### 2. Backend
+### Opción A: Docker Compose (recomendado)
+
+```bash
+cp phishware-backend/.env.example .env   # y rellena DB_PASSWORD y JWT_SECRET
+docker compose up --build
+# Frontend → http://localhost:3000 (sirve /api/ al backend)
+# Backend  → http://localhost:8080/api
+# Swagger  → http://localhost:8080/api/swagger-ui.html
+```
+
+### Opción B: manual
+
+#### 2. Backend
 
 ```bash
 cd phishware-backend
@@ -510,8 +522,27 @@ npm run build
 # Abrir en Android Studio
 # File > Open > phishware-android/
 
-# Para emulador: BASE_URL ya apunta a 10.0.2.2:8080 (host del emulador)
-# Para dispositivo físico: cambiar en build.gradle DEBUG buildConfigField
+# Flavor full (SMS + compartir + QR) o play (sin SMS, apto para Play Store)
+./gradlew assembleFullDebug        # con SMS
+./gradlew assemblePlayDebug        # sin SMS
+./gradlew testFullDebugUnitTest testPlayDebugUnitTest
+./gradlew connectedPlayDebugAndroidTest   # requiere emulador
+```
+
+### 5. Extensión Chrome/Edge (MV3, sin compilar)
+
+```bash
+# chrome://extensions -> modo desarrollador -> "Cargar descomprimida" -> phishware-extension/
+# Opciones de la extensión: URL base del backend (por defecto http://localhost:8080/api)
+# ES/EN automático según el idioma del navegador; tema claro/oscuro según el sistema.
+```
+
+### 6. Frontend: i18n y tests
+
+```bash
+cd phishware-frontend
+npm run i18n:check   # falla si falta una clave en es o en
+npx vitest run       # 17 tests (jsdom + Testing Library)
 ```
 
 ---
@@ -608,13 +639,21 @@ cd phishware-android
 - [x] Swagger/OpenAPI documentado
 - [x] App Android con MVVM + Hilt
 
+### v1.1 (rama `feature/v1.1-improvements`)
+- [x] Refresh tokens con rotación (`POST /auth/refresh`)
+- [x] VirusTotal con polling hasta el veredicto
+- [x] Reportes comunitarios CONFIRMED como sexta fuente (`GET /public/blocklist`)
+- [x] Verificación de filtraciones con k-anonimato (`POST /security/password-check`)
+- [x] Principio de persuasión por indicador + 7 microlecciones + sello oficial + favicon
+- [x] Web: tema claro/oscuro, ES/EN completo (339+ claves), insignias, racha, admin con gráficas, 17 tests
+- [x] Extensión MV3: heurística offline, fail-safe, blocklist cada 30 min, backend configurable, ES/EN
+- [x] Android: analizador de texto on-device, DayNight, EN por defecto, flavor `play` sin SMS
+- [x] CI (4 jobs), Docker multi-stage + compose, scripts de evaluación con dataset real y Wilcoxon
+
 ### Futuras mejoras
-- [ ] Rate limiting por usuario
+- [ ] Rate limiting distribuido (Redis + Bucket4J)
 - [ ] Notificaciones push (Android)
-- [ ] Extensión de navegador Chrome/Firefox
-- [ ] Detección heurística local (ML)
-- [ ] Dashboard admin con gráficas globales
-- [ ] Sistema de reportes de amenazas comunitario
+- [ ] ML explicable con SHAP como fase 1.5
 
 ---
 
@@ -622,7 +661,7 @@ cd phishware-android
 
 **PHISHWARE** — Proyecto Académico-Profesional  
 Arquitectura: Clean Architecture · MVC · SOLID  
-Desarrollado con Java 21, Spring Boot 3, React 18, Kotlin
+Desarrollado con Java 17, Spring Boot 3, React 18, Kotlin
 
 APIs utilizadas:
 - Google Safe Browsing API — Google LLC

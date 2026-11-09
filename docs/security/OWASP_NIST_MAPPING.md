@@ -1,8 +1,8 @@
 # PHISHWARE — Mapeo OWASP Top 10 × NIST CSF × Controles Implementados
 
-**Versión:** 1.0  
-**Estándar OWASP:** Top 10:2021  
-**Estándar NIST:** Cybersecurity Framework v1.1 + SP 800-30 Rev.1 + SP 800-63B  
+**Versión:** 1.1 (rama `feature/v1.1-improvements`)
+**Estándar OWASP:** Top 10:2025 (migración desde Top 10:2021)
+**Estándar NIST:** Cybersecurity Framework 2.0 (6 funciones, incluye Govern) + SP 800-30 Rev.1 + SP 800-63B
 
 ---
 
@@ -14,18 +14,20 @@
 
 ## Tabla de Mapeo Completa
 
-| OWASP Top 10:2021 | NIST CSF Function | NIST Control | Control en PHISHWARE | Clase Java |
+| OWASP Top 10:2025 | NIST CSF 2.0 Function | NIST Control | Control en PHISHWARE | Clase Java |
 |---|---|---|---|---|
 | A01 — Broken Access Control | PR (Protect) | PR.AC-3, PR.AC-4 | RBAC con `@PreAuthorize`, validación de propietario en recursos | `SecurityConfig`, `OwaspComplianceValidator#validateOwnership()` |
-| A02 — Cryptographic Failures | PR (Protect) | PR.DS-1, PR.DS-2 | BCrypt (cost=12) para contraseñas, HTTPS obligatorio, JWT HS256 | `SecurityConfig`, `AuthService` |
+| A02 — Cryptographic Failures | PR (Protect) | PR.DS-1, PR.DS-2 | BCrypt (cost=12) para contraseñas, HTTPS, JWT HS256 + refresh rotation | `SecurityConfig`, `AuthService`, `JwtTokenProvider` |
 | A03 — Injection | DE (Detect) | SI-10, SI-3 | Sanitización HTML, validación de URL, bloqueo de SQL/Command injection | `InputSanitizerService`, `OwaspComplianceValidator#validateUrlForInjection()` |
-| A04 — Insecure Design | PR (Protect) | SC-5, DE.CM-7 | Rate limiting por IP (30 req/min) en endpoints críticos | `RateLimitingConfig.RateLimitFilter` |
-| A05 — Security Misconfiguration | PR (Protect) | CM-6, CM-7 | Cabeceras HTTP de seguridad (CSP, HSTS, X-Frame-Options) | `SecurityHeadersConfig` |
-| A06 — Vulnerable Components | PR (Protect) | SA-10, SI-2 | Spring Boot 3.2.5 LTS, dependencias con versiones explícitas, Flyway migrations | `pom.xml` |
-| A07 — Auth Failures | ID (Identify) + PR | IA-5, IA-8 | JWT stateless, BCrypt, validación NIST SP 800-63B en contraseñas | `JwtTokenProvider`, `OwaspComplianceValidator#validatePasswordStrength()` |
-| A08 — Data Integrity Failures | PR (Protect) | SI-7, CM-3 | Flyway versioned migrations, validación de input antes de persistir | `V1__create_schema.sql`, `V2__insert_initial_data.sql` |
+| A04 — Insecure Design | PR (Protect) | SC-5, DE.CM-7 | Rate limiting por IP (120 req/min) en endpoints críticos, `X-Forwarded-For` solo desde trusted proxies | `RateLimitingConfig.RateLimitFilter` |
+| A05 — Security Misconfiguration | PR (Protect) | CM-6, CM-7 | Cabeceras HTTP de seguridad (CSP, HSTS, X-Frame-Options), sin valores por defecto inseguros | `SecurityHeadersConfig` |
+| A06 — Vulnerable Components | PR (Protect) | SA-10, SI-2 | Spring Boot 3.5 / Java 17 LTS, dependencias con versiones explícitas, Flyway V1–V7 | `pom.xml` |
+| A07 — Auth Failures | ID (Identify) + PR | IA-5, IA-8 | JWT stateless + refresh rotation, BCrypt, NIST SP 800-63B, sin enumeración de usuarios | `JwtTokenProvider`, `AuthController#/auth/refresh`, `GlobalExceptionHandler` |
+| A08 — Data Integrity Failures | PR (Protect) | SI-7, CM-3 | Flyway versioned migrations, validación de input antes de persistir | `V1__create_schema.sql`, `V7__persuasion_micro_lessons.sql` |
 | A09 — Logging Failures | DE (Detect) | AU-2, AU-3, AU-12 | `AuditLog` entity, logging de eventos de seguridad con nivel WARN | `AuditLogService`, `OwaspComplianceValidator#logSecurityEvent()` |
-| A10 — SSRF | PR (Protect) | SC-7, AC-3 | Bloqueo de RFC 1918, loopback, cloud metadata antes de llamar APIs | `OwaspComplianceValidator#validateAgainstSsrf()` |
+| A10 — SSRF | PR (Protect) | SC-7, AC-3 | Resolución DNS + bloqueo de non-public (loopback, RFC 1918, CGNAT, ULA, `inet_aton` legado) antes de llamar APIs | `SafeNetwork`, `OwaspComplianceValidator#validateAgainstSsrf()`, `SafePageFetcher` |
+| — (controles nuevos v1.1) | DE (Detect) | DE.CM-2 | VT con polling del veredicto; comunidad CONFIRMED como 6.ª fuente; k-anonimato HIBP | `VirusTotalService`, `CommunityReportService`, `PasswordBreachService` |
+| — (NIST CSF 2.0) | GV (Govern) | GV.OC-1, GV.SC-1 | Roles y alcance documentados; gestión de riesgo del proyecto en PROGRESS.md | `docs/`, `PROGRESS.md` |
 
 ---
 
@@ -46,7 +48,7 @@
 
 | Sub-categoría NIST | Implementación PHISHWARE |
 |---|---|
-| PR.AC-1: Gestión de identidades | JWT con expiración 24h, refresh via re-login |
+| PR.AC-1: Gestión de identidades | JWT con expiración 24h + refresh rotation (7d), refresh token nunca válido como Bearer |
 | PR.AC-3: Gestión de acceso remoto | CORS configurado con orígenes explícitos, HTTPS |
 | PR.AC-4: Permisos mínimos | `@PreAuthorize("hasRole('ADMIN')")` en endpoints admin |
 | PR.AC-7: Autenticación de usuarios | BCrypt cost=12, contraseñas validadas contra NIST SP 800-63B |
@@ -61,8 +63,8 @@
 | Sub-categoría NIST | Implementación PHISHWARE |
 |---|---|
 | DE.AE-1: Línea base de red establecida | Registro de todas las URLs analizadas con metadata |
-| DE.AE-2: Análisis de eventos detectados | Score combinado: GSB (60%) + VT (30%) + Heurística (10%) |
-| DE.AE-3: Correlación de datos | `UrlAnalysis` combina resultados de múltiples fuentes |
+| DE.AE-2: Análisis de eventos detectados | Score noisy-OR: heurística×0.75 + contenido×0.85 + edad×0.70 + comunidad×0.9 + GSB/VT |
+| DE.AE-3: Correlación de datos | `UrlAnalysis` combina 6 fuentes; `scoreBreakdown` por fuente |
 | DE.CM-1: Monitoreo de red | Rate limit logging de IPs que exceden el límite |
 | DE.CM-3: Monitoreo de personal | `AuditLog` tabla registra acciones críticas |
 | DE.CM-7: Monitoreo no autorizado | Rate limiting detecta comportamiento anómalo (DoS, scraping) |
@@ -112,29 +114,25 @@
                    ▼
  ┌─────────────────────────────────────────────┐
  │  OWASP A10: validateAgainstSsrf()           │  ← Bloquear SSRF
- │  • RFC 1918 ranges (10.x, 192.168.x)        │
- │  • Cloud metadata (169.254.169.254)         │
- │  • localhost, ::1                           │
+ │  • Resolucion DNS + rechazo loopback, RFC1918, CGNAT, ULA        │
+ │  • inet_aton legado + fail-closed si no resuelve         │
+ │  • Cloud metadata (169.254.169.254)                           │
  └─────────────────┬───────────────────────────┘
                    │ URL segura para consultar
                    ▼
  ┌─────────────────────────────────────────────┐
  │  NIST ID/DE: NistThreatClassifier           │  ← Análisis heurístico local
- │  • Typosquatting de marcas (score: 30)      │
- │  • Subdominio sospechoso (score: 20)        │
- │  • TLD alto riesgo (score: 15)              │
- │  • Palabras clave phishing (score: 10)      │
- │  • URL excesivamente larga (score: 5)       │
- │  • IP como dominio (score: 35)              │
- │  • Subdominios excesivos (score: 15)        │
- └─────────────────┬───────────────────────────┘
+ │  • Typosquatting+marcas CO (40) + homoglifos  │
+ │  • 18 reglas lexicas + 18 de contenido       │
+ │  • favicon + edad RDAP + comunidad CONFIRMED  │
+     └─────────────────┬───────────────────────────┘
                    │ HeuristicResult
           ┌────────┴────────┐
           ▼                 ▼
  ┌─────────────────┐ ┌─────────────────────────┐
  │ NIST DE:        │ │ NIST DE:                │
  │ Google Safe     │ │ VirusTotal API          │
- │ Browsing API    │ │ (70+ antivirus engines) │
+ │ Browsing API    │ │ (70+ motores + polling) │
  └────────┬────────┘ └──────────┬──────────────┘
           │   SafeBrowsingResult │ VirusTotalResult
           └──────────┬───────────┘
@@ -186,13 +184,18 @@
 ## Score de Riesgo — Pesos y Umbrales
 
 ```
-Score = GSB_contribution(0-60) + VT_contribution(0-30) + Heuristic_contribution(0-10)
+Score = 100 × (1 − Π_fuentes (1 − score_fuente × confianza_fuente))
 
-Donde:
-  GSB_contribution  = 60.0 si GSB detecta amenaza, 0 si es seguro
-  VT_contribution   = min(30, maliciousPercentage * 0.3)  si MALICIOUS
-                    = min(15, suspiciousCount * 2)         si SUSPICIOUS
-  Heuristic_contrib = heuristicScore * 0.10
+Donde (confianzas en UrlAnalysisService.sourceConfidences()):
+  urlHeuristic = heuristicScore/100 × 0.75
+  pageContent  = contentScore/100 × 0.85
+  domainAge    = ageScore/100 × 0.70
+  communityConfirmed = 0.9 si hay reportes CONFIRMED del dominio
+  googleSafeBrowsing = 0.95 si GSB marca peligro, 0.0 si seguro
+  virusTotal   = min(0.95, 0.5 + malicious%/100) si MALICIOUS
+               = min(0.4, suspicious × 0.08) si SUSPICIOUS
+
+isPhishing = GSB/VT malicioso o score >= 70.
 
 Umbrales:
   score >= 50  →  RiskLevel.DANGEROUS
@@ -206,8 +209,9 @@ Umbrales:
 
 | Documento | Organización | Relevancia |
 |---|---|---|
-| [OWASP Top 10:2021](https://owasp.org/Top10/) | OWASP | Marco de vulnerabilidades web |
-| [NIST CSF v1.1](https://www.nist.gov/cyberframework) | NIST | Framework de gestión de riesgo |
+| [OWASP Top 10:2025](https://top10.owasp.org/2025/es/) | OWASP | Marco de vulnerabilidades web |
+| [OWASP ASVS 5.0](https://github.com/asvs) | OWASP | Verificación de seguridad de aplicaciones |
+| [NIST CSF 2.0](https://doi.org/10.6028/NIST.CSWP.29) | NIST | Framework de gestión de riesgo (6 funciones, incluye Govern) |
 | [NIST SP 800-30 Rev.1](https://csrc.nist.gov/publications/detail/sp/800-30/rev-1/final) | NIST | Guía de evaluación de riesgos |
 | [NIST SP 800-63B](https://pages.nist.gov/800-63-3/sp800-63b.html) | NIST | Requisitos de contraseñas e identidad digital |
 | [NIST SP 800-53 Rev.5](https://csrc.nist.gov/publications/detail/sp/800-53/rev-5/final) | NIST | Controles de seguridad y privacidad |

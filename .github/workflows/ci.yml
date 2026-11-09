@@ -1,0 +1,92 @@
+name: CI v1.1
+
+on:
+  push:
+    branches: [feature/v1.1-improvements, main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16-alpine
+        env:
+          POSTGRES_DB: phishware_db
+          POSTGRES_USER: phishware
+          POSTGRES_PASSWORD: postgres
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd="pg_isready -U phishware -d phishware_db"
+          --health-interval=5s --health-timeout=5s --health-retries=10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+      - name: Verify backend
+        working-directory: phishware-backend
+        env:
+          DB_USERNAME: phishware
+          DB_PASSWORD: postgres
+          JWT_SECRET: ci-only-test-secret-that-is-long-enough-for-hs256-ok
+        run: mvn -q clean verify
+
+  frontend:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: phishware-frontend/package-lock.json
+      - run: npm ci
+        working-directory: phishware-frontend
+      - run: npm run lint
+        working-directory: phishware-frontend
+      - run: npm run i18n:check
+        working-directory: phishware-frontend
+      - run: npx vitest run
+        working-directory: phishware-frontend
+      - run: npm run build
+        working-directory: phishware-frontend
+
+  android:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: gradle
+      - uses: android-actions/setup-android@v3
+      - name: Assemble and unit-test both flavors
+        working-directory: phishware-android
+        run: ./gradlew assembleFullDebug assemblePlayDebug testFullDebugUnitTest testPlayDebugUnitTest
+      - name: Compile instrumented tests
+        working-directory: phishware-android
+        run: ./gradlew assembleFullDebugAndroidTest assemblePlayDebugAndroidTest
+
+  extension:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Validate extension JS and JSON
+        working-directory: phishware-extension
+        run: |
+          node --check background.js
+          node --check heuristics.js
+          node --check content.js
+          node --check popup.js
+          node --check options.js
+          node -e "for (const f of ['manifest.json','_locales/es/messages.json','_locales/en/messages.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"
+          echo "extension OK"

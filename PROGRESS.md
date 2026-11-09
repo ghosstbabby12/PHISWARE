@@ -3,10 +3,10 @@
 Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, push cada 2-3 commits, verificar antes de cada commit (backend `mvn -q clean verify`; frontend `npm run lint && npm run build && npm run test`; android `./gradlew assembleDebug testDebugUnitTest`; extensión JSON válido). No push a main, no force-push.
 
 ## FASE 1 – Seguridad y limpieza
-- [ ] 1. `chore(security)`: sanear secretos (.env.example, docker-compose, application.yml, README) — _HISTORIAL: git todavía contiene las claves viejas; hay que rotarlas a mano._
-- [ ] 2. `fix(auth)`: anti-enumeración de usuarios + test
-- [ ] 3. `fix(security)`: SSRF con resolución DNS + tests
-- [ ] 4. `fix(rate-limit)`: X-Forwarded-For solo desde trusted-proxies + test
+- [x] 1. `chore(security)` (`7433404`): sanear secretos (.env.example, docker-compose, application.yml, README) — _HISTORIAL: git todavía contiene las claves viejas (`.env.example` con GSB/VT keys, `DB_PASSWORD`, `JWT_SECRET`); hay que rotarlas a mano en Google Cloud, VirusTotal y donde aplique._
+- [x] 2. `fix(auth)` (`7802472`): anti-enumeración de usuarios + test
+- [x] 3. `fix(security)` (`53bc539`): SSRF con resolución DNS + inet_aton legado + tests
+- [x] 4. `fix(rate-limit)` (`bf64089`): X-Forwarded-For solo desde trusted-proxies + test
 
 ## FASE 2 – Bugs del motor (5-8)
 - [ ] 5. `fix(virustotal)`: polling de GET /analyses/{id}

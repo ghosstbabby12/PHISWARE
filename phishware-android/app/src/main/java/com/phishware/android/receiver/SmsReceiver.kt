@@ -10,6 +10,7 @@ import com.phishware.android.data.local.GuardPreferences
 import com.phishware.android.data.local.SessionManager
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.notifications.NotificationHelper
+import com.phishware.android.security.MessageTextAnalyzer
 import com.phishware.android.security.UrlExtractor
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.CoroutineScope
@@ -70,15 +71,23 @@ class SmsReceiver : BroadcastReceiver() {
                             )
                         }
                     }.onFailure {
-                        // Sin backend: análisis local para no perder el SMS (Ley 1581: solo URL)
-                        if (notifOn && looksPhishyLocal(url)) {
+                        // Sin backend: análisis local del texto completo (nunca sale del dispositivo)
+                        val textRisk = MessageTextAnalyzer.analyze(body)
+                        if (notifOn && textRisk.isThreat) {
                             val ctx = context.applicationContext
+                            val tip = buildString {
+                                append(ctx.getString(com.phishware.android.R.string.notif_offline_tip))
+                                if (textRisk.principles.isNotEmpty()) {
+                                    append(" · ")
+                                    append(textRisk.principles.joinToString("/"))
+                                }
+                            }
                             notifications.showThreat(
                                 url = url,
                                 domain = url.substringAfter("://").substringBefore("/"),
-                                riskLevel = "SUSPICIOUS",
-                                score = 55.0,
-                                firstTip = ctx.getString(com.phishware.android.R.string.notif_offline_tip)
+                                riskLevel = textRisk.level,
+                                score = textRisk.score,
+                                firstTip = tip
                             )
                         }
                     }
@@ -86,11 +95,5 @@ class SmsReceiver : BroadcastReceiver() {
             } catch (_: Exception) {
             } finally { pending.finish() }
         }
-    }
-
-    private fun looksPhishyLocal(url: String): Boolean {
-        val u = url.lowercase()
-        val keywords = listOf("verific", "login", "banco", "nequi", "davi", "suspend", "bloque", "urgente", "premio", "gratis", "bit.ly", "tinyurl", ".tk", ".ml", ".ga", ".cf", ".sbs", ".top", ".xyz")
-        return keywords.any { u.contains(it) } || u.count { it == '.' } >= 3 || u.count { it == '-' } >= 3
     }
 }

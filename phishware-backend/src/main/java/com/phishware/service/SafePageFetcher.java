@@ -1,5 +1,6 @@
 package com.phishware.service;
 
+import com.phishware.security.SafeNetwork;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
@@ -144,29 +145,10 @@ public class SafePageFetcher {
             throw new SecurityException("Puerto no permitido: " + uri.getPort());
         }
         for (InetAddress address : InetAddress.getAllByName(uri.getHost())) {
-            if (isNonPublic(address)) {
+            if (SafeNetwork.isNonPublic(address)) {
                 throw new SecurityException("El destino resuelve a una IP interna: " + address.getHostAddress());
             }
         }
-    }
-
-    static boolean isNonPublic(InetAddress a) {
-        if (a.isLoopbackAddress() || a.isAnyLocalAddress() || a.isLinkLocalAddress()
-                || a.isSiteLocalAddress() || a.isMulticastAddress()) {
-            return true;
-        }
-        byte[] b = a.getAddress();
-        if (a instanceof Inet4Address) {
-            int b0 = b[0] & 0xFF, b1 = b[1] & 0xFF;
-            return b0 == 0                                  // 0.0.0.0/8
-                || (b0 == 100 && (b1 & 0xC0) == 64)         // 100.64.0.0/10 CGNAT
-                || (b0 == 192 && b1 == 0 && (b[2] & 0xFF) == 0) // 192.0.0.0/24
-                || b0 >= 240;                               // reservado
-        }
-        if (a instanceof Inet6Address) {
-            return (b[0] & 0xFE) == 0xFC;                   // fc00::/7 ULA
-        }
-        return false;
     }
 
     // ── Tipos de resultado ────────────────────────────────────────────────────

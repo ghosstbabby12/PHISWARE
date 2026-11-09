@@ -150,6 +150,10 @@ public class OwaspComplianceValidator {
                 );
             }
         }
+
+        // DNS resolution check: blocks encoded loopback forms (decimal, hex,
+        // octal, short forms, IPv6) that substring matching cannot catch
+        SafeNetwork.assertPublicHost(domain);
     }
 
     // ── A09: Security Logging ─────────────────────────────────────────────────

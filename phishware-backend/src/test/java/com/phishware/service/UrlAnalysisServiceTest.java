@@ -5,6 +5,7 @@ import com.phishware.dto.response.UrlAnalysisResponse;
 import com.phishware.entity.User;
 import com.phishware.entity.enums.RiskLevel;
 import com.phishware.repository.AlertRepository;
+import com.phishware.repository.CommunityReportRepository;
 import com.phishware.repository.UrlAnalysisRepository;
 import com.phishware.repository.UserRepository;
 import com.phishware.dto.response.OfficialSeal;
@@ -45,6 +46,7 @@ class UrlAnalysisServiceTest {
     @Mock private NistThreatClassifier nistClassifier;
     @Mock private OwaspComplianceValidator owaspValidator;
     @Mock private OfficialSealService officialSealService;
+    @Mock private CommunityReportRepository communityReportRepository;
 
     @InjectMocks
     private UrlAnalysisService urlAnalysisService;
@@ -80,6 +82,8 @@ class UrlAnalysisServiceTest {
             .thenReturn(DomainAgeService.DomainAgeResult.unavailable());
         lenient().when(officialSealService.check(any()))
             .thenReturn(OfficialSeal.none());
+        lenient().when(communityReportRepository.findTop500ByStatusOrderByReviewedAtDesc(any()))
+            .thenReturn(List.of());
 
         lenient().when(nistClassifier.classify(any(), any()))
             .thenReturn(new NistThreatClassifier.HeuristicResult(
@@ -200,5 +204,34 @@ class UrlAnalysisServiceTest {
         assertThat(response.getRiskLevel()).isEqualTo(RiskLevel.DANGEROUS);
         assertThat(response.getThreats()).anyMatch(t -> t.getSource().equals("CONTENT_SCRAPING"));
         assertThat(response.getScoreBreakdown()).containsKeys("urlHeuristic", "pageContent");
+    }
+
+    @Test
+    @DisplayName("Debe sumar la fuente comunitaria cuando hay reportes CONFIRMED del dominio")
+    void analyzeUrl_WhenCommunityConfirmed_ShouldIncludeCommunitySource() {
+        UrlAnalysisRequest request = new UrlAnalysisRequest();
+        request.setUrl("https://soporte-nequi-falso.tk/acceso");
+
+        com.phishware.entity.CommunityReport confirmed =
+            com.phishware.entity.CommunityReport.builder()
+                .reportedUrl("https://soporte-nequi-falso.tk/acceso")
+                .reportType("PHISHING")
+                .status("CONFIRMED")
+                .build();
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(safeBrowsingService.checkUrl(any())).thenReturn(GoogleSafeBrowsingService.SafeBrowsingResult.safe());
+        when(virusTotalService.analyzeUrl(any())).thenReturn(VirusTotalService.VirusTotalResult.safe(0, 70));
+        when(nistClassifier.classify(any(), any())).thenReturn(new NistThreatClassifier.HeuristicResult(
+            RiskLevel.SAFE, BigDecimal.ZERO, List.of(), List.of()));
+        when(communityReportRepository.findTop500ByStatusOrderByReviewedAtDesc("CONFIRMED"))
+            .thenReturn(List.of(confirmed));
+        when(analysisRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        UrlAnalysisResponse response = urlAnalysisService.analyzeUrl(request, 1L);
+
+        assertThat(response.getScoreBreakdown()).containsKey("communityConfirmed");
+        assertThat(response.getThreats()).anyMatch(t -> t.getSource().equals("COMMUNITY"));
+        assertThat(response.isPhishing()).isTrue();
     }
 }

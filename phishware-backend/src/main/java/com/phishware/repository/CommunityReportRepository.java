@@ -17,6 +17,8 @@ public interface CommunityReportRepository extends JpaRepository<CommunityReport
 
     long countByStatus(String status);
 
+    java.util.List<CommunityReport> findTop500ByStatusOrderByReviewedAtDesc(String status);
+
     @Query("SELECT cr.reportType, COUNT(cr) FROM CommunityReport cr GROUP BY cr.reportType ORDER BY COUNT(cr) DESC")
     java.util.List<Object[]> countByReportType();
 }

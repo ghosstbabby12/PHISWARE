@@ -4,6 +4,7 @@ import com.phishware.dto.request.UrlAnalysisRequest;
 import com.phishware.dto.response.ThreatResponse;
 import com.phishware.dto.response.UrlAnalysisResponse;
 import com.phishware.entity.Alert;
+import com.phishware.entity.CommunityReport;
 import com.phishware.entity.Threat;
 import com.phishware.entity.UrlAnalysis;
 import com.phishware.entity.User;
@@ -13,8 +14,10 @@ import com.phishware.entity.enums.Severity;
 import com.phishware.exception.ResourceNotFoundException;
 import com.phishware.exception.UrlValidationException;
 import com.phishware.repository.AlertRepository;
+import com.phishware.repository.CommunityReportRepository;
 import com.phishware.repository.UrlAnalysisRepository;
 import com.phishware.repository.UserRepository;
+import com.phishware.security.DomainUtils;
 import com.phishware.security.IndicatorEducationCatalog;
 import com.phishware.security.InputSanitizerService;
 import com.phishware.security.NistThreatClassifier;
@@ -52,6 +55,7 @@ public class UrlAnalysisService {
     public static final double URL_HEURISTIC_CONFIDENCE = 0.75;
     public static final double CONTENT_CONFIDENCE       = 0.85;
     public static final double DOMAIN_AGE_CONFIDENCE    = 0.70;
+    public static final double COMMUNITY_CONFIDENCE     = 0.90;
     public static final double PHISHING_THRESHOLD       = 70.0;
     public static final double DANGEROUS_THRESHOLD      = 50.0;
     public static final double SUSPICIOUS_THRESHOLD     = 20.0;
@@ -63,12 +67,14 @@ public class UrlAnalysisService {
         confidences.put("urlHeuristic", URL_HEURISTIC_CONFIDENCE);
         confidences.put("pageContent", CONTENT_CONFIDENCE);
         confidences.put("domainAge", DOMAIN_AGE_CONFIDENCE);
+        confidences.put("communityConfirmed", COMMUNITY_CONFIDENCE);
         return confidences;
     }
 
     private final UrlAnalysisRepository analysisRepository;
     private final UserRepository         userRepository;
     private final AlertRepository         alertRepository;
+    private final CommunityReportRepository communityReportRepository;
     private final GoogleSafeBrowsingService safeBrowsingService;
     private final VirusTotalService         virusTotalService;
     private final WebContentAnalyzer        contentAnalyzer;
@@ -125,6 +131,9 @@ public class UrlAnalysisService {
         CompletableFuture<DomainAgeService.DomainAgeResult> ageFuture = async(
             () -> domainAgeService.check(domain), DomainAgeService.DomainAgeResult.unavailable(), 8);
 
+        // Fuente comunitaria: reportes CONFIRMED por la comunidad (base de datos local)
+        CommunityVerdict community = checkCommunityReports(domain);
+
         CompletableFuture.allOf(gsbFuture, vtFuture, contentFuture, ageFuture).join();
 
         GoogleSafeBrowsingService.SafeBrowsingResult gsbResult = gsbFuture.getNow(
@@ -137,7 +146,7 @@ public class UrlAnalysisService {
             DomainAgeService.DomainAgeResult.unavailable());
 
         // NIST ID.RA-3: Calcular riesgo combinado (APIs + heurística + contenido + antigüedad)
-        RiskAssessment assessment = calculateCombinedRisk(gsbResult, vtResult, heuristic, content, age);
+        RiskAssessment assessment = calculateCombinedRisk(gsbResult, vtResult, heuristic, content, age, community);
 
         // Construir y persistir entidad
         UrlAnalysis analysis = UrlAnalysis.builder()
@@ -154,7 +163,7 @@ public class UrlAnalysisService {
             .analyzedAt(LocalDateTime.now())
             .build();
 
-        List<Threat> threats = buildThreats(analysis, gsbResult, vtResult, heuristic, content, age);
+        List<Threat> threats = buildThreats(analysis, gsbResult, vtResult, heuristic, content, age, community);
         analysis.setThreats(threats);
         analysis = analysisRepository.save(analysis);
 
@@ -216,7 +225,8 @@ public class UrlAnalysisService {
             VirusTotalService.VirusTotalResult vt,
             NistThreatClassifier.HeuristicResult heuristic,
             WebContentAnalyzer.ContentAnalysisResult content,
-            DomainAgeService.DomainAgeResult age) {
+            DomainAgeService.DomainAgeResult age,
+            CommunityVerdict community) {
 
         Map<String, Double> breakdown = new LinkedHashMap<>();
         List<String> recommendations = new ArrayList<>();
@@ -267,6 +277,14 @@ public class UrlAnalysisService {
             age.indicators().forEach(i -> recommendations.add("Dominio: " + i.description()));
         }
 
+        // Fuente 6 — Reportes confirmados por la comunidad
+        if (community.present()) {
+            breakdown.put("communityConfirmed", COMMUNITY_CONFIDENCE);
+            isPhishing = true;
+            recommendations.add("La comunidad confirmó este dominio como phishing ("
+                + community.reportCount() + " reporte(s) revisados).");
+        }
+
         double notMalicious = 1.0;
         for (double p : breakdown.values()) notMalicious *= (1.0 - p);
         double score = Math.min(100.0, (1.0 - notMalicious) * 100.0);
@@ -297,6 +315,45 @@ public class UrlAnalysisService {
         breakdown.forEach((k, v) -> breakdownPct.put(k, Math.round(v * 10000.0) / 100.0));
 
         return new RiskAssessment(level, BigDecimal.valueOf(score), isPhishing, recommendations, breakdownPct);
+    }
+
+    // ── Fuente comunitaria ──────────────────────────────────────────────────
+
+    record CommunityVerdict(boolean present, long reportCount) {
+        static CommunityVerdict absent() {
+            return new CommunityVerdict(false, 0);
+        }
+    }
+
+    /**
+     * Busca reportes CONFIRMED por la comunidad cuyo dominio registrable coincida.
+     * Solo lectura de la columna reported_url; no accede al contenido de mensajes.
+     */
+    CommunityVerdict checkCommunityReports(String domain) {
+        if (domain == null || domain.isBlank()) {
+            return CommunityVerdict.absent();
+        }
+        String registrable;
+        try {
+            registrable = DomainUtils.registrableDomain(domain);
+        } catch (Exception e) {
+            return CommunityVerdict.absent();
+        }
+        long matches = communityReportRepository.findTop500ByStatusOrderByReviewedAtDesc("CONFIRMED")
+            .stream()
+            .map(CommunityReport::getReportedUrl)
+            .filter(java.util.Objects::nonNull)
+            .map(reported -> {
+                try {
+                    String host = new java.net.URI(reported).getHost();
+                    return host == null ? "" : DomainUtils.registrableDomain(host);
+                } catch (Exception e) {
+                    return "";
+                }
+            })
+            .filter(registrable::equals)
+            .count();
+        return new CommunityVerdict(matches > 0, matches);
     }
 
     private Map<String, Object> buildRawResponse(
@@ -334,9 +391,21 @@ public class UrlAnalysisService {
             VirusTotalService.VirusTotalResult vt,
             NistThreatClassifier.HeuristicResult heuristic,
             WebContentAnalyzer.ContentAnalysisResult content,
-            DomainAgeService.DomainAgeResult age) {
+            DomainAgeService.DomainAgeResult age,
+            CommunityVerdict community) {
 
         List<Threat> threats = new ArrayList<>();
+
+        if (community.present()) {
+            threats.add(Threat.builder()
+                .analysis(analysis)
+                .threatType("COMMUNITY_CONFIRMED")
+                .description("La comunidad confirmó este dominio como phishing ("
+                    + community.reportCount() + " reporte(s) revisados)")
+                .severity(Severity.HIGH)
+                .source("COMMUNITY")
+                .build());
+        }
 
         // Amenazas de Google Safe Browsing
         for (String threatType : gsb.threats()) {

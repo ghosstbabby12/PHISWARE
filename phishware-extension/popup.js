@@ -1,11 +1,20 @@
 const BACKEND_HEALTH = 'http://localhost:8080/api/actuator/health';
 
+function t(key) {
+  return chrome.i18n.getMessage(key) || key;
+}
+
+function principleName(principle) {
+  if (!principle || principle === 'NONE') return null;
+  return t('principle_' + principle) || principle;
+}
+
 function timeAgo(ts) {
   const s = Math.floor((Date.now() - ts) / 1000);
-  if (s < 60) return `hace ${s}s`;
+  if (s < 60) return `${s}s`;
   const m = Math.floor(s / 60);
-  if (m < 60) return `hace ${m}m`;
-  return `hace ${Math.floor(m / 60)}h`;
+  if (m < 60) return `${m}m`;
+  return `${Math.floor(m / 60)}h`;
 }
 
 function iconFor(cls) {
@@ -21,13 +30,13 @@ async function checkBackend() {
     const res = await fetch(BACKEND_HEALTH, { signal: AbortSignal.timeout(3000) });
     if (res.ok) {
       dot.className = 'status-dot connected';
-      status.textContent = 'Backend conectado';
+      status.textContent = t('popupBackendOn');
     } else {
       throw new Error();
     }
   } catch {
     dot.className = 'status-dot error';
-    status.textContent = 'Backend sin conexión';
+    status.textContent = t('popupBackendOff');
   }
 }
 
@@ -41,7 +50,7 @@ function renderPageResult(result) {
 
   if (!result) {
     badge.className = 'badge loading';
-    badge.textContent = 'Sin datos';
+    badge.textContent = t('popupNoData');
     domain.textContent = '—';
     score.textContent  = '';
     return;
@@ -50,17 +59,25 @@ function renderPageResult(result) {
   badge.className  = `badge ${result.classification}`;
   badge.textContent = result.classification;
   domain.textContent = result.domain || result.url || '—';
-  score.textContent  = `Riesgo: ${Math.round(result.riskScore ?? 0)}/100`;
+  score.textContent  = `${t('popupRisk')} ${Math.round(result.riskScore ?? 0)}/100`;
 
   indList.innerHTML = '';
-  if (result.indicators?.length && result.classification !== 'SAFE') {
-    result.indicators.slice(0, 3).forEach(ind => {
+  const explained = Array.isArray(result.explainedIndicators) ? result.explainedIndicators : [];
+  const items = (explained.length ? explained : (result.indicators ?? []).slice(0, 3).map(toExplained)).slice(0, 3);
+  if (result.classification !== 'SAFE') {
+    items.forEach(ind => {
       const li = document.createElement('div');
       li.className = 'indicator-item';
-      li.textContent = ind;
+      const label = typeof ind === 'string' ? ind : ind.description;
+      const principle = typeof ind === 'string' ? null : principleName(ind.persuasionPrinciple);
+      li.textContent = principle ? `${label} · ${t('principleLabel')}: ${principle}` : label;
       indList.appendChild(li);
     });
   }
+}
+
+function toExplained(text) {
+  return { description: String(text), persuasionPrinciple: 'NONE' };
 }
 
 // ── Alerts list ───────────────────────────────────────────────────────────────
@@ -69,7 +86,11 @@ function renderAlerts(alerts) {
   const list = document.getElementById('alerts-list');
   list.innerHTML = '';
   if (!alerts?.length) {
-    list.innerHTML = '<div class="empty">Sin alertas</div>';
+    list.innerHTML = '';
+    const empty = document.createElement('div');
+    empty.className = 'empty';
+    empty.textContent = t('popupNoAlerts');
+    list.appendChild(empty);
     return;
   }
   alerts.slice(0, 10).forEach(a => {
@@ -85,7 +106,7 @@ function renderAlerts(alerts) {
 
     const domain = document.createElement('div');
     domain.className = 'alert-domain';
-    domain.textContent = a.domain || a.url || 'desconocido';
+    domain.textContent = a.domain || a.url || t('popupUnknown');
     domain.title = a.url || '';
 
     const time = document.createElement('div');
@@ -101,6 +122,12 @@ function renderAlerts(alerts) {
 }
 
 // ── Bootstrap ─────────────────────────────────────────────────────────────────
+
+// Localize static labels
+document.querySelectorAll('[data-i18n]').forEach(el => {
+  el.textContent = t(el.getAttribute('data-i18n'));
+});
+document.documentElement.lang = chrome.i18n.getUILanguage?.()?.split('-')[0] || 'es';
 
 checkBackend();
 

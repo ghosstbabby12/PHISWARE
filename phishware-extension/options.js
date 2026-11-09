@@ -5,6 +5,10 @@ const input = document.getElementById('backendRoot');
 const status = document.getElementById('status');
 
 async function load() {
+  document.querySelectorAll('[data-i18n]').forEach(el => {
+    el.textContent = chrome.i18n.getMessage(el.getAttribute('data-i18n')) || el.textContent;
+  });
+  document.title = chrome.i18n.getMessage('optionsTitle');
   const { backendRoot } = await chrome.storage.sync.get({ backendRoot: DEFAULT_BACKEND_ROOT });
   input.value = backendRoot;
   input.placeholder = DEFAULT_BACKEND_ROOT;

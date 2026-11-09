@@ -3,12 +3,20 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="color-scheme" content="light dark" />
   <title>PHISWARE Link Guard</title>
   <style>
     :root {
       --bg: #1e1e2e; --surface: #313244; --text: #cdd6f4;
       --muted: #6c7086; --danger: #f38ba8; --warn: #fab387;
       --safe: #a6e3a1; --accent: #89b4fa;
+    }
+    @media (prefers-color-scheme: light) {
+      :root {
+        --bg: #f7f7fa; --surface: #e7e4e8; --text: #17171c;
+        --muted: #686873; --danger: #c6283d; --warn: #c78316;
+        --safe: #16845b; --accent: #790D2B;
+      }
     }
     * { margin: 0; padding: 0; box-sizing: border-box; }
     body {
@@ -103,7 +111,7 @@
   </div>
 
   <div class="section">
-    <div class="section-label">Página actual</div>
+    <div class="section-label" data-i18n="popupCurrentPage">Página actual</div>
     <div class="page-result">
       <span class="badge loading" id="page-badge">…</span>
       <div class="page-info">
@@ -115,15 +123,15 @@
   </div>
 
   <div class="section">
-    <div class="section-label">Alertas recientes</div>
+    <div class="section-label" data-i18n="popupRecentAlerts">Alertas recientes</div>
     <div class="alerts-list" id="alerts-list">
       <div class="empty">Sin alertas</div>
     </div>
   </div>
 
   <div class="footer">
-    <a href="http://localhost:5173" target="_blank">Abrir PHISWARE</a>
-    <button class="clear-btn" id="clear-btn">Limpiar alertas</button>
+    <a href="http://localhost:5173" target="_blank" data-i18n="popupOpenApp">Abrir PHISWARE</a>
+    <button class="clear-btn" id="clear-btn" data-i18n="popupClear">Limpiar alertas</button>
   </div>
 
   <script src="popup.js"></script>

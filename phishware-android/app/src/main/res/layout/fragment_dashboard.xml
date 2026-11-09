@@ -43,31 +43,32 @@
                     android:textSize="19sp"
                     android:textStyle="bold" />
             </LinearLayout>
-            <TextView
+            <ImageView
                 android:layout_width="40dp"
                 android:layout_height="40dp"
                 android:background="@drawable/bg_search_pill"
-                android:gravity="center"
-                android:text="🔔"
-                android:textColor="#FFFFFF"
-                android:textSize="18sp" />
+                android:contentDescription="@string/alerts_title"
+                android:padding="10dp"
+                android:src="@drawable/ic_alert" />
         </LinearLayout>
 
-        <!-- Search pill estilo Proton Vault -->
+        <!-- Search pill estilo Proton Vault: abre el analizador al tocar -->
         <LinearLayout
+            android:id="@+id/searchPill"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp"
             android:background="@drawable/bg_search_pill"
+            android:clickable="true"
+            android:focusable="true"
             android:gravity="center_vertical"
             android:orientation="horizontal"
             android:padding="14dp">
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="🔍"
-                android:textColor="#FFFFFF"
-                android:textSize="16sp" />
+            <ImageView
+                android:layout_width="18dp"
+                android:layout_height="18dp"
+                android:contentDescription="@string/dash_go_analyze"
+                android:src="@drawable/ic_search" />
             <TextView
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
@@ -76,7 +77,6 @@
                 android:text="@string/dash_search_hint"
                 android:textColor="#E8B4BB"
                 android:textSize="13sp" />
-            <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚙" android:textColor="#FFFFFF" />
         </LinearLayout>
 
         <LinearLayout
@@ -190,7 +190,7 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⛔" android:textSize="20sp" />
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_stat_danger" android:contentDescription="@string/dash_danger" />
                     <TextView android:id="@+id/tvDanger" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/proton_text" android:textSize="20sp" android:textStyle="bold" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dash_danger" android:textColor="@color/proton_subtext" android:textSize="11sp" />
                 </LinearLayout>
@@ -209,7 +209,7 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="⚠️" android:textSize="20sp" />
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_stat_warning" android:contentDescription="@string/dash_susp" />
                     <TextView android:id="@+id/tvSusp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/proton_text" android:textSize="20sp" android:textStyle="bold" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dash_susp" android:textColor="@color/proton_subtext" android:textSize="11sp" />
                 </LinearLayout>
@@ -228,7 +228,7 @@
                     android:gravity="center"
                     android:orientation="vertical"
                     android:padding="12dp">
-                    <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="✅" android:textSize="20sp" />
+                    <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_stat_check" android:contentDescription="@string/dash_safe" />
                     <TextView android:id="@+id/tvSafe" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="0" android:textColor="@color/proton_text" android:textSize="20sp" android:textStyle="bold" />
                     <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dash_safe" android:textColor="@color/proton_subtext" android:textSize="11sp" />
                 </LinearLayout>

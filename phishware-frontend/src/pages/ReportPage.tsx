@@ -100,7 +100,7 @@ export default function ReportPage() {
                   type="button"
                   onClick={() => setType(rt)}
                   aria-pressed={type === rt}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
                     type === rt ? reportTypeStyles[rt] : 'border-ink-200 dark:border-dark-800 text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 hover:border-ink-300'
                   }`}
                 >
@@ -119,7 +119,7 @@ export default function ReportPage() {
                   type="button"
                   onClick={() => setSeverity(s)}
                   aria-pressed={severity === s}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
+                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
                     severity === s ? severityStyles[s] : 'text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 bg-ink-50 dark:bg-dark-900 border border-ink-200 dark:border-dark-800'
                   }`}
                 >

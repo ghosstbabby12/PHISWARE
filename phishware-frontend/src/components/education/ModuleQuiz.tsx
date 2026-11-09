@@ -41,7 +41,8 @@ function QuestionCard({ question, selected, onChange }: {
               key={key}
               type="button"
               onClick={() => toggle(key)}
-              className={`w-full text-left flex items-start gap-3 p-3 rounded-lg border transition-colors ${
+              aria-pressed={active}
+              className={`w-full text-left flex items-start gap-3 p-3 rounded-lg border transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
                 active
                   ? 'border-primary-600 bg-primary-50 dark:bg-primary-600/25 text-ink-900 dark:text-white'
                   : 'border-ink-200 dark:border-dark-800 bg-white dark:bg-dark-800 text-ink-700 dark:text-ink-200 hover:border-primary-600'

@@ -19,8 +19,11 @@ import java.util.regex.Pattern;
 public class InputSanitizerService {
 
     // Patrones de caracteres peligrosos para XSS (OWASP A07)
+    // Nota: el detector de event-handlers exige que "on..." NO esté precedido
+    // por un caracter de palabra (?<![A-Za-z0-9_]): así "sessionExpired=" no se
+    // confunde con un handler, pero "?x=1&onclick=alert(1)" sí se detecta.
     private static final Pattern XSS_PATTERN = Pattern.compile(
-        "<[^>]*>|javascript:|vbscript:|on\\w+\\s*=|<script|</script|<iframe|<object|<embed",
+        "<[^>]*>|javascript:|vbscript:|<script|</script|<iframe|<object|<embed|(?<![A-Za-z0-9_])on\\w+\\s*=",
         Pattern.CASE_INSENSITIVE
     );
 

@@ -40,6 +40,17 @@ class SettingsFragment : Fragment() {
     @Inject lateinit var session: SessionManager
     @Inject lateinit var notifications: NotificationHelper
 
+    private val notifPermLauncher = registerForActivityResult(
+        ActivityResultContracts.RequestPermission()) { granted ->
+        if (granted) {
+            doTestNotif()
+        } else {
+            Snackbar.make(binding.root,
+                getString(R.string.guard_notif_how), Snackbar.LENGTH_LONG).show()
+        }
+        refresh()
+    }
+
     private val reqPerms = registerForActivityResult(
         ActivityResultContracts.RequestMultiplePermissions()) { res ->
         val denied = res.filterValues { !it }.keys
@@ -103,13 +114,12 @@ class SettingsFragment : Fragment() {
             }
         }
         binding.btnTestNotif.setOnClickListener {
-            notifications.showThreat(
-                url = "https://nequi-verificacion.tk/login",
-                domain = "nequi-verificacion.tk",
-                riskLevel = "DANGEROUS",
-                score = 85.0,
-                firstTip = getString(R.string.guard_test_tip)
-            )
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU &&
+                ContextCompat.checkSelfPermission(requireContext(), Manifest.permission.POST_NOTIFICATIONS) != PackageManager.PERMISSION_GRANTED) {
+                notifPermLauncher.launch(Manifest.permission.POST_NOTIFICATIONS)
+                return@setOnClickListener
+            }
+            doTestNotif()
         }
         binding.btnLangEs.setOnClickListener { applyLocale("es") }
         binding.btnLangEn.setOnClickListener { applyLocale("en") }
@@ -129,6 +139,16 @@ class SettingsFragment : Fragment() {
                 refresh()
             }
         }
+    }
+
+    private fun doTestNotif() {
+        notifications.showThreat(
+            url = "https://nequi-verificacion.tk/login",
+            domain = "nequi-verificacion.tk",
+            riskLevel = "DANGEROUS",
+            score = 85.0,
+            firstTip = getString(R.string.guard_test_tip)
+        )
     }
 
     private fun applyLocale(tag: String) {

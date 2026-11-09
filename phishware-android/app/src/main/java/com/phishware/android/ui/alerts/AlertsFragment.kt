@@ -43,12 +43,17 @@ class AlertsFragment : Fragment() {
             repository.getAlerts(0, 20)
                 .onSuccess { page ->
                     if (page.content.isEmpty()) binding.tvList.text = getString(R.string.alerts_empty)
-                    else binding.tvList.text = page.content.joinToString("\n\n") { a ->
-                        val icon = when (a.severity) {
-                            "CRITICAL" -> "⛔"; "HIGH" -> "🔴"; "MEDIUM" -> "🟠"; else -> "🟡"
+                    else {
+                        val sb = android.text.SpannableStringBuilder()
+                        page.content.forEachIndexed { i, a ->
+                            if (i > 0) sb.append("\n\n")
+                            val read = if (a.isRead) "" else getString(R.string.alerts_new)
+                            sb.append(com.phishware.android.ui.RiskUi.dotLine(
+                                a.severity,
+                                "[${a.severity}]${read}\n${a.title}\n${a.message.take(160)}"
+                            ))
                         }
-                        val read = if (a.isRead) "" else getString(R.string.alerts_new)
-                        "$icon [${a.severity}]${read}\n${a.title}\n${a.message.take(160)}"
+                        binding.tvList.text = sb
                     }
                 }
                 .onFailure { binding.tvList.text = getString(R.string.alerts_error_fmt, it.message ?: "") }

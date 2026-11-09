@@ -161,7 +161,8 @@ export default function EducationPage() {
           <button
             key={c.value}
             onClick={() => setCategory(c.value)}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors ${
+            aria-pressed={category === c.value}
+            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
               category === c.value
                 ? c.value === 'OWASP'
                   ? 'bg-orange-600 text-white'

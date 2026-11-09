@@ -30,7 +30,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         <Logo size={34} />
       </div>
 
-      <nav className="flex-1 p-4 space-y-1 overflow-y-auto" aria-label="Navegación principal">
+      <nav className="flex-1 min-h-0 p-4 space-y-1 overflow-y-auto" aria-label="Navegación principal">
         {isAdmin && (
           <NavLink
             to="/admin"
@@ -56,7 +56,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
         ))}
       </nav>
 
-      <div className="p-4 border-t divider">
+      <div className="mt-auto shrink-0 p-4 border-t divider bg-ink-50/60 dark:bg-dark-900/60">
         <div className="flex items-center gap-3 mb-3 px-2">
           <div className="w-9 h-9 rounded-full bg-primary-600 flex items-center justify-center text-sm font-bold text-white shrink-0" aria-hidden>
             {user?.username?.[0]?.toUpperCase() ?? 'U'}

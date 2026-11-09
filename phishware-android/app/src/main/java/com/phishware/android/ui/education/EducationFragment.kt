@@ -74,7 +74,7 @@ class EducationFragment : Fragment() {
                         val selectedKey = opts.keys.sorted()[which]
                         lifecycleScope.launch {
                             repository.submitQuiz(quiz.id, mapOf(q.id.toString() to selectedKey))
-                                .onSuccess { r -> Snackbar.make(binding.root, getString(R.string.edu_quiz_score_fmt, r.score, if (r.passed) "✅" else "❌", r.pointsEarned), Snackbar.LENGTH_LONG).show() }
+                                .onSuccess { r -> Snackbar.make(binding.root, getString(R.string.edu_quiz_score_fmt, r.score, if (r.passed) getString(R.string.edu_quiz_passed) else getString(R.string.edu_quiz_failed), r.pointsEarned), Snackbar.LENGTH_LONG).show() }
                                 .onFailure { Snackbar.make(binding.root, it.message ?: getString(R.string.common_error), Snackbar.LENGTH_LONG).show() }
                         }
                     }

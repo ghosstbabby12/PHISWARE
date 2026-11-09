@@ -44,7 +44,7 @@
     <string name="dash_no_conn">No connection</string>
     <string name="dash_total">Total analyses</string>
     <string name="dash_level_fmt">Level %1$d · %2$d pts</string>
-    <string name="dash_threats_fmt">⛔ %1$d threats · 🔔 %2$d unread</string>
+    <string name="dash_threats_fmt">%1$d threats · %2$d unread</string>
     <string name="dash_danger">Dangerous</string>
     <string name="dash_susp">Suspicious</string>
     <string name="dash_safe">Safe</string>
@@ -62,14 +62,14 @@
     <string name="analysis_sub">Paste a suspicious link to analyze it</string>
     <string name="analysis_qr_btn">Scan QR</string>
     <string name="analysis_report_btn">Report this URL</string>
-    <string name="analysis_report_sent">Report sent ✅ (id %1$d)</string>
+    <string name="analysis_report_sent">Report sent (id %1$d)</string>
     <string name="analysis_need_url">Enter a valid URL</string>
     <string name="analysis_domain_fmt">Domain: %1$s</string>
     <string name="analysis_score_fmt">Risk score: %1$.1f/100</string>
     <string name="analysis_time_fmt">Time: %1$dms</string>
-    <string name="analysis_threats_fmt">⚠ %1$d threat(s) detected</string>
-    <string name="analysis_dash_fmt">📊 %1$d analyses · ⛔ %2$d threats · ⭐ Lv.%3$d (%4$d pts)</string>
-    <string name="analysis_dash_off">📊 No connection</string>
+    <string name="analysis_threats_fmt">%1$d threat(s) detected</string>
+    <string name="analysis_dash_fmt">%1$d analyses · %2$d threats · Lv.%3$d (%4$d pts)</string>
+    <string name="analysis_dash_off">No connection</string>
     <string name="common_error">Error</string>
     <string name="common_close">Close</string>
 
@@ -88,7 +88,7 @@
     <string name="alerts_loading">Loading…</string>
     <string name="alerts_empty">No alerts. Analyze a URL, SMS or QR.</string>
     <string name="alerts_unread_fmt">Unread: %1$d</string>
-    <string name="alerts_new"> · 🆕 NEW</string>
+    <string name="alerts_new"> · NEW</string>
     <string name="alerts_error_fmt">Error: %1$s</string>
 
     <string name="edu_title">Learn</string>
@@ -101,6 +101,8 @@
     <string name="edu_take_quiz">Take quiz</string>
     <string name="edu_no_quiz">This module has no quiz yet</string>
     <string name="edu_quiz_score_fmt">Score: %1$d %2$s (+%3$d pts)</string>
+    <string name="edu_quiz_passed">Passed</string>
+    <string name="edu_quiz_failed">Failed</string>
     <string name="edu_no_quiz2">No quiz</string>
 
     <string name="qr_title">Scan QR</string>
@@ -122,17 +124,17 @@
     <string name="qr_img_fail">Could not read the image.</string>
     <string name="qr_img_fail_status">Could not read the image.</string>
     <string name="qr_detected">QR detected. Analyzing…</string>
-    <string name="qr_no_url_title">⚠️ QR has no URL</string>
+    <string name="qr_no_url_title">QR has no URL</string>
     <string name="qr_no_url_detail">Empty\n\nThe QR does not contain a link; there is nothing to analyze. Tap \"Scan another\" to continue.</string>
     <string name="qr_read_no_link">QR read (no link).</string>
     <string name="qr_review_title">Review the QR before opening it</string>
     <string name="qr_review_body">Content:</string>
     <string name="qr_open">Open</string>
     <string name="qr_cancel">Cancel</string>
-    <string name="qr_status_safe">✅ SAFE</string>
-    <string name="qr_status_susp">⚠️ SUSPICIOUS</string>
-    <string name="qr_status_dang">⛔ DANGEROUS</string>
-    <string name="qr_status_analyzed">🔍 ANALYZED</string>
+    <string name="qr_status_safe">SAFE</string>
+    <string name="qr_status_susp">SUSPICIOUS</string>
+    <string name="qr_status_dang">DANGEROUS</string>
+    <string name="qr_status_analyzed">ANALYZED</string>
     <string name="qr_analysis_ready_fmt">Analysis ready: %1$s.</string>
 
     <string name="guard_title">Protection</string>
@@ -215,5 +217,5 @@
     <string name="analysis_overview_sub">Monitor your vault health</string>
     <string name="guard_lang_es">Spanish</string>
     <string name="guard_lang_en">English</string>
-    <string name="dash_search_hint">Search passwords…</string>
+    <string name="dash_search_hint">Paste or type a URL to analyze…</string>
 </resources>

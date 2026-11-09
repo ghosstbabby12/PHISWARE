@@ -1,0 +1,234 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-11-09T09:42:49-05:00",
+  "title": "Design System: PHISHWARE",
+  "extensions": {
+    "colorMeta": {
+      "brand-wine": {
+        "role": "primary",
+        "displayName": "Deep Wine",
+        "canonical": "#790D2B",
+        "tonalRamp": ["#4D071B", "#5F0A22", "#790D2B", "#B42345", "#C65D7B", "#DF93A8", "#F0C9D4", "#FBEDF1"]
+      },
+      "brand-hover": {
+        "role": "primary",
+        "displayName": "Dark Wine",
+        "canonical": "#5F0A22",
+        "tonalRamp": ["#4D071B", "#5F0A22", "#790D2B", "#B42345", "#C65D7B", "#DF93A8", "#F0C9D4", "#FBEDF1"]
+      },
+      "brand-active": {
+        "role": "primary",
+        "displayName": "Deepest Wine",
+        "canonical": "#4D071B",
+        "tonalRamp": ["#4D071B", "#5F0A22", "#790D2B", "#B42345", "#C65D7B", "#DF93A8", "#F0C9D4", "#FBEDF1"]
+      },
+      "brand-raspberry": {
+        "role": "primary",
+        "displayName": "Raspberry",
+        "canonical": "#B42345",
+        "tonalRamp": ["#4D071B", "#5F0A22", "#790D2B", "#B42345", "#C65D7B", "#DF93A8", "#F0C9D4", "#FBEDF1"]
+      },
+      "rose-wash": {
+        "role": "secondary",
+        "displayName": "Rose Wash",
+        "canonical": "#F8E9EE",
+        "tonalRamp": ["#4D071B", "#5F0A22", "#790D2B", "#B42345", "#C65D7B", "#DF93A8", "#F0C9D4", "#FBEDF1"]
+      },
+      "canvas": {
+        "role": "neutral",
+        "displayName": "Pale Canvas",
+        "canonical": "#F7F7FA",
+        "tonalRamp": ["#17171C", "#3A3A44", "#686873", "#C9C6CE", "#E7E4E8", "#EDEDF1", "#F7F7FA", "#FFFFFF"]
+      },
+      "surface": {
+        "role": "neutral",
+        "displayName": "White Surface",
+        "canonical": "#FFFFFF",
+        "tonalRamp": ["#17171C", "#3A3A44", "#686873", "#C9C6CE", "#E7E4E8", "#EDEDF1", "#F7F7FA", "#FFFFFF"]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Near-Black Ink",
+        "canonical": "#17171C",
+        "tonalRamp": ["#17171C", "#3A3A44", "#686873", "#C9C6CE", "#E7E4E8", "#EDEDF1", "#F7F7FA", "#FFFFFF"]
+      },
+      "muted-ink": {
+        "role": "neutral",
+        "displayName": "Muted Gray",
+        "canonical": "#686873",
+        "tonalRamp": ["#17171C", "#3A3A44", "#686873", "#C9C6CE", "#E7E4E8", "#EDEDF1", "#F7F7FA", "#FFFFFF"]
+      },
+      "border": {
+        "role": "neutral",
+        "displayName": "Pale Border",
+        "canonical": "#E7E4E8",
+        "tonalRamp": ["#17171C", "#3A3A44", "#686873", "#C9C6CE", "#E7E4E8", "#EDEDF1", "#F7F7FA", "#FFFFFF"]
+      },
+      "safe-green": {
+        "role": "tertiary",
+        "displayName": "Safety Green",
+        "canonical": "#16845B",
+        "tonalRamp": ["#116A49", "#16845B", "#3DA56A", "#8FD0A3", "#DDF0E3", "#EFF8F2", "#F8FCF9", "#FFFFFF"]
+      },
+      "warning-amber": {
+        "role": "tertiary",
+        "displayName": "Warning Amber",
+        "canonical": "#C78316",
+        "tonalRamp": ["#A66E12", "#C78316", "#D9A21B", "#FCD34D", "#FEF3C7", "#FFFBEB", "#FFFDF5", "#FFFFFF"]
+      },
+      "danger-red": {
+        "role": "tertiary",
+        "displayName": "Danger Red",
+        "canonical": "#C6283D",
+        "tonalRamp": ["#7F1625", "#A71F31", "#C6283D", "#D95F6C", "#E89AA3", "#F9DEE1", "#FDF1F2", "#FFF9F9"]
+      },
+      "dark-canvas": {
+        "role": "neutral",
+        "displayName": "Midnight Canvas",
+        "canonical": "#020617",
+        "tonalRamp": ["#020617", "#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1"]
+      },
+      "dark-surface": {
+        "role": "neutral",
+        "displayName": "Midnight Surface",
+        "canonical": "#0F172A",
+        "tonalRamp": ["#020617", "#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1"]
+      },
+      "dark-raised": {
+        "role": "neutral",
+        "displayName": "Raised Slate",
+        "canonical": "#1E293B",
+        "tonalRamp": ["#020617", "#0F172A", "#1E293B", "#334155", "#475569", "#64748B", "#94A3B8", "#CBD5E1"]
+      }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Wide landing-page hero heading." },
+      "headline": { "displayName": "Headline", "purpose": "Responsive landing-page hero heading." },
+      "title": { "displayName": "Title", "purpose": "Page and section headings." },
+      "body": { "displayName": "Body", "purpose": "General interface copy." },
+      "label": { "displayName": "Label", "purpose": "Field labels and compact controls." },
+      "badge": { "displayName": "Badge", "purpose": "Compact risk and status labels." },
+      "mono": { "displayName": "Technical Mono", "purpose": "URLs and technical strings." }
+    },
+    "shadows": [
+      { "name": "card-rest", "value": "0 1px 2px rgba(23,23,28,0.05), 0 8px 24px -12px rgba(23,23,28,0.12)", "purpose": "Subtle separation for default card surfaces." },
+      { "name": "card-hover", "value": "0 2px 4px rgba(23,23,28,0.06), 0 12px 32px -12px rgba(121,13,43,0.18)", "purpose": "Interactive hover feedback on card-hover and stat cards." }
+    ],
+    "motion": [
+      { "name": "standard-transition", "value": "200ms", "purpose": "Button, navigation, input, and card state changes." },
+      { "name": "fade-in", "value": "300ms ease-in-out", "purpose": "Entering page content." },
+      { "name": "slide-up", "value": "300ms ease-out", "purpose": "Small upward entrance transition." }
+    ],
+    "breakpoints": [
+      { "name": "sm", "value": "640px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Primary Button",
+      "kind": "button",
+      "refersTo": "button-primary",
+      "description": "High-priority actions such as analyzing a URL or starting registration.",
+      "html": "<button class=\"ds-btn-primary\" type=\"button\">Analyze link</button>",
+      "css": ".ds-btn-primary { background: #790D2B; color: #fff; padding: 10px 24px; border: 0; border-radius: 12px; font: 600 14px/1.4 Inter, system-ui, sans-serif; transition: background-color 200ms, box-shadow 200ms; box-shadow: 0 1px 2px rgba(77,7,27,0.3); cursor: pointer; } .ds-btn-primary:hover { background: #5F0A22; } .ds-btn-primary:active { background: #4D071B; } .ds-btn-primary:focus-visible { outline: 2px solid #790D2B; outline-offset: 2px; } .ds-btn-primary:disabled { opacity: .5; cursor: not-allowed; }"
+    },
+    {
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Supporting actions that should remain clear without competing with the primary action.",
+      "html": "<button class=\"ds-btn-secondary\" type=\"button\">Cancel</button>",
+      "css": ".ds-btn-secondary { background: #fff; color: #17171C; padding: 10px 24px; border: 1px solid #E7E4E8; border-radius: 12px; font: 600 14px/1.4 Inter, system-ui, sans-serif; transition: background-color 200ms, border-color 200ms; cursor: pointer; } .ds-btn-secondary:hover { background: #F7F7FA; } .ds-btn-secondary:focus-visible { outline: 2px solid #790D2B; outline-offset: 2px; }"
+    },
+    {
+      "name": "Ghost Button",
+      "kind": "button",
+      "refersTo": "button-ghost",
+      "description": "Quiet, low-emphasis actions in toolbars and navigation.",
+      "html": "<button class=\"ds-btn-ghost\" type=\"button\">More options</button>",
+      "css": ".ds-btn-ghost { background: transparent; color: #686873; padding: 8px 16px; border: 0; border-radius: 12px; font: 500 14px/1.4 Inter, system-ui, sans-serif; transition: background-color 200ms, color 200ms; cursor: pointer; } .ds-btn-ghost:hover { background: #EDEDF1; color: #17171C; } .ds-btn-ghost:focus-visible { outline: 2px solid #790D2B; outline-offset: 2px; }"
+    },
+    {
+      "name": "URL Input",
+      "kind": "input",
+      "refersTo": "input-field",
+      "description": "Full-width field for entering or pasting a URL for analysis.",
+      "html": "<label class=\"ds-field-label\" for=\"ds-url\">URL to check</label><input class=\"ds-input\" id=\"ds-url\" inputmode=\"url\" placeholder=\"https://example.com\" />",
+      "css": ".ds-field-label { display: block; margin-bottom: 6px; color: #17171C; font: 600 14px/1.4 Inter, system-ui, sans-serif; } .ds-input { width: 100%; background: #fff; color: #17171C; padding: 12px 16px; border: 1px solid #E7E4E8; border-radius: 12px; font: 400 15px/1.5 Inter, system-ui, sans-serif; transition: border-color 200ms, box-shadow 200ms; } .ds-input::placeholder { color: #C9C6CE; } .ds-input:focus { outline: 0; border-color: #790D2B; box-shadow: 0 0 0 2px rgba(121,13,43,0.2); } .ds-input:focus-visible { outline: 2px solid #790D2B; outline-offset: 2px; } .ds-input:disabled { background: #F7F7FA; color: #686873; }"
+    },
+    {
+      "name": "Card",
+      "kind": "card",
+      "refersTo": "card",
+      "description": "Neutral content container for dashboard summaries, lists, and analysis details.",
+      "html": "<article class=\"ds-card\"><h3>Recent analysis</h3><p>Review your latest link checks.</p></article>",
+      "css": ".ds-card { background: #fff; color: #17171C; padding: 24px; border: 1px solid #E7E4E8; border-radius: 16px; box-shadow: 0 1px 2px rgba(23,23,28,0.05), 0 8px 24px -12px rgba(23,23,28,0.12); font: 400 16px/1.5 Inter, system-ui, sans-serif; } .ds-card h3 { margin: 0 0 8px; font-size: 16px; font-weight: 600; } .ds-card p { margin: 0; color: #686873; } .ds-card:hover { border-color: #F0C9D4; box-shadow: 0 2px 4px rgba(23,23,28,0.06), 0 12px 32px -12px rgba(121,13,43,0.18); }"
+    },
+    {
+      "name": "Safe Badge",
+      "kind": "chip",
+      "refersTo": "badge-safe",
+      "description": "Compact safe verdict; pair its color with an icon and text.",
+      "html": "<span class=\"ds-badge-safe\"><svg aria-hidden=\"true\" viewBox=\"0 0 16 16\"><path d=\"m3 8 3.2 3.2L13 4.5\" /></svg>Safe</span>",
+      "css": ".ds-badge-safe { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(22,132,91,0.1); color: #116A49; border: 1px solid rgba(22,132,91,0.25); border-radius: 9999px; font: 600 12px/1.4 Inter, system-ui, sans-serif; } .ds-badge-safe svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Suspicious Badge",
+      "kind": "chip",
+      "refersTo": "badge-suspicious",
+      "description": "Cautious amber verdict for a suspicious link.",
+      "html": "<span class=\"ds-badge-suspicious\"><svg aria-hidden=\"true\" viewBox=\"0 0 16 16\"><path d=\"M8 2 14 13H2L8 2Z\" /><path d=\"M8 6v3m0 2h.01\" /></svg>Suspicious</span>",
+      "css": ".ds-badge-suspicious { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(199,131,22,0.1); color: #A66E12; border: 1px solid rgba(199,131,22,0.3); border-radius: 9999px; font: 600 12px/1.4 Inter, system-ui, sans-serif; } .ds-badge-suspicious svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Dangerous Badge",
+      "kind": "chip",
+      "refersTo": "badge-dangerous",
+      "description": "Red verdict for a dangerous link, paired with a label and icon.",
+      "html": "<span class=\"ds-badge-dangerous\"><svg aria-hidden=\"true\" viewBox=\"0 0 16 16\"><circle cx=\"8\" cy=\"8\" r=\"6\" /><path d=\"m6 6 4 4m0-4-4 4\" /></svg>Dangerous</span>",
+      "css": ".ds-badge-dangerous { display: inline-flex; align-items: center; gap: 6px; padding: 4px 12px; background: rgba(198,40,61,0.1); color: #A71F31; border: 1px solid rgba(198,40,61,0.25); border-radius: 9999px; font: 600 12px/1.4 Inter, system-ui, sans-serif; } .ds-badge-dangerous svg { width: 12px; height: 12px; fill: none; stroke: currentColor; stroke-width: 1.6; stroke-linecap: round; stroke-linejoin: round; }"
+    },
+    {
+      "name": "Active Navigation Link",
+      "kind": "nav",
+      "refersTo": "nav-link-active",
+      "description": "Indicates the current route in the app sidebar.",
+      "html": "<a class=\"ds-nav-link ds-nav-link-active\" href=\"#current\"><svg aria-hidden=\"true\" viewBox=\"0 0 16 16\"><rect x=\"2\" y=\"2\" width=\"12\" height=\"12\" rx=\"2\" /><path d=\"M2 6h12M6 6v8\" /></svg><span>Dashboard</span></a>",
+      "css": ".ds-nav-link { display: flex; align-items: center; gap: 12px; padding: 10px 16px; color: #686873; background: transparent; border: 1px solid transparent; border-radius: 12px; font: 500 14px/1.4 Inter, system-ui, sans-serif; text-decoration: none; transition: background-color 200ms, color 200ms; } .ds-nav-link svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.5; stroke-linecap: round; stroke-linejoin: round; } .ds-nav-link:hover { color: #17171C; background: #EDEDF1; } .ds-nav-link-active { color: #5F0A22; background: #F8E9EE; border-color: rgba(121,13,43,0.15); } .ds-nav-link:focus-visible { outline: 2px solid #790D2B; outline-offset: 2px; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Campus Safety Console",
+    "overview": "PHISHWARE's web interface is a clear, reassuring, educational place to assess a link and decide what to do next. It pairs a practical dashboard and persistent navigation with small, legible status cues. The overall impression is capable and approachable, not alarmist: safe, suspicious, and dangerous states are distinct, sober messages rather than fear-driven decoration.\n\nInter and compact controls keep the interface direct and easy to scan. The wine-and-raspberry brand colors identify primary actions, while pale neutral surfaces, subtle borders, and restrained shadows carry most of the structure. The UI supports light and dark themes and a Spanish-first experience with English localization.",
+    "keyCharacteristics": [
+      "Reassuring, task-focused security guidance",
+      "Burgundy brand accent with restrained semantic risk colors",
+      "Rounded controls and layered neutral surfaces",
+      "Persistent, responsive app navigation",
+      "Light and dark themes; Spanish-first interface"
+    ],
+    "rules": [
+      { "name": "The Risk-Color Rule", "body": "Reserve green, amber, and red for safe, suspicious, and dangerous states respectively; keep these indicators legible and sober rather than alarmist.", "section": "colors" },
+      { "name": "The Readable-Risk Rule", "body": "Keep verdicts, explanations, and actionable labels in the sans-serif hierarchy; use monospace for literal URLs and technical values, not whole paragraphs.", "section": "typography" },
+      { "name": "The Quiet-Layer Rule", "body": "Use borders and tonal separation first; reserve the stronger shadow for interactive hover feedback.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do use the existing wine brand ramp for primary actions and selected navigation.",
+      "Do preserve the mapping of green to safe, amber to suspicious, and red to dangerous.",
+      "Do retain light/dark theme behavior, Spanish-first copy, and the English locale.",
+      "Do keep visible focus treatment and honor reduced-motion preferences.",
+      "Do use JetBrains Mono for URLs and technical values.",
+      "Do pair risk color with an icon and a text verdict."
+    ],
+    "donts": [
+      "Don't use alarmist visuals or amplify fear around threat states.",
+      "Don't use danger red for ordinary primary actions or decorative emphasis.",
+      "Don't replace the established logo, shield identity, or wine brand palette without an explicit redesign.",
+      "Don't make safe, suspicious, or dangerous status understandable by color alone.",
+      "Don't add heavy shadows to every surface or make the dashboard denser than its existing responsive grids."
+    ]
+  }
+}

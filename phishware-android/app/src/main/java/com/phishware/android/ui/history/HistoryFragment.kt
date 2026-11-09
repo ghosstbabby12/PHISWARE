@@ -42,11 +42,16 @@ class HistoryFragment : Fragment() {
             val res = repository.getHistory(0, 20, if (onlyDanger) "DANGEROUS" else null)
             res.onSuccess { page ->
                 if (page.content.isEmpty()) binding.tvList.text = getString(R.string.hist_empty)
-                else binding.tvList.text = page.content.joinToString("\n\n") { r ->
-                    val icon = when (r.riskLevel) {
-                        "SAFE" -> "✅"; "SUSPICIOUS" -> "⚠️"; "DANGEROUS" -> "⛔"; else -> "🔍"
+                else {
+                    val sb = android.text.SpannableStringBuilder()
+                    page.content.forEachIndexed { i, r ->
+                        if (i > 0) sb.append("\n\n")
+                        sb.append(com.phishware.android.ui.RiskUi.dotLine(
+                            r.riskLevel,
+                            "[${r.riskLevel}] ${"%.0f".format(r.riskScore)}/100\n${r.domain ?: r.originalUrl}\n${r.analyzedAt ?: ""}"
+                        ))
                     }
-                    "$icon [${r.riskLevel}] ${"%.0f".format(r.riskScore)}/100\n${r.domain ?: r.originalUrl}\n${r.analyzedAt ?: ""}"
+                    binding.tvList.text = sb
                 }
             }.onFailure { binding.tvList.text = getString(R.string.hist_error_fmt, it.message ?: "") }
         }

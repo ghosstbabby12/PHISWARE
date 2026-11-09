@@ -9,6 +9,8 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.phishware.android.R
 import com.phishware.android.data.local.GuardPreferences
@@ -34,6 +36,17 @@ class MainActivity : AppCompatActivity() {
 
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as NavHostFragment
         val navController = navHostFragment.navController
+        setSupportActionBar(binding.topBar)
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                com.phishware.android.R.id.dashboard_fragment,
+                com.phishware.android.R.id.url_analysis_fragment,
+                com.phishware.android.R.id.alerts_fragment,
+                com.phishware.android.R.id.education_fragment,
+                com.phishware.android.R.id.settings_fragment
+            )
+        )
+        setupActionBarWithNavController(navController, appBarConfiguration)
         binding.bottomNavigation.setupWithNavController(navController)
 
         handleIntent(intent)
@@ -44,7 +57,17 @@ class MainActivity : AppCompatActivity() {
                     com.google.android.material.dialog.MaterialAlertDialogBuilder(this@MainActivity)
                         .setTitle(getString(com.phishware.android.R.string.consent_title))
                         .setMessage(getString(com.phishware.android.R.string.consent_msg))
-                        .setPositiveButton(getString(com.phishware.android.R.string.consent_ok), null)
+                        .setPositiveButton(getString(com.phishware.android.R.string.consent_ok)) { _, _ ->
+                            lifecycleScope.launch {
+                                guard.setConsent(true)
+                                LinkGuardService.start(this@MainActivity)
+                                LinkGuardService.scheduleSync(this@MainActivity)
+                            }
+                        }
+                        .setNegativeButton(android.R.string.cancel) { _, _ ->
+                            lifecycleScope.launch { guard.setConsent(false) }
+                        }
+                        .setCancelable(false)
                         .show()
                 }
             } catch (_: Exception) { }
@@ -98,4 +121,11 @@ class MainActivity : AppCompatActivity() {
             ContextCompat.checkSelfPermission(this, Manifest.permission.POST_NOTIFICATIONS) ==
                 PackageManager.PERMISSION_GRANTED
         else true
+
+    override fun onSupportNavigateUp(): Boolean {
+        val navController = runCatching {
+            (supportFragmentManager.findFragmentById(R.id.nav_host_fragment) as? NavHostFragment)?.navController
+        }.getOrNull() ?: return false
+        return navController.navigateUp() || super.onSupportNavigateUp()
+    }
 }

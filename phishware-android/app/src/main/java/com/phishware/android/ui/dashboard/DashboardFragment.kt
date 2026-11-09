@@ -11,6 +11,7 @@ import com.phishware.android.R
 import com.phishware.android.data.local.SessionManager
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentDashboardBinding
+import com.phishware.android.ui.RiskUi
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.launch
@@ -33,6 +34,7 @@ class DashboardFragment : Fragment() {
         binding.btnGoAnalyze.setOnClickListener { runCatching { findNavController().navigate(R.id.url_analysis_fragment) } }
         binding.btnGoQr.setOnClickListener { runCatching { findNavController().navigate(R.id.qr_scanner_fragment) } }
         binding.btnGoHistory.setOnClickListener { runCatching { findNavController().navigate(R.id.history_fragment) } }
+        binding.searchPill.setOnClickListener { runCatching { findNavController().navigate(R.id.url_analysis_fragment) } }
         load()
     }
 
@@ -54,10 +56,15 @@ class DashboardFragment : Fragment() {
                 binding.tvUsername.text = getString(R.string.dash_no_conn)
             }
             repository.getHistory(0, 3).onSuccess { page ->
-                binding.tvRecent.text = if (page.content.isEmpty()) getString(R.string.dash_recent_empty)
-                else page.content.joinToString("\n\n") {
-                    val icon = when (it.riskLevel) { "SAFE" -> "✅"; "SUSPICIOUS" -> "⚠️"; "DANGEROUS" -> "⛔"; else -> "🔍" }
-                    "$icon ${it.domain ?: it.originalUrl}"
+                if (page.content.isEmpty()) {
+                    binding.tvRecent.text = getString(R.string.dash_recent_empty)
+                } else {
+                    val sb = android.text.SpannableStringBuilder()
+                    page.content.forEachIndexed { i, it ->
+                        if (i > 0) sb.append("\n\n")
+                        sb.append(RiskUi.dotLine(it.riskLevel, it.domain ?: it.originalUrl))
+                    }
+                    binding.tvRecent.text = sb
                 }
             }
         }

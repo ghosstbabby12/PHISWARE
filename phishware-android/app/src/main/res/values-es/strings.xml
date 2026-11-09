@@ -44,7 +44,7 @@
     <string name="dash_no_conn">Sin conexión</string>
     <string name="dash_total">Análisis totales</string>
     <string name="dash_level_fmt">Nivel %1$d · %2$d pts</string>
-    <string name="dash_threats_fmt">⛔ %1$d amenazas · 🔔 %2$d sin leer</string>
+    <string name="dash_threats_fmt">%1$d amenazas · %2$d sin leer</string>
     <string name="dash_danger">Peligrosas</string>
     <string name="dash_susp">Sospechosas</string>
     <string name="dash_safe">Seguras</string>
@@ -62,14 +62,14 @@
     <string name="analysis_sub">Pega un enlace sospechoso para analizarlo</string>
     <string name="analysis_qr_btn">Escanear QR</string>
     <string name="analysis_report_btn">Reportar esta URL</string>
-    <string name="analysis_report_sent">Reporte enviado ✅ (id %1$d)</string>
+    <string name="analysis_report_sent">Reporte enviado (id %1$d)</string>
     <string name="analysis_need_url">Ingresa una URL válida</string>
     <string name="analysis_domain_fmt">Dominio: %1$s</string>
     <string name="analysis_score_fmt">Score de riesgo: %1$.1f/100</string>
     <string name="analysis_time_fmt">Tiempo: %1$dms</string>
-    <string name="analysis_threats_fmt">⚠ %1$d amenaza(s) detectada(s)</string>
-    <string name="analysis_dash_fmt">📊 %1$d análisis · ⛔ %2$d amenazas · ⭐ Nv.%3$d (%4$d pts)</string>
-    <string name="analysis_dash_off">📊 Sin conexión</string>
+    <string name="analysis_threats_fmt">%1$d amenaza(s) detectada(s)</string>
+    <string name="analysis_dash_fmt">%1$d análisis · %2$d amenazas · Nv.%3$d (%4$d pts)</string>
+    <string name="analysis_dash_off">Sin conexión</string>
     <string name="common_error">Error</string>
     <string name="common_close">Cerrar</string>
 
@@ -88,7 +88,7 @@
     <string name="alerts_loading">Cargando…</string>
     <string name="alerts_empty">Sin alertas. Analiza una URL, SMS o QR.</string>
     <string name="alerts_unread_fmt">Sin leer: %1$d</string>
-    <string name="alerts_new"> · 🆕 NUEVA</string>
+    <string name="alerts_new"> · NUEVA</string>
     <string name="alerts_error_fmt">Error: %1$s</string>
 
     <string name="edu_title">Aprende</string>
@@ -101,6 +101,8 @@
     <string name="edu_take_quiz">Hacer quiz</string>
     <string name="edu_no_quiz">Este módulo aún no tiene quiz</string>
     <string name="edu_quiz_score_fmt">Puntaje: %1$d %2$s (+%3$d pts)</string>
+    <string name="edu_quiz_passed">Aprobado</string>
+    <string name="edu_quiz_failed">No aprobado</string>
     <string name="edu_no_quiz2">Sin quiz</string>
 
     <string name="qr_title">Escanear QR</string>
@@ -122,17 +124,17 @@
     <string name="qr_img_fail">No se pudo leer la imagen.</string>
     <string name="qr_img_fail_status">No se pudo leer la imagen.</string>
     <string name="qr_detected">QR detectado. Analizando…</string>
-    <string name="qr_no_url_title">⚠️ QR sin URL</string>
+    <string name="qr_no_url_title">QR sin URL</string>
     <string name="qr_no_url_detail">Vacío\n\nEl QR no contiene un enlace; no hay nada que analizar. Pulsa \"Escanear otro\" para continuar.</string>
     <string name="qr_read_no_link">QR leído (sin enlace).</string>
     <string name="qr_review_title">Revisa el QR antes de abrirlo</string>
     <string name="qr_review_body">Contenido:</string>
     <string name="qr_open">Abrir</string>
     <string name="qr_cancel">Cancelar</string>
-    <string name="qr_status_safe">✅ SEGURO</string>
-    <string name="qr_status_susp">⚠️ SOSPECHOSO</string>
-    <string name="qr_status_dang">⛔ PELIGROSO</string>
-    <string name="qr_status_analyzed">🔍 ANALIZADO</string>
+    <string name="qr_status_safe">SEGURO</string>
+    <string name="qr_status_susp">SOSPECHOSO</string>
+    <string name="qr_status_dang">PELIGROSO</string>
+    <string name="qr_status_analyzed">ANALIZADO</string>
     <string name="qr_analysis_ready_fmt">Análisis listo: %1$s.</string>
 
     <string name="guard_title">Protección</string>
@@ -215,5 +217,5 @@
     <string name="analysis_overview_sub">Supervisa la salud de tu vault</string>
     <string name="guard_lang_es">Español</string>
     <string name="guard_lang_en">Inglés</string>
-    <string name="dash_search_hint">Buscar contraseñas…</string>
+    <string name="dash_search_hint">Pega o escribe una URL para analizar…</string>
 </resources>

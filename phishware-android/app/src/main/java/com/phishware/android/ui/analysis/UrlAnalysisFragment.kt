@@ -106,15 +106,15 @@ class UrlAnalysisFragment : Fragment() {
         lastUrl = result.originalUrl ?: binding.etUrl.text.toString()
         binding.cardResult.visibility = View.VISIBLE
 
-        val (colorRes, icon, label) = when (result.riskLevel) {
-            "SAFE"       -> Triple(R.color.success_green, "✅", getString(R.string.risk_safe))
-            "SUSPICIOUS" -> Triple(R.color.warning_amber, "⚠️", getString(R.string.risk_suspicious))
-            "DANGEROUS"  -> Triple(R.color.danger_red,    "⛔", getString(R.string.risk_dangerous))
-            else         -> Triple(R.color.primary_blue,  "🔍", getString(R.string.analysis_analyzed))
+        val (colorRes, label) = when (result.riskLevel) {
+            "SAFE"       -> Pair(R.color.success_green, getString(R.string.risk_safe))
+            "SUSPICIOUS" -> Pair(R.color.warning_amber, getString(R.string.risk_suspicious))
+            "DANGEROUS"  -> Pair(R.color.danger_red,    getString(R.string.risk_dangerous))
+            else         -> Pair(R.color.primary_blue,  getString(R.string.analysis_analyzed))
         }
 
         val color = ContextCompat.getColor(requireContext(), colorRes)
-        binding.tvRiskLevel.text = "$icon $label"
+        binding.tvRiskLevel.text = "● $label"
         binding.tvRiskLevel.setTextColor(color)
         binding.tvRiskMessage.text = result.riskMessage.orEmpty()
         binding.tvDomain.text = getString(R.string.analysis_domain_fmt, result.domain.orEmpty())

@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Outlet } from 'react-router-dom'
-import { Toaster } from 'react-hot-toast'
 import Sidebar from './Sidebar'
 import Navbar from './Navbar'
 import LinkGuardWidget from './LinkGuardWidget'
@@ -18,7 +17,7 @@ export default function AppLayout() {
           onClick={() => setMenuOpen(false)}
         />
       )}
-      <div className={`fixed z-40 h-full transition-transform duration-300 lg:static lg:z-auto lg:translate-x-0 ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
+      <div className={`fixed z-40 h-dvh transition-transform duration-300 lg:static lg:z-auto lg:translate-x-0 lg:h-full ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
         <Sidebar onNavigate={() => setMenuOpen(false)} />
       </div>
       <div className="flex flex-col flex-1 min-w-0">
@@ -30,19 +29,6 @@ export default function AppLayout() {
         </main>
       </div>
       <LinkGuardWidget />
-      <Toaster
-        position="top-right"
-        toastOptions={{
-          duration: 4200,
-          style: {
-            background: '#fff',
-            color: '#17171C',
-            border: '1px solid #E7E4E8',
-            borderRadius: '12px',
-            fontSize: '14px',
-          },
-        }}
-      />
     </div>
   )
 }

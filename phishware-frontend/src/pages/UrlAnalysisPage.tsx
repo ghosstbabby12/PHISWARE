@@ -109,7 +109,7 @@ export default function UrlAnalysisPage() {
             role="tab"
             aria-selected={tab === id}
             onClick={() => switchTab(id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
               tab === id ? 'bg-primary-600 text-white shadow-sm' : 'text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 hover:bg-ink-50 dark:hover:bg-dark-800 dark:bg-dark-900'
             }`}
           >

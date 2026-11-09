@@ -1,6 +1,7 @@
 package com.phishware.controller;
 
 import com.phishware.entity.enums.RiskLevel;
+import com.phishware.security.IndicatorEducationCatalog;
 import com.phishware.security.NistThreatClassifier;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -41,6 +42,15 @@ public class PublicUrlCheckController {
             .map(i -> i.type() + ": " + i.description())
             .toList();
 
+        List<ExplainedIndicator> explained = result.indicators().stream()
+            .map(i -> {
+                IndicatorEducationCatalog.EducationRef ref =
+                    IndicatorEducationCatalog.forType(i.type());
+                return new ExplainedIndicator(i.type(), i.description(),
+                    ref.principle().name(), ref.microlessonSlug());
+            })
+            .toList();
+
         String classification = switch (result.riskLevel()) {
             case DANGEROUS  -> "DANGEROUS";
             case SUSPICIOUS -> "SUSPICIOUS";
@@ -54,7 +64,8 @@ public class PublicUrlCheckController {
             classification,
             result.riskLevel() != RiskLevel.SAFE,
             indicatorDescriptions,
-            result.recommendations()
+            result.recommendations(),
+            explained
         ));
     }
 
@@ -77,6 +88,14 @@ public class PublicUrlCheckController {
         String classification,
         boolean isThreat,
         List<String> indicators,
-        List<String> recommendations
+        List<String> recommendations,
+        List<ExplainedIndicator> explainedIndicators
+    ) {}
+
+    public record ExplainedIndicator(
+        String type,
+        String description,
+        String persuasionPrinciple,
+        String microlessonSlug
     ) {}
 }

@@ -5,6 +5,7 @@ import com.phishware.security.BrandCatalog;
 import com.phishware.security.DomainUtils;
 import com.phishware.security.NistThreatClassifier.NistFunction;
 import com.phishware.security.NistThreatClassifier.ThreatIndicator;
+import com.phishware.security.PersuasionPrinciple;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.jsoup.Jsoup;
@@ -107,12 +108,12 @@ public class WebContentAnalyzer {
             if (fetch.error() == SafePageFetcher.FetchError.TLS_ERROR) {
                 return ContentAnalysisResult.of(List.of(new ThreatIndicator("INVALID_CERTIFICATE",
                     "El certificado HTTPS del sitio es inválido, expiró o no coincide con el dominio",
-                    Severity.HIGH, 30.0, NistFunction.DETECT)), evidenceOf(fetch));
+                    Severity.HIGH, 30.0, NistFunction.DETECT, PersuasionPrinciple.TRUST)), evidenceOf(fetch));
             }
             if (fetch.error() == SafePageFetcher.FetchError.TOO_MANY_REDIRECTS) {
                 return ContentAnalysisResult.of(List.of(new ThreatIndicator("REDIRECT_LOOP",
                     "El sitio encadena demasiadas redirecciones — técnica usada para evadir análisis",
-                    Severity.MEDIUM, 15.0, NistFunction.DETECT)), evidenceOf(fetch));
+                    Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.NONE)), evidenceOf(fetch));
             }
             return ContentAnalysisResult.unavailable("No se pudo obtener la página: " + fetch.error());
         }
@@ -124,7 +125,7 @@ public class WebContentAnalyzer {
                 || disposition.matches(".*filename=.*\\.(apk|exe|msi|scr|bat|js|vbs|hta|dmg|jar)\"?.*")) {
             return ContentAnalysisResult.of(List.of(new ThreatIndicator("EXECUTABLE_DOWNLOAD",
                 "La URL descarga directamente un archivo ejecutable o aplicación",
-                Severity.HIGH, 40.0, NistFunction.DETECT)), evidenceOf(fetch));
+                Severity.HIGH, 40.0, NistFunction.DETECT, PersuasionPrinciple.FEAR)), evidenceOf(fetch));
         }
 
         if (!fetch.isHtml()) {
@@ -154,12 +155,12 @@ public class WebContentAnalyzer {
         if (!DomainUtils.registrableDomain(originalHost).equals(finalReg)) {
             indicators.add(new ThreatIndicator("CROSS_DOMAIN_REDIRECT",
                 "La URL redirige a otro dominio: " + finalHost,
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
         }
         if (fetch.redirectChain().size() >= 4) {
             indicators.add(new ThreatIndicator("LONG_REDIRECT_CHAIN",
                 "La URL pasa por " + (fetch.redirectChain().size() - 1) + " redirecciones antes de llegar al destino",
-                Severity.LOW, 5.0, NistFunction.DETECT));
+                Severity.LOW, 5.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
 
         // ── 2. Formularios y campos sensibles ─────────────────────────────────
@@ -192,22 +193,22 @@ public class WebContentAnalyzer {
         if (externalAction) {
             indicators.add(new ThreatIndicator("FORM_EXTERNAL_ACTION",
                 "El formulario de acceso envía los datos a un dominio diferente al de la página",
-                Severity.HIGH, 30.0, NistFunction.DETECT));
+                Severity.HIGH, 30.0, NistFunction.DETECT, PersuasionPrinciple.AUTHORITY));
         }
         if (mailtoAction) {
             indicators.add(new ThreatIndicator("FORM_MAILTO",
                 "El formulario envía los datos ingresados por correo electrónico",
-                Severity.HIGH, 25.0, NistFunction.DETECT));
+                Severity.HIGH, 25.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
         if (asksCredentials && (!finalIsHttps || insecureAction)) {
             indicators.add(new ThreatIndicator("CREDENTIALS_OVER_HTTP",
                 "La página pide contraseña o datos sensibles sin cifrado HTTPS",
-                Severity.HIGH, 25.0, NistFunction.PROTECT));
+                Severity.HIGH, 25.0, NistFunction.PROTECT, PersuasionPrinciple.URGENCY));
         }
         if (sensitiveFields > 0 && !BrandCatalog.isAnyOfficialDomain(finalHost)) {
             indicators.add(new ThreatIndicator("SENSITIVE_DATA_REQUEST",
                 "La página solicita datos financieros o de identidad (tarjeta, CVV, PIN, cédula, frase semilla)",
-                Severity.MEDIUM, 20.0, NistFunction.DETECT));
+                Severity.MEDIUM, 20.0, NistFunction.DETECT, PersuasionPrinciple.AUTHORITY));
         }
 
         // ── 3. Suplantación de marca ──────────────────────────────────────────
@@ -251,11 +252,11 @@ public class WebContentAnalyzer {
             if (asksCredentials) {
                 indicators.add(new ThreatIndicator("BRAND_IMPERSONATION",
                     "La página se presenta como \"" + name + "\" y pide credenciales, pero está alojada en " + finalHost,
-                    Severity.CRITICAL, 45.0, NistFunction.DETECT));
+                    Severity.CRITICAL, 45.0, NistFunction.DETECT, PersuasionPrinciple.AUTHORITY));
             } else if (brandResources >= 3 || (totalLinks >= 5 && (double) brandLinks / totalLinks > 0.3)) {
                 indicators.add(new ThreatIndicator("CLONED_SITE",
                     "La página copia recursos y enlaces del sitio oficial de \"" + name + "\" (posible clon)",
-                    Severity.MEDIUM, 20.0, NistFunction.DETECT));
+                    Severity.MEDIUM, 20.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
             }
         }
 
@@ -263,12 +264,12 @@ public class WebContentAnalyzer {
         if (totalLinks >= 5 && (double) nullLinks / totalLinks > 0.5) {
             indicators.add(new ThreatIndicator("NULL_LINKS",
                 "La mayoría de enlaces de la página no llevan a ninguna parte (" + nullLinks + "/" + totalLinks + ")",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
         if (asksCredentials && totalLinks >= 10 && (double) externalLinks / totalLinks > 0.8) {
             indicators.add(new ThreatIndicator("EXTERNAL_LINKS",
                 "Casi todos los enlaces apuntan a otros dominios, típico de páginas clonadas",
-                Severity.LOW, 10.0, NistFunction.DETECT));
+                Severity.LOW, 10.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
 
         // ── 5. Scripts ────────────────────────────────────────────────────────
@@ -284,17 +285,17 @@ public class WebContentAnalyzer {
         if (obfuscationHits >= 2) {
             indicators.add(new ThreatIndicator("OBFUSCATED_SCRIPT",
                 "La página contiene JavaScript ofuscado (eval, atob, unescape, cadenas codificadas)",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
         if (EXFILTRATION.matcher(fullHtml).find()) {
             indicators.add(new ThreatIndicator("DATA_EXFILTRATION",
                 "La página envía información a un bot de Telegram o webhook — técnica típica de kits de phishing",
-                Severity.CRITICAL, 45.0, NistFunction.DETECT));
+                Severity.CRITICAL, 45.0, NistFunction.DETECT, PersuasionPrinciple.FEAR));
         }
         if (ANTI_INSPECTION.matcher(fullHtml).find()) {
             indicators.add(new ThreatIndicator("ANTI_INSPECTION",
                 "La página bloquea clic derecho o herramientas de desarrollador para impedir su inspección",
-                Severity.LOW, 5.0, NistFunction.DETECT));
+                Severity.LOW, 5.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
 
         // ── 6. Redirecciones automáticas (meta refresh / JS) ──────────────────
@@ -303,7 +304,7 @@ public class WebContentAnalyzer {
         if (autoRedirect.isPresent()) {
             indicators.add(new ThreatIndicator("AUTO_REDIRECT",
                 "La página redirige automáticamente a otro dominio: " + hostOf(autoRedirect.get()),
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.URGENCY));
         }
 
         // ── 7. Iframes ocultos ────────────────────────────────────────────────
@@ -315,7 +316,7 @@ public class WebContentAnalyzer {
         if (hiddenIframe) {
             indicators.add(new ThreatIndicator("HIDDEN_IFRAME",
                 "La página contiene un iframe oculto que puede cargar contenido malicioso",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
 
         // ── 8. Lenguaje de urgencia / ingeniería social ───────────────────────
@@ -325,7 +326,7 @@ public class WebContentAnalyzer {
             indicators.add(new ThreatIndicator("URGENCY_LANGUAGE",
                 "La página usa lenguaje de urgencia o amenaza para presionar al usuario (\""
                     + urgency.get(0) + "\", \"" + urgency.get(1) + "\")",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.URGENCY));
         }
 
         return ContentAnalysisResult.of(indicators, evidence);

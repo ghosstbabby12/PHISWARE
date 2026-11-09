@@ -5,6 +5,7 @@ import com.phishware.security.BrandCatalog;
 import com.phishware.security.DomainUtils;
 import com.phishware.security.NistThreatClassifier.NistFunction;
 import com.phishware.security.NistThreatClassifier.ThreatIndicator;
+import com.phishware.security.PersuasionPrinciple;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.core.ParameterizedTypeReference;
@@ -91,15 +92,15 @@ public class DomainAgeService {
             ThreatIndicator indicator = null;
             if (days < 7) {
                 indicator = new ThreatIndicator("VERY_NEW_DOMAIN",
-                    "El dominio fue registrado hace " + days + " días", Severity.HIGH, 60.0, NistFunction.IDENTIFY);
+                    "El dominio fue registrado hace " + days + " días", Severity.HIGH, 60.0, NistFunction.IDENTIFY, PersuasionPrinciple.URGENCY);
             } else if (days < 30) {
                 indicator = new ThreatIndicator("NEW_DOMAIN",
                     "El dominio fue registrado hace " + days + " días (menos de un mes)",
-                    Severity.HIGH, 45.0, NistFunction.IDENTIFY);
+                    Severity.HIGH, 45.0, NistFunction.IDENTIFY, PersuasionPrinciple.URGENCY);
             } else if (days < 180) {
                 indicator = new ThreatIndicator("RECENT_DOMAIN",
                     "El dominio tiene menos de 6 meses de antigüedad (" + days + " días)",
-                    Severity.MEDIUM, 20.0, NistFunction.IDENTIFY);
+                    Severity.MEDIUM, 20.0, NistFunction.IDENTIFY, PersuasionPrinciple.NONE);
             }
             List<ThreatIndicator> list = indicator == null ? List.of() : List.of(indicator);
             return new DomainAgeResult(true, registered, days,

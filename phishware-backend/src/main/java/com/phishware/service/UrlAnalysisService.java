@@ -15,6 +15,7 @@ import com.phishware.exception.UrlValidationException;
 import com.phishware.repository.AlertRepository;
 import com.phishware.repository.UrlAnalysisRepository;
 import com.phishware.repository.UserRepository;
+import com.phishware.security.IndicatorEducationCatalog;
 import com.phishware.security.InputSanitizerService;
 import com.phishware.security.NistThreatClassifier;
 import com.phishware.security.OwaspComplianceValidator;
@@ -424,14 +425,20 @@ public class UrlAnalysisService {
 
     private UrlAnalysisResponse toResponse(UrlAnalysis analysis, List<String> recommendations) {
         List<ThreatResponse> threatResponses = analysis.getThreats().stream()
-            .map(t -> ThreatResponse.builder()
-                .id(t.getId())
-                .threatType(t.getThreatType())
-                .description(t.getDescription())
-                .severity(t.getSeverity())
-                .source(t.getSource())
-                .detectedAt(t.getDetectedAt())
-                .build())
+            .map(t -> {
+                IndicatorEducationCatalog.EducationRef ref =
+                    IndicatorEducationCatalog.forType(t.getThreatType());
+                return ThreatResponse.builder()
+                    .id(t.getId())
+                    .threatType(t.getThreatType())
+                    .description(t.getDescription())
+                    .severity(t.getSeverity())
+                    .source(t.getSource())
+                    .detectedAt(t.getDetectedAt())
+                    .persuasionPrinciple(ref.principle().name())
+                    .microlessonSlug(ref.microlessonSlug())
+                    .build();
+            })
             .collect(Collectors.toList());
 
         String riskMessage = getRiskMessage(analysis.getRiskLevel());

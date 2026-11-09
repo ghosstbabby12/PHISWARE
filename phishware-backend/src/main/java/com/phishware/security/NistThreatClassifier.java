@@ -108,83 +108,83 @@ public class NistThreatClassifier {
         if (PHISHING_TERMS_IN_DOMAIN.matcher(host).find()) {
             indicators.add(indicator("PHISHING_DOMAIN_PATTERN",
                 "El dominio combina términos de phishing típicos (secure-login, verify-account, etc.)",
-                Severity.HIGH, 35.0, NistFunction.DETECT));
+                Severity.HIGH, 35.0, NistFunction.DETECT, PersuasionPrinciple.AUTHORITY));
         }
 
         // 4. Subdominio sospechoso punteado (e.g. secure.bancosantander.xyz)
         if (SUSPICIOUS_SUBDOMAIN.matcher(host).find() && !BrandCatalog.isAnyOfficialDomain(host)) {
             indicators.add(indicator("SUSPICIOUS_SUBDOMAIN",
                 "El subdominio usa términos que imitan servicios legítimos (login, secure, verify)",
-                Severity.MEDIUM, 20.0, NistFunction.DETECT));
+                Severity.MEDIUM, 20.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
         }
 
         // 5. URL shortener — destino desconocido
         if (URL_SHORTENER.matcher(host).find()) {
             indicators.add(indicator("URL_SHORTENER",
                 "La URL usa un acortador que puede ocultar un destino malicioso",
-                Severity.MEDIUM, 20.0, NistFunction.DETECT));
+                Severity.MEDIUM, 20.0, NistFunction.DETECT, PersuasionPrinciple.CURIOSITY));
         }
 
         // 6. TLD de alto riesgo (se evalúa sobre el host, no sobre toda la URL)
         HIGH_RISK_TLDS.stream().filter(host::endsWith).findFirst().ifPresent(tld ->
             indicators.add(indicator("HIGH_RISK_TLD",
                 "El dominio usa un TLD frecuentemente asociado a actividades maliciosas: " + tld,
-                Severity.MEDIUM, 15.0, NistFunction.IDENTIFY)));
+                Severity.MEDIUM, 15.0, NistFunction.IDENTIFY, PersuasionPrinciple.NONE)));
 
         // 7. Palabras clave de phishing en la URL
         if (PHISHING_KEYWORDS.matcher(url).find() && !isLikelySafeDomain(host)) {
             indicators.add(indicator("PHISHING_KEYWORDS",
                 "La URL contiene términos frecuentemente usados en páginas de phishing",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.URGENCY));
         }
 
         // 8. URL excesivamente larga (técnica de ofuscación)
         if (url.length() > SUSPICIOUS_URL_LENGTH) {
             indicators.add(indicator("EXCESSIVE_URL_LENGTH",
                 "URL inusualmente larga (" + url.length() + " chars) — posible técnica de ofuscación",
-                Severity.LOW, 5.0, NistFunction.DETECT));
+                Severity.LOW, 5.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
 
         // 9. IP en lugar de dominio (técnica directa de phishing)
         if (DomainUtils.isIpAddress(host)) {
             indicators.add(indicator("IP_AS_DOMAIN",
                 "La URL usa una dirección IP en lugar de un nombre de dominio",
-                Severity.HIGH, 35.0, NistFunction.IDENTIFY));
+                Severity.HIGH, 35.0, NistFunction.IDENTIFY, PersuasionPrinciple.TRUST));
         }
 
         // 10. Múltiples subdominios (técnica de evasión)
         if (host.chars().filter(c -> c == '.').count() > 3) {
             indicators.add(indicator("EXCESSIVE_SUBDOMAINS",
                 "El dominio tiene demasiados niveles de subdominio — técnica de evasión",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
         }
 
         // 11. Punycode / IDN: caracteres de otros alfabetos que se ven iguales (аpple.com con "а" cirílica)
         if (host.startsWith("xn--") || host.contains(".xn--")) {
             indicators.add(indicator("PUNYCODE_HOMOGRAPH",
                 "El dominio usa caracteres internacionales (punycode) que pueden imitar visualmente a otro sitio",
-                Severity.HIGH, 30.0, NistFunction.DETECT));
+                Severity.HIGH, 30.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
         }
 
         // 12. Símbolo @ en la autoridad: el navegador ignora todo lo anterior (https://paypal.com@evil.xyz)
         if (uri != null && uri.getRawUserInfo() != null) {
             indicators.add(indicator("USERINFO_TRICK",
                 "La URL contiene '@' antes del dominio: lo que aparece antes es engañoso y se ignora",
-                Severity.HIGH, 35.0, NistFunction.DETECT));
+                Severity.HIGH, 35.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
         }
 
         // 13. Puerto no estándar
         if (uri != null && uri.getPort() != -1 && uri.getPort() != 80 && uri.getPort() != 443) {
             indicators.add(indicator("NON_STANDARD_PORT",
                 "La URL usa un puerto poco común (" + uri.getPort() + ")",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
 
         // 14. Sin cifrado TLS
         if (uri != null && "http".equalsIgnoreCase(uri.getScheme())) {
             indicators.add(indicator("NO_HTTPS",
                 "La conexión no está cifrada (HTTP): los datos viajan en texto plano",
-                Severity.LOW, 10.0, NistFunction.PROTECT));
+                Severity.LOW, 10.0, NistFunction.PROTECT, PersuasionPrinciple.NONE));
         }
 
         // 15. Redirección abierta o "//" embebido en la ruta
@@ -192,7 +192,7 @@ public class NistThreatClassifier {
         if (OPEN_REDIRECT_PARAM.matcher(url).find() || path.contains("//")) {
             indicators.add(indicator("EMBEDDED_REDIRECT",
                 "La URL contiene otra URL como parámetro — posible redirección a un sitio malicioso",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
         }
 
         // 16. Nombre de dominio aleatorio (alta entropía, típico de dominios generados por algoritmo)
@@ -200,7 +200,7 @@ public class NistThreatClassifier {
                 && !DomainUtils.isIpAddress(host)) {
             indicators.add(indicator("RANDOM_LOOKING_DOMAIN",
                 "El nombre del dominio parece generado aleatoriamente",
-                Severity.MEDIUM, 15.0, NistFunction.DETECT));
+                Severity.MEDIUM, 15.0, NistFunction.DETECT, PersuasionPrinciple.NONE));
         }
 
         // 17. Exceso de guiones o dígitos en el dominio (paypal-login-secure-verify.com)
@@ -209,14 +209,14 @@ public class NistThreatClassifier {
         if (hyphens >= 3 || (sld.length() > 0 && digits >= 4 && (double) digits / sld.length() > 0.3)) {
             indicators.add(indicator("DOMAIN_COMPOSITION",
                 "El dominio tiene demasiados guiones o dígitos, algo poco común en sitios legítimos",
-                Severity.LOW, 10.0, NistFunction.DETECT));
+                Severity.LOW, 10.0, NistFunction.DETECT, PersuasionPrinciple.TRUST));
         }
 
         // 18. Hosting gratuito / DNS dinámico
         FREE_HOSTING_DOMAINS.stream().filter(d -> DomainUtils.isSameOrSubdomain(host, d)).findFirst()
             .ifPresent(d -> indicators.add(indicator("FREE_HOSTING",
                 "El sitio está alojado en un servicio gratuito (" + d + ") muy usado para campañas de phishing",
-                Severity.MEDIUM, 15.0, NistFunction.IDENTIFY)));
+                Severity.MEDIUM, 15.0, NistFunction.IDENTIFY, PersuasionPrinciple.TRUST)));
 
         double heuristicScore = indicators.stream().mapToDouble(ThreatIndicator::scoreContribution).sum();
 
@@ -251,7 +251,7 @@ public class NistThreatClassifier {
             if (literal) {
                 return Optional.of(indicator("BRAND_SQUATTING",
                     "El dominio contiene la marca \"" + name + "\" pero no es su dominio oficial",
-                    Severity.HIGH, 40.0, NistFunction.IDENTIFY));
+                    Severity.HIGH, 40.0, NistFunction.IDENTIFY, PersuasionPrinciple.AUTHORITY));
             }
 
             if (name.length() < 5) continue;
@@ -264,15 +264,16 @@ public class NistThreatClassifier {
             if (homoglyph || nearMiss) {
                 return Optional.of(indicator("TYPOSQUATTING",
                     "El dominio imita a \"" + name + "\" cambiando letras o usando caracteres parecidos",
-                    Severity.HIGH, 40.0, NistFunction.IDENTIFY));
+                    Severity.HIGH, 40.0, NistFunction.IDENTIFY, PersuasionPrinciple.TRUST));
             }
         }
         return Optional.empty();
     }
 
     private static ThreatIndicator indicator(String type, String description, Severity severity,
-                                             double score, NistFunction function) {
-        return new ThreatIndicator(type, description, severity, score, function);
+                                             double score, NistFunction function,
+                                             PersuasionPrinciple persuasionPrinciple) {
+        return new ThreatIndicator(type, description, severity, score, function, persuasionPrinciple);
     }
 
     private static URI parseUri(String url) {
@@ -342,7 +343,8 @@ public class NistThreatClassifier {
         String description,
         Severity severity,
         double scoreContribution,
-        NistFunction nistFunction
+        NistFunction nistFunction,
+        PersuasionPrinciple persuasionPrinciple
     ) {}
 
     public record HeuristicResult(

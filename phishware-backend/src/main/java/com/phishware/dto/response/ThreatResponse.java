@@ -15,4 +15,6 @@ public class ThreatResponse {
     private Severity severity;
     private String source;
     private LocalDateTime detectedAt;
+    private String persuasionPrinciple;
+    private String microlessonSlug;
 }

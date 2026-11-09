@@ -186,7 +186,8 @@ class UrlAnalysisServiceTest {
         when(contentAnalyzer.analyze(any())).thenReturn(new WebContentAnalyzer.ContentAnalysisResult(
             true, null, 75.0, List.of(new NistThreatClassifier.ThreatIndicator(
                 "BRAND_IMPERSONATION", "Se presenta como paypal", com.phishware.entity.enums.Severity.CRITICAL,
-                45.0, NistThreatClassifier.NistFunction.DETECT)), java.util.Map.of()));
+                45.0, NistThreatClassifier.NistFunction.DETECT,
+                com.phishware.security.PersuasionPrinciple.AUTHORITY)), java.util.Map.of()));
         when(analysisRepository.save(any())).thenAnswer(i -> i.getArgument(0));
 
         UrlAnalysisResponse response = urlAnalysisService.analyzeUrl(request, 1L);

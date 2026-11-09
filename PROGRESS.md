@@ -33,9 +33,10 @@ Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, 
 - [x] 19. `feat(extension)` (`6e5afe5`): _locales ES/EN, options i18n, popup/overlay con tema claro/oscuro + principio de persuasión
 
 ## FASE 6 – Android (20-22)
-- [ ] 20. `feat(android)`: MessageTextAnalyzer on-device + tests
-- [ ] 21. `feat(android)`: DayNight + ES/EN + alerta educativa
-- [ ] 22. `chore(android)`: flavor play + quitar Glide + 2 instrumentados
+- [x] 20. `feat(android)` (`b4b9ca0`): MessageTextAnalyzer on-device (~40 reglas ES/EN) + reemplazo de looksPhishyLocal + 10 tests
+- [x] 21. `feat(android)` (`ab6de31`): DayNight + ES/EN (inglés por defecto) + alerta con principio/microlección/sello
+- [x] 22. `chore(android)` (`1754ff5`): flavor play sin SMS + sin Glide + 2 instrumentados (requieren emulador: `./gradlew connectedPlayDebugAndroidTest`)
+- Verificado: `assembleDebug assemblePlayDebug testFullDebugUnitTest testPlayDebugUnitTest` en verde (con red para la primera resolución de la variante play).
 
 ## FASE 7 – Evaluación/calidad/despliegue (23-26)
 - [ ] 23. `test(eval)`: dataset real + scripts corregidos + Wilcoxon

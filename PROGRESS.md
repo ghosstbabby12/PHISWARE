@@ -29,8 +29,8 @@ Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, 
 - [x] 17. `feat(web)` (`f6b4b56`): badges/streaks/admin stats (backend+frontend) + 17 tests vitest
 
 ## FASE 5 – Extensión (18-19)
-- [ ] 18. `feat(extension)`: heurística offline + fail-safe + blocklist
-- [ ] 19. `feat(extension)`: config URL + i18n + theme
+- [x] 18. `feat(extension)` (`eb48ba7`): heurística offline + fail-safe + blocklist + backend configurable + endpoint /public/blocklist
+- [x] 19. `feat(extension)` (`6e5afe5`): _locales ES/EN, options i18n, popup/overlay con tema claro/oscuro + principio de persuasión
 
 ## FASE 6 – Android (20-22)
 - [ ] 20. `feat(android)`: MessageTextAnalyzer on-device + tests

@@ -71,6 +71,11 @@ app:
   cors:
     allowed-origins: http://localhost:5173,http://localhost:3000,https://phishware.app
 
+  security:
+    # Reverse proxies allowed to set X-Forwarded-For (exact IPs or IPv4 CIDR).
+    # Empty by default: client IP is always taken from the direct connection.
+    trusted-proxies:
+
 # SpringDoc / Swagger
 springdoc:
   api-docs:

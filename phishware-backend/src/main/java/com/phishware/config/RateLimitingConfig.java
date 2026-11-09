@@ -31,15 +31,19 @@ public class RateLimitingConfig {
     @Value("${app.rate-limit.requests-per-minute:120}")
     private int requestsPerMinute;
 
+    @Value("${app.security.trusted-proxies:}")
+    private java.util.List<String> trustedProxies;
+
     @Bean
     public RateLimitFilter rateLimitFilter() {
-        return new RateLimitFilter(requestsPerMinute);
+        return new RateLimitFilter(requestsPerMinute, trustedProxies);
     }
 
     @Slf4j
     public static class RateLimitFilter extends OncePerRequestFilter {
 
         private final int maxRequestsPerMinute;
+        private final java.util.List<String> trustedProxies;
 
         // ip -> [count, windowStartEpochSecond]
         private final Map<String, long[]> requestCounts = new ConcurrentHashMap<>();
@@ -52,8 +56,9 @@ public class RateLimitingConfig {
             "/public/url"
         );
 
-        public RateLimitFilter(int maxRequestsPerMinute) {
+        public RateLimitFilter(int maxRequestsPerMinute, java.util.List<String> trustedProxies) {
             this.maxRequestsPerMinute = maxRequestsPerMinute;
+            this.trustedProxies = trustedProxies == null ? java.util.List.of() : trustedProxies;
         }
 
         @Override
@@ -105,11 +110,52 @@ public class RateLimitingConfig {
         }
 
         private String extractIp(HttpServletRequest request) {
-            String forwarded = request.getHeader("X-Forwarded-For");
-            if (forwarded != null && !forwarded.isBlank()) {
-                return forwarded.split(",")[0].strip();
+            String remoteAddr = request.getRemoteAddr();
+            if (isTrustedProxy(remoteAddr)) {
+                String forwarded = request.getHeader("X-Forwarded-For");
+                if (forwarded != null && !forwarded.isBlank()) {
+                    return forwarded.split(",")[0].strip();
+                }
             }
-            return request.getRemoteAddr();
+            return remoteAddr;
+        }
+
+        private boolean isTrustedProxy(String remoteAddr) {
+            for (String entry : trustedProxies) {
+                String candidate = entry.strip();
+                if (candidate.isEmpty()) {
+                    continue;
+                }
+                if (candidate.equals(remoteAddr)) {
+                    return true;
+                }
+                if (candidate.contains("/") && matchesCidr(candidate, remoteAddr)) {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        static boolean matchesCidr(String cidr, String ip) {
+            try {
+                String[] parts = cidr.split("/");
+                int prefix = Integer.parseInt(parts[1]);
+                long network = toLong(java.net.InetAddress.getByName(parts[0]));
+                long address = toLong(java.net.InetAddress.getByName(ip));
+                long mask = prefix == 0 ? 0L : (~0L << (32 - prefix)) & 0xFFFFFFFFL;
+                return (network & mask) == (address & mask);
+            } catch (Exception e) {
+                return false;
+            }
+        }
+
+        private static long toLong(java.net.InetAddress address) {
+            byte[] raw = address.getAddress();
+            if (raw.length != 4) {
+                return -1;
+            }
+            return ((raw[0] & 0xFFL) << 24) | ((raw[1] & 0xFFL) << 16)
+                | ((raw[2] & 0xFFL) << 8) | (raw[3] & 0xFFL);
         }
     }
 }

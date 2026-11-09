@@ -110,10 +110,16 @@ public class UrlAnalysisService {
         CompletableFuture<DomainAgeService.DomainAgeResult> ageFuture = async(
             () -> domainAgeService.check(domain), DomainAgeService.DomainAgeResult.unavailable(), 8);
 
-        GoogleSafeBrowsingService.SafeBrowsingResult gsbResult = gsbFuture.join();
-        VirusTotalService.VirusTotalResult          vtResult  = vtFuture.join();
-        WebContentAnalyzer.ContentAnalysisResult    content   = contentFuture.join();
-        DomainAgeService.DomainAgeResult            age       = ageFuture.join();
+        CompletableFuture.allOf(gsbFuture, vtFuture, contentFuture, ageFuture).join();
+
+        GoogleSafeBrowsingService.SafeBrowsingResult gsbResult = gsbFuture.getNow(
+            GoogleSafeBrowsingService.SafeBrowsingResult.error());
+        VirusTotalService.VirusTotalResult vtResult = vtFuture.getNow(
+            VirusTotalService.VirusTotalResult.error());
+        WebContentAnalyzer.ContentAnalysisResult content = contentFuture.getNow(
+            WebContentAnalyzer.ContentAnalysisResult.unavailable("Tiempo de espera agotado"));
+        DomainAgeService.DomainAgeResult age = ageFuture.getNow(
+            DomainAgeService.DomainAgeResult.unavailable());
 
         // NIST ID.RA-3: Calcular riesgo combinado (APIs + heurística + contenido + antigüedad)
         RiskAssessment assessment = calculateCombinedRisk(gsbResult, vtResult, heuristic, content, age);

@@ -17,5 +17,31 @@ services:
       timeout: 5s
       retries: 10
 
+  backend:
+    build: ./phishware-backend
+    container_name: phishware-backend
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DB_USERNAME: ${DB_USERNAME:-phishware}
+      DB_PASSWORD: ${DB_PASSWORD:?Define DB_PASSWORD en tu archivo .env}
+      JWT_SECRET: ${JWT_SECRET:?Define JWT_SECRET en tu archivo .env}
+      GOOGLE_SAFE_BROWSING_KEY: ${GOOGLE_SAFE_BROWSING_KEY:-YOUR_API_KEY}
+      VIRUSTOTAL_KEY: ${VIRUSTOTAL_KEY:-YOUR_API_KEY}
+      APP_SECURITY_TRUSTED_PROXIES: ${TRUSTED_PROXIES:-}
+    ports:
+      - "8080:8080"
+
+  frontend:
+    build: ./phishware-frontend
+    container_name: phishware-frontend
+    restart: unless-stopped
+    depends_on:
+      - backend
+    ports:
+      - "3000:80"
+
 volumes:
   phishware-postgres-data:

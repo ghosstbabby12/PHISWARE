@@ -31,7 +31,7 @@ public class RateLimitingConfig {
     @Value("${app.rate-limit.requests-per-minute:120}")
     private int requestsPerMinute;
 
-    @Value("${app.security.trusted-proxies:}")
+    @Value("#{'${app.security.trusted-proxies:}'.split(',')}")
     private java.util.List<String> trustedProxies;
 
     @Bean

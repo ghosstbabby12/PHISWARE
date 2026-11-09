@@ -24,6 +24,17 @@ android {
         buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/api/\"")
     }
 
+    flavorDimensions += "dist"
+    productFlavors {
+        create("full") {
+            dimension = "dist"
+        }
+        create("play") {
+            dimension = "dist"
+            // Play policy: no SMS reading in the Play build (share link, QR and notifications only)
+        }
+    }
+
     buildTypes {
         debug {
             isDebuggable = true
@@ -94,10 +105,6 @@ dependencies {
 
     // Shared Preferences (DataStore)
     implementation(libs.datastore.preferences)
-
-    // Glide (imágenes)
-    implementation(libs.glide)
-    kapt(libs.glide.compiler)
 
     // Testing
     testImplementation(libs.junit)

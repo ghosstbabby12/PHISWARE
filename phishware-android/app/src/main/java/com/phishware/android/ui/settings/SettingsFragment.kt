@@ -57,6 +57,10 @@ class SettingsFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        // Play flavor has no SMS permission: hide the SMS toggle (share link + QR still work)
+        if (com.phishware.android.BuildConfig.FLAVOR == "play") {
+            binding.swSms.visibility = View.GONE
+        }
         lifecycleScope.launch {
             binding.swConsent.isChecked = guard.consent.first()
             binding.swGuard.isChecked = guard.guardEnabled.first()

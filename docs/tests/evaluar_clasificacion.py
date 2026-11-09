@@ -121,21 +121,27 @@ def main():
 
     c = Counter(r["acierto"] for r in out)
     vp, vn, fp, fn = c.get("VP", 0), c.get("VN", 0), c.get("FP", 0), c.get("FN", 0)
-    total = vp + vn + fp + fn
-    precision = (vp + vn) / total if total else 0
+    errores = c.get("ERROR", 0)
+    validas = vp + vn + fp + fn
+    exactitud = (vp + vn) / validas if validas else 0
     prec_ph = vp / (vp + fp) if (vp + fp) else 0
     recall = vp / (vp + fn) if (vp + fn) else 0
+    f1 = 2 * prec_ph * recall / (prec_ph + recall) if (prec_ph + recall) else 0
+    tasa_fp = fp / (fp + vn) if (fp + vn) else 0
     tiempos = [int(r["analysisTimeMs"]) for r in out if str(r["analysisTimeMs"]).isdigit()]
     tprom = sum(tiempos) / len(tiempos) if tiempos else 0
     print("\n===== PARA PEGAR EN DOCUMENTO =====")
-    print(f"4.3.1: Total={len(rows)} | phishing={sum(1 for r in out if r['esperado']=='phishing')} | legitimas={sum(1 for r in out if r['esperado']=='legitima')}")
-    print(f"4.3.2: VP={vp} ({vp/total:.1%}) | VN={vn} ({vn/total:.1%}) | FP={fp} ({fp/total:.1%}) | FN={fn} ({fn/total:.1%}) | Precision general={precision:.1%} | Precision phishing={prec_ph:.1%} | Recall={recall:.1%}")
+    print(f"4.4.1: Total={len(rows)} | phishing={sum(1 for r in out if r['esperado']=='phishing')} | legitimas={sum(1 for r in out if r['esperado']=='legitima')} | validas={validas} | errores={errores}")
+    print(f"4.4.2: VP={vp} | VN={vn} | FP={fp} | FN={fn} (sobre {validas} validas)")
+    print(f"Exactitud={exactitud:.1%} | Precision phishing={prec_ph:.1%} | Recall={recall:.1%} | F1={f1:.3f} | Tasa FP={tasa_fp:.1%}")
     print(f"4.3.3: Tiempo promedio={tprom:.0f} ms | max={max(tiempos) if tiempos else 0} ms | HU-NF01 (<5000ms): {'CUMPLE' if tprom < 5000 else 'NO CUMPLE'}")
     print(f"CSV detalle: {args.out}")
     # resumen JSON para generar_graficas.py
-    json.dump({"vp": vp, "vn": vn, "fp": fp, "fn": fn, "precision": precision,
-               "precision_phishing": prec_ph, "recall": recall, "t_prom_ms": tprom,
-               "total": len(rows)}, open("resumen_metricas.json", "w"), indent=2)
+    json.dump({"vp": vp, "vn": vn, "fp": fp, "fn": fn, "errores": errores,
+               "exactitud": exactitud, "precision_phishing": prec_ph,
+               "recall": recall, "f1": f1, "tasa_fp": tasa_fp,
+               "t_prom_ms": tprom, "total": len(rows), "validas": validas},
+              open("resumen_metricas.json", "w"), indent=2)
     print("resumen_metricas.json generado -> usar con generar_graficas.py")
 
 if __name__ == "__main__":

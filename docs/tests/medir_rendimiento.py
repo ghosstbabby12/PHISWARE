@@ -61,11 +61,27 @@ def main():
         print(f"{i+1}/{a.n} ok={m['ok']} http={m['http']} total_ms={m['ms']:.0f} server_ms={m.get('server_ms')}")
     with open(a.out, "w", newline="", encoding="utf-8") as f:
         w = csv.DictWriter(f, fieldnames=list(filas[0].keys())); w.writeheader(); w.writerows(filas)
-    ms = [f["ms"] for f in filas if f["ok"]]
+    ms = sorted(f["ms"] for f in filas if f["ok"])
+    srv = sorted(f["server_ms"] for f in filas if f["ok"] and f.get("server_ms") is not None)
     ok = sum(1 for f in filas if f["ok"])
-    print("\n===== TABLA 4.3.3 =====")
-    print(f"Tiempo promedio por URL: {statistics.mean(ms):.0f} ms | p50={statistics.median(ms):.0f} | p95={sorted(ms)[int(len(ms)*0.95)-1]:.0f} ms | max={max(ms):.0f} ms")
-    print(f"Exito: {ok}/{len(filas)} ({ok/len(filas):.1%}) | HU-NF01 (<5000 ms promedio): {'CUMPLE' if statistics.mean(ms)<5000 else 'NO CUMPLE'}")
+
+    def pct(xs, p):
+        if not xs:
+            return 0
+        k = min(len(xs) - 1, int(len(xs) * p))
+        return xs[k]
+
+    def resumen(xs, nombre):
+        if not xs:
+            return f"{nombre}: sin datos"
+        return (f"{nombre}: media={statistics.mean(xs):.0f} ms | "
+                f"mediana={statistics.median(xs):.0f} ms | "
+                f"P95={pct(xs, 0.95):.0f} ms | max={max(xs):.0f} ms")
+
+    print("\n===== TABLA 4.4.3 =====")
+    print(resumen(ms, "Tiempo total por URL"))
+    print(resumen(srv, "Tiempo en servidor"))
+    print(f"Exito: {ok}/{len(filas)} ({ok/len(filas):.1%}) | HU-NF01 (<5000 ms promedio): {'CUMPLE' if (statistics.mean(ms) < 5000 if ms else False) else 'NO CUMPLE'}")
 
 if __name__ == "__main__":
     main()

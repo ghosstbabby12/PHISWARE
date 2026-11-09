@@ -4,9 +4,9 @@ import { Link } from 'react-router-dom'
 import { useClipboardGuard } from '@/hooks/useClipboardGuard'
 
 const RISK_STYLES = {
-  SAFE:       'border-success-500/40 bg-white text-success-600',
-  SUSPICIOUS: 'border-warning-500/40 bg-white text-warning-600',
-  DANGEROUS:  'border-danger-500/40 bg-white text-danger-600',
+  SAFE:       'border-success-500/40 bg-white dark:bg-dark-800 text-success-600',
+  SUSPICIOUS: 'border-warning-500/40 bg-white dark:bg-dark-800 text-warning-600',
+  DANGEROUS:  'border-danger-500/40 bg-white dark:bg-dark-800 text-danger-600',
 }
 
 const RISK_LABELS = {
@@ -75,7 +75,7 @@ export default function LinkGuardWidget() {
         className={`pointer-events-auto flex items-center gap-2 px-4 py-2.5 rounded-full font-medium text-sm shadow-xl border transition-all duration-200 ${
           isActive
             ? 'bg-primary-600 border-primary-500 text-white hover:bg-primary-700'
-            : 'bg-white border-ink-200 text-ink-500 hover:text-ink-900 hover:border-ink-300 shadow-lg'
+            : 'bg-white dark:bg-dark-800 border-ink-200 dark:border-dark-800 text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 hover:border-ink-300 shadow-lg'
         }`}
         title={isActive ? 'Link Guard activo — haz clic para desactivar' : 'Activar Link Guard'}
       >

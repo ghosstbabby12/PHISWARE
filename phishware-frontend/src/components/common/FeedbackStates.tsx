@@ -6,7 +6,7 @@ export function LoadingState({ message = 'Cargando…', rows = 3 }: { message?: 
     <div role="status" aria-live="polite" aria-label={message} className="card">
       <div className="flex items-center gap-3 mb-4">
         <div className="animate-spin w-5 h-5 border-2 border-primary-600 border-t-transparent rounded-full" aria-hidden />
-        <p className="text-sm font-medium text-ink-700">{message}</p>
+        <p className="text-sm font-medium text-ink-700 dark:text-ink-200">{message}</p>
       </div>
       <div className="space-y-2.5" aria-hidden>
         {Array.from({ length: rows }).map((_, i) => (
@@ -33,8 +33,8 @@ export function EmptyState({
       <div className="mx-auto w-12 h-12 rounded-2xl bg-primary-100 border border-primary-600/15 flex items-center justify-center mb-4">
         <Icon className="w-6 h-6 text-primary-600" />
       </div>
-      <h3 className="font-semibold text-ink-900">{title}</h3>
-      {description && <p className="text-sm text-ink-500 mt-1 max-w-md mx-auto">{description}</p>}
+      <h3 className="font-semibold text-ink-900 dark:text-ink-50">{title}</h3>
+      {description && <p className="text-sm text-ink-500 dark:text-ink-300 mt-1 max-w-md mx-auto">{description}</p>}
       {action && <div className="mt-5 flex justify-center">{action}</div>}
     </div>
   )
@@ -56,8 +56,8 @@ export function ErrorState({
       <div className="mx-auto w-12 h-12 rounded-2xl bg-danger-500/10 border border-danger-500/20 flex items-center justify-center mb-4">
         <AlertTriangle className="w-6 h-6 text-danger-500" />
       </div>
-      <h3 className="font-semibold text-ink-900">{title}</h3>
-      <p className="text-sm text-ink-500 mt-1 max-w-md mx-auto">{description}</p>
+      <h3 className="font-semibold text-ink-900 dark:text-ink-50">{title}</h3>
+      <p className="text-sm text-ink-500 dark:text-ink-300 mt-1 max-w-md mx-auto">{description}</p>
       {onRetry && (
         <button type="button" onClick={onRetry} className="btn-secondary mt-5 inline-flex items-center gap-2">
           <RefreshCw className="w-4 h-4" /> Reintentar

@@ -116,7 +116,7 @@ export default function UrlAnalysisPage() {
         <p className="section-subtitle">{t.analysis.subtitle}</p>
       </div>
 
-      <div className="inline-flex rounded-xl border divider bg-white p-1 shadow-sm" role="tablist" aria-label={t.analysis.typeLabel}>
+      <div className="inline-flex rounded-xl border divider bg-white dark:bg-dark-800 p-1 shadow-sm" role="tablist" aria-label={t.analysis.typeLabel}>
         {([
           { id: 'url', label: t.analysis.urlTab, icon: LinkIcon },
           { id: 'qr',  label: t.analysis.qrTab, icon: QrCode },
@@ -128,7 +128,7 @@ export default function UrlAnalysisPage() {
             aria-selected={tab === id}
             onClick={() => switchTab(id)}
             className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
-              tab === id ? 'bg-primary-600 text-white shadow-sm' : 'text-ink-500 hover:text-ink-900 hover:bg-ink-50'
+              tab === id ? 'bg-primary-600 text-white shadow-sm' : 'text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 hover:bg-ink-50 dark:hover:bg-dark-800 dark:bg-dark-900'
             }`}
           >
             <Icon className="w-4 h-4" /> {label}
@@ -162,7 +162,7 @@ export default function UrlAnalysisPage() {
       )}
 
       {isPending && (
-        <div className="card animate-pulse text-sm text-ink-500" role="status" aria-live="polite">
+        <div className="card animate-pulse text-sm text-ink-500 dark:text-ink-300" role="status" aria-live="polite">
           {t.analysis.analyzingUrl(analyzedUrl ?? '…')}
         </div>
       )}
@@ -170,13 +170,13 @@ export default function UrlAnalysisPage() {
       {result && <AnalysisResult result={result} onAnalyzeAnother={analyzeAnother} />}
 
       <div className="card !bg-primary-50/60 !border-primary-600/15">
-        <h3 className="text-sm font-semibold text-ink-900 flex items-center gap-2 mb-3">
+        <h3 className="text-sm font-semibold text-ink-900 dark:text-ink-50 flex items-center gap-2 mb-3">
           <Info className="w-4 h-4 text-primary-700" />
           {t.analysis.tipsTitle}
         </h3>
         <ul className="space-y-2">
           {tips.map((tip, i) => (
-            <li key={i} className="flex items-start gap-2 text-sm text-ink-700">
+            <li key={i} className="flex items-start gap-2 text-sm text-ink-700 dark:text-ink-200">
               <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-primary-600 shrink-0" aria-hidden />
               {tip}
             </li>

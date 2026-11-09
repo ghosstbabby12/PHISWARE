@@ -46,11 +46,11 @@ export default function AnalysisResult({ result, onAnalyzeAnother }: Props) {
       />
 
       <div className="card">
-        <div className="flex justify-between text-xs text-ink-500 mb-1.5">
+        <div className="flex justify-between text-xs text-ink-500 dark:text-ink-300 mb-1.5">
           <span className="font-medium">{t.analysis.fromBackend}</span>
-          <span className="font-bold text-ink-900 tabular-nums">{t.analysis.scoreOut(result.riskScore.toFixed(1))}</span>
+          <span className="font-bold text-ink-900 dark:text-ink-50 tabular-nums">{t.analysis.scoreOut(result.riskScore.toFixed(1))}</span>
         </div>
-        <div className="h-2.5 bg-ink-100 rounded-full overflow-hidden" role="progressbar" aria-valuenow={Math.round(result.riskScore)} aria-valuemin={0} aria-valuemax={100} aria-label="Puntuación de riesgo">
+        <div className="h-2.5 bg-ink-100 dark:bg-dark-800 rounded-full overflow-hidden" role="progressbar" aria-valuenow={Math.round(result.riskScore)} aria-valuemin={0} aria-valuemax={100} aria-label="Puntuación de riesgo">
           <div
             className={clsx(
               'h-full rounded-full transition-all duration-700',
@@ -66,10 +66,10 @@ export default function AnalysisResult({ result, onAnalyzeAnother }: Props) {
 
       {result.recommendations.length > 0 && (
         <section className="card" aria-label={t.analysis.nextSteps}>
-          <h3 className="font-semibold text-ink-900 mb-1">{t.analysis.nextSteps}</h3>
+          <h3 className="font-semibold text-ink-900 dark:text-ink-50 mb-1">{t.analysis.nextSteps}</h3>
           <ul className="space-y-1.5 mt-2">
             {result.recommendations.map((rec, i) => (
-              <li key={i} className="flex items-start gap-2.5 text-sm text-ink-700">
+              <li key={i} className="flex items-start gap-2.5 text-sm text-ink-700 dark:text-ink-200">
                 <span className="mt-[7px] w-1.5 h-1.5 rounded-full bg-primary-600 shrink-0" aria-hidden />
                 {rec}
               </li>
@@ -83,7 +83,7 @@ export default function AnalysisResult({ result, onAnalyzeAnother }: Props) {
           type="button"
           onClick={() => setShowDetails((v) => !v)}
           aria-expanded={showDetails}
-          className="w-full flex items-center justify-between gap-2 font-semibold text-ink-900 text-sm"
+          className="w-full flex items-center justify-between gap-2 font-semibold text-ink-900 dark:text-ink-50 text-sm"
         >
           <span className="flex items-center gap-2">
             <ListTree className="w-4 h-4 text-primary-700" /> {t.analysis.techDetails}
@@ -98,9 +98,9 @@ export default function AnalysisResult({ result, onAnalyzeAnother }: Props) {
               [t.analysis.dPhishing, result.isPhishing ? t.analysis.dYes : t.analysis.dNo],
               [t.analysis.dProviders, providersInResponse.size > 0 ? [...providersInResponse].join(', ') : t.analysis.dNone],
             ].map(([k, v]) => (
-              <div key={k} className="rounded-xl border divider px-3.5 py-2.5 bg-ink-50">
-                <dt className="text-[11px] font-semibold text-ink-500 uppercase tracking-wide">{k}</dt>
-                <dd className="text-ink-900 font-mono text-[13px] break-all mt-0.5">{v}</dd>
+              <div key={k} className="rounded-xl border divider px-3.5 py-2.5 bg-ink-50 dark:bg-dark-900">
+                <dt className="text-[11px] font-semibold text-ink-500 dark:text-ink-300 uppercase tracking-wide">{k}</dt>
+                <dd className="text-ink-900 dark:text-ink-50 font-mono text-[13px] break-all mt-0.5">{v}</dd>
               </div>
             ))}
           </dl>

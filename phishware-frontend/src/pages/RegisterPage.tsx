@@ -58,7 +58,7 @@ export default function RegisterPage() {
         <div>
           <label htmlFor="username" className="field-label">{t.auth.username}</label>
           <div className="relative">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 dark:text-ink-500 pointer-events-none" aria-hidden />
             <input
               id="username"
               {...register('username', {
@@ -77,7 +77,7 @@ export default function RegisterPage() {
         <div>
           <label htmlFor="email" className="field-label">{t.auth.email}</label>
           <div className="relative">
-            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+            <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 dark:text-ink-500 pointer-events-none" aria-hidden />
             <input
               id="email"
               {...register('email', {
@@ -96,7 +96,7 @@ export default function RegisterPage() {
         <div>
           <label htmlFor="password" className="field-label">{t.auth.password}</label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 dark:text-ink-500 pointer-events-none" aria-hidden />
             <input
               id="password"
               {...register('password', {
@@ -115,7 +115,7 @@ export default function RegisterPage() {
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-300 hover:text-ink-900"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-300 dark:text-ink-500 hover:text-ink-900 dark:hover:text-white dark:text-ink-50"
               aria-label={showPass ? t.auth.hidePass : t.auth.showPass}
             >
               {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -128,7 +128,7 @@ export default function RegisterPage() {
           {isLoading ? t.auth.creating : t.auth.createBtn}
         </button>
 
-        <p className="text-center text-sm text-ink-500">
+        <p className="text-center text-sm text-ink-500 dark:text-ink-300">
           {t.auth.hasAccount}{' '}
           <Link to="/login" className="text-primary-700 hover:text-primary-800 font-semibold">
             {t.auth.loginBtn}

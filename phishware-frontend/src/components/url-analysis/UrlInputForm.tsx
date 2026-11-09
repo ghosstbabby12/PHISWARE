@@ -34,7 +34,7 @@ export default function UrlInputForm({ onSubmit, isLoading }: Props) {
       </label>
       <div className="flex flex-col sm:flex-row gap-3">
         <div className="relative flex-1">
-          <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+          <LinkIcon className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 dark:text-ink-500 pointer-events-none" aria-hidden />
           <input
             id="url-input"
             type="text"

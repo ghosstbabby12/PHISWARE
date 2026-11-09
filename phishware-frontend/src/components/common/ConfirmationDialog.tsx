@@ -52,8 +52,8 @@ export default function ConfirmationDialog({
             <AlertTriangle className="w-5 h-5 text-warning-600" />
           </div>
           <div>
-            <h2 id="confirm-title" className="font-semibold text-ink-900">{title}</h2>
-            {description && <p className="text-sm text-ink-500 mt-1">{description}</p>}
+            <h2 id="confirm-title" className="font-semibold text-ink-900 dark:text-ink-50">{title}</h2>
+            {description && <p className="text-sm text-ink-500 dark:text-ink-300 mt-1">{description}</p>}
           </div>
         </div>
         <div className="flex justify-end gap-2 mt-6">

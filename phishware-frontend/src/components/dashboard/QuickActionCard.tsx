@@ -15,11 +15,11 @@ export default function QuickActionCard({ to, icon: Icon, title, description }: 
         <Icon className="w-5 h-5 text-primary-700 group-hover:text-white" />
       </span>
       <span className="flex-1 min-w-0">
-        <span className="flex items-center gap-1.5 font-semibold text-ink-900 text-[15px]">
+        <span className="flex items-center gap-1.5 font-semibold text-ink-900 dark:text-ink-50 text-[15px]">
           {title}
-          <ArrowUpRight className="w-4 h-4 text-ink-300 group-hover:text-primary-600 transition-colors" />
+          <ArrowUpRight className="w-4 h-4 text-ink-300 dark:text-ink-500 group-hover:text-primary-600 transition-colors" />
         </span>
-        <span className="block text-sm text-ink-500 mt-0.5">{description}</span>
+        <span className="block text-sm text-ink-500 dark:text-ink-300 mt-0.5">{description}</span>
       </span>
     </Link>
   )

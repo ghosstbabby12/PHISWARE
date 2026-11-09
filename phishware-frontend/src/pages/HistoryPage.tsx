@@ -38,7 +38,7 @@ export default function HistoryPage() {
         title={t.history.title}
         subtitle={t.history.sub(data?.totalElements ?? 0)}
         actions={
-          <div className="flex items-center gap-1.5 bg-white border divider rounded-xl p-1 shadow-sm" role="group" aria-label={t.history.filter}>
+          <div className="flex items-center gap-1.5 bg-white dark:bg-dark-800 border divider rounded-xl p-1 shadow-sm" role="group" aria-label={t.history.filter}>
             {RISK_FILTERS.map(f => (
               <button
                 key={f.value}
@@ -47,7 +47,7 @@ export default function HistoryPage() {
                 className={`px-3 py-1.5 rounded-lg text-sm font-medium transition-colors ${
                   riskFilter === f.value
                     ? 'bg-primary-600 text-white shadow-sm'
-                    : 'text-ink-500 hover:text-ink-900 hover:bg-ink-50'
+                    : 'text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 hover:bg-ink-50 dark:hover:bg-dark-800 dark:bg-dark-900'
                 }`}
               >
                 {f.label}
@@ -78,30 +78,30 @@ export default function HistoryPage() {
             <table className="w-full min-w-[720px]">
               <caption className="sr-only">{t.history.title}</caption>
               <thead>
-                <tr className="border-b divider bg-ink-50/60">
-                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 uppercase tracking-wider px-6 py-3">{t.history.url}</th>
-                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 uppercase tracking-wider px-4 py-3">{t.history.domain}</th>
-                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 uppercase tracking-wider px-4 py-3">{t.history.risk}</th>
-                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 uppercase tracking-wider px-4 py-3">{t.history.score}</th>
-                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 uppercase tracking-wider px-4 py-3">{t.history.date}</th>
+                <tr className="border-b divider bg-ink-50/60 dark:bg-dark-900/60">
+                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 dark:text-ink-300 uppercase tracking-wider px-6 py-3">{t.history.url}</th>
+                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 dark:text-ink-300 uppercase tracking-wider px-4 py-3">{t.history.domain}</th>
+                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 dark:text-ink-300 uppercase tracking-wider px-4 py-3">{t.history.risk}</th>
+                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 dark:text-ink-300 uppercase tracking-wider px-4 py-3">{t.history.score}</th>
+                  <th scope="col" className="text-left text-xs font-semibold text-ink-500 dark:text-ink-300 uppercase tracking-wider px-4 py-3">{t.history.date}</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-ink-100">
                 {data.content.map((item) => (
                   <tr key={item.id} className="hover:bg-primary-50/40 transition-colors">
                     <td className="px-6 py-4">
-                      <p className="text-sm font-mono text-ink-900 truncate max-w-xs" title={item.originalUrl}>
+                      <p className="text-sm font-mono text-ink-900 dark:text-ink-50 truncate max-w-xs" title={item.originalUrl}>
                         {item.originalUrl}
                       </p>
                     </td>
-                    <td className="px-4 py-4 text-sm text-ink-500 font-mono">{item.domain}</td>
+                    <td className="px-4 py-4 text-sm text-ink-500 dark:text-ink-300 font-mono">{item.domain}</td>
                     <td className="px-4 py-4">
                       <RiskBadge level={item.riskLevel as RiskLevel} />
                     </td>
-                    <td className="px-4 py-4 text-sm font-mono font-semibold text-ink-900 tabular-nums">
+                    <td className="px-4 py-4 text-sm font-mono font-semibold text-ink-900 dark:text-ink-50 tabular-nums">
                       {item.riskScore?.toFixed(1)}
                     </td>
-                    <td className="px-4 py-4 text-sm text-ink-500 whitespace-nowrap">
+                    <td className="px-4 py-4 text-sm text-ink-500 dark:text-ink-300 whitespace-nowrap">
                       <time dateTime={item.analyzedAt}>{formatDate(item.analyzedAt, lang === 'es' ? 'es-CO' : 'en-US')}</time>
                     </td>
                   </tr>
@@ -121,7 +121,7 @@ export default function HistoryPage() {
           >
             {t.history.prev}
           </button>
-          <span className="text-sm text-ink-500 tabular-nums" aria-live="polite">
+          <span className="text-sm text-ink-500 dark:text-ink-300 tabular-nums" aria-live="polite">
             {t.history.page(data.number + 1, data.totalPages)}
           </span>
           <button
@@ -135,7 +135,7 @@ export default function HistoryPage() {
       )}
 
       {!isLoading && !isError && (data?.content.length ?? 0) > 0 && (
-        <p className="text-xs text-ink-500">{t.history.note}</p>
+        <p className="text-xs text-ink-500 dark:text-ink-300">{t.history.note}</p>
       )}
     </div>
   )

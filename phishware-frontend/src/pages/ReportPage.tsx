@@ -13,7 +13,7 @@ const reportTypeStyles: Record<ReportType, string> = {
   MALWARE: 'bg-danger-500/10 text-danger-600 border-danger-500/25',
   SUSPICIOUS: 'bg-warning-500/10 text-warning-600 border-warning-500/25',
   SCAM: 'bg-warning-500/10 text-warning-600 border-warning-500/25',
-  SPAM: 'bg-ink-100 text-ink-500 border-ink-200',
+  SPAM: 'bg-ink-100 dark:bg-dark-800 text-ink-500 dark:text-ink-300 border-ink-200 dark:border-dark-800',
 }
 
 const severityStyles: Record<ReportSeverity, string> = {
@@ -27,7 +27,7 @@ const statusStyles: Record<string, string> = {
   PENDING: 'bg-warning-500/10 text-warning-600 border border-warning-500/25',
   REVIEWED: 'bg-primary-100 text-primary-700 border border-primary-600/15',
   CONFIRMED: 'bg-danger-500/10 text-danger-600 border border-danger-500/25',
-  REJECTED: 'bg-ink-100 text-ink-500 border border-ink-200',
+  REJECTED: 'bg-ink-100 dark:bg-dark-800 text-ink-500 dark:text-ink-300 border border-ink-200 dark:border-dark-800',
 }
 
 const TYPES: ReportType[] = ['PHISHING', 'MALWARE', 'SUSPICIOUS', 'SCAM', 'SPAM']
@@ -68,7 +68,7 @@ export default function ReportPage() {
       <AppHeader title={t.report.title} subtitle={t.report.sub} />
 
       <form onSubmit={handleSubmit} className="card space-y-5" aria-label={t.report.formTitle}>
-        <h2 className="font-semibold text-ink-900 flex items-center gap-2">
+        <h2 className="font-semibold text-ink-900 dark:text-ink-50 flex items-center gap-2">
           <span className="p-2 bg-warning-500/10 rounded-xl border border-warning-500/25">
             <AlertTriangle className="w-4 h-4 text-warning-600" aria-hidden />
           </span>
@@ -101,7 +101,7 @@ export default function ReportPage() {
                   onClick={() => setType(rt)}
                   aria-pressed={type === rt}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                    type === rt ? reportTypeStyles[rt] : 'border-ink-200 text-ink-500 hover:text-ink-900 hover:border-ink-300'
+                    type === rt ? reportTypeStyles[rt] : 'border-ink-200 dark:border-dark-800 text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 hover:border-ink-300'
                   }`}
                 >
                   {t.report.types[rt]}
@@ -120,7 +120,7 @@ export default function ReportPage() {
                   onClick={() => setSeverity(s)}
                   aria-pressed={severity === s}
                   className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all ${
-                    severity === s ? severityStyles[s] : 'text-ink-500 hover:text-ink-900 bg-ink-50 border border-ink-200'
+                    severity === s ? severityStyles[s] : 'text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 bg-ink-50 dark:bg-dark-900 border border-ink-200 dark:border-dark-800'
                   }`}
                 >
                   {t.report.sevs[s]}
@@ -131,7 +131,7 @@ export default function ReportPage() {
         </div>
 
         <div>
-          <label htmlFor="report-desc" className="field-label">{t.report.descLabel} <span className="font-normal text-ink-500">{t.report.descOpt}</span></label>
+          <label htmlFor="report-desc" className="field-label">{t.report.descLabel} <span className="font-normal text-ink-500 dark:text-ink-300">{t.report.descOpt}</span></label>
           <textarea
             id="report-desc"
             value={description}
@@ -153,7 +153,7 @@ export default function ReportPage() {
       </form>
 
       <section className="card space-y-4" aria-label={t.report.recent}>
-        <h2 className="font-semibold text-ink-900 flex items-center gap-2">
+        <h2 className="font-semibold text-ink-900 dark:text-ink-50 flex items-center gap-2">
           <Clock className="w-5 h-5 text-primary-700" aria-hidden />
           {t.report.recent}
         </h2>
@@ -166,11 +166,11 @@ export default function ReportPage() {
         ) : (
           <ul className="space-y-3">
             {myReports.content.map((report: ReportResponse) => (
-              <li key={report.id} className="bg-ink-50 rounded-xl p-4 border divider">
+              <li key={report.id} className="bg-ink-50 dark:bg-dark-900 rounded-xl p-4 border divider">
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex-1 min-w-0">
-                    <p className="text-sm text-ink-900 font-mono truncate" title={report.reportedUrl}>{report.reportedUrl}</p>
-                    <p className="text-xs text-ink-500 mt-1">
+                    <p className="text-sm text-ink-900 dark:text-ink-50 font-mono truncate" title={report.reportedUrl}>{report.reportedUrl}</p>
+                    <p className="text-xs text-ink-500 dark:text-ink-300 mt-1">
                       {report.description || t.report.noDesc}
                     </p>
                   </div>
@@ -183,7 +183,7 @@ export default function ReportPage() {
                     </span>
                   </div>
                 </div>
-                <p className="text-xs text-ink-300 mt-2">
+                <p className="text-xs text-ink-300 dark:text-ink-500 mt-2">
                   <time dateTime={report.createdAt}>
                     {new Date(report.createdAt).toLocaleDateString('es-CO', { day: '2-digit', month: 'short', year: 'numeric' })}
                   </time>

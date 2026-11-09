@@ -13,13 +13,13 @@ export default function StatCard({ title, value, icon: Icon, iconClass = 'text-p
   return (
     <div className="stat-card">
       <div className="flex items-center justify-between">
-        <p className="text-sm text-ink-500 font-medium">{title}</p>
+        <p className="text-sm text-ink-500 dark:text-ink-300 font-medium">{title}</p>
         <span className="p-2 bg-primary-100 rounded-xl border border-primary-600/10">
           <Icon className={clsx('w-4.5 h-4.5 w-5 h-5', iconClass)} />
         </span>
       </div>
-      <p className="text-3xl font-bold text-ink-900 mt-1 tabular-nums">{value}</p>
-      {subtitle && <p className="text-xs text-ink-500">{subtitle}</p>}
+      <p className="text-3xl font-bold text-ink-900 dark:text-ink-50 mt-1 tabular-nums">{value}</p>
+      {subtitle && <p className="text-xs text-ink-500 dark:text-ink-300">{subtitle}</p>}
     </div>
   )
 }

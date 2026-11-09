@@ -24,8 +24,8 @@ export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnaly
           <Icon className="w-5 h-5 text-primary-700" />
         </div>
         <div>
-          <p className="text-xs text-ink-500 font-medium">Contenido del código QR</p>
-          <p className="text-ink-900 font-semibold">{QR_KIND_LABELS[content.kind]}</p>
+          <p className="text-xs text-ink-500 dark:text-ink-300 font-medium">Contenido del código QR</p>
+          <p className="text-ink-900 dark:text-ink-50 font-semibold">{QR_KIND_LABELS[content.kind]}</p>
         </div>
       </div>
 
@@ -33,15 +33,15 @@ export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnaly
         <dl className="grid grid-cols-[auto_1fr] gap-x-4 gap-y-1 text-sm">
           {content.details.map(d => (
             <div key={d.label} className="contents">
-              <dt className="text-ink-500">{d.label}</dt>
-              <dd className="text-ink-900 break-all font-mono text-[13px]">{d.value || '—'}</dd>
+              <dt className="text-ink-500 dark:text-ink-300">{d.label}</dt>
+              <dd className="text-ink-900 dark:text-ink-50 break-all font-mono text-[13px]">{d.value || '—'}</dd>
             </div>
           ))}
         </dl>
       )}
 
       {content.kind !== 'WIFI' && (
-        <pre className="text-xs text-ink-700 bg-ink-50 border divider rounded-xl p-3 whitespace-pre-wrap break-all max-h-40 overflow-auto">
+        <pre className="text-xs text-ink-700 dark:text-ink-200 bg-ink-50 dark:bg-dark-900 border divider rounded-xl p-3 whitespace-pre-wrap break-all max-h-40 overflow-auto">
           {content.raw}
         </pre>
       )}
@@ -53,15 +53,15 @@ export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnaly
       ))}
 
       {content.urls.length === 0 ? (
-        <p className="text-sm text-ink-500">
+        <p className="text-sm text-ink-500 dark:text-ink-300">
           Este QR no contiene ningún enlace, así que no hay nada que analizar.
         </p>
       ) : content.urls.length > 1 && (
         <div className="space-y-2">
-          <p className="text-sm text-ink-500">El QR contiene {content.urls.length} enlaces. Analiza cada uno sin abrirlos:</p>
+          <p className="text-sm text-ink-500 dark:text-ink-300">El QR contiene {content.urls.length} enlaces. Analiza cada uno sin abrirlos:</p>
           {content.urls.map(url => (
             <div key={url} className="flex items-center gap-2 rounded-xl border divider px-3 py-2">
-              <span className="flex-1 text-sm text-ink-900 font-mono truncate" title={url}>{url}</span>
+              <span className="flex-1 text-sm text-ink-900 dark:text-ink-50 font-mono truncate" title={url}>{url}</span>
               <button
                 type="button"
                 onClick={() => onAnalyze(url)}

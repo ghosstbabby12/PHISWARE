@@ -54,7 +54,7 @@ export default function LoginPage() {
         <div>
           <label htmlFor="usernameOrEmail" className="field-label">{t.auth.user}</label>
           <div className="relative">
-            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+            <User className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 dark:text-ink-500 pointer-events-none" aria-hidden />
             <input
               id="usernameOrEmail"
               {...register('usernameOrEmail', { required: t.auth.required })}
@@ -71,7 +71,7 @@ export default function LoginPage() {
         <div>
           <label htmlFor="password" className="field-label">{t.auth.password}</label>
           <div className="relative">
-            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 pointer-events-none" aria-hidden />
+            <Lock className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-ink-300 dark:text-ink-500 pointer-events-none" aria-hidden />
             <input
               id="password"
               {...register('password', { required: t.auth.required })}
@@ -83,7 +83,7 @@ export default function LoginPage() {
             <button
               type="button"
               onClick={() => setShowPass(!showPass)}
-              className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-300 hover:text-ink-900"
+              className="absolute right-4 top-1/2 -translate-y-1/2 text-ink-300 dark:text-ink-500 hover:text-ink-900 dark:hover:text-white dark:text-ink-50"
               aria-label={showPass ? t.auth.hidePass : t.auth.showPass}
             >
               {showPass ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
@@ -98,7 +98,7 @@ export default function LoginPage() {
           {isLoading ? t.auth.loggingIn : t.auth.loginBtn}
         </button>
 
-        <p className="text-center text-sm text-ink-500">
+        <p className="text-center text-sm text-ink-500 dark:text-ink-300">
           {t.auth.noAccount}{' '}
           <Link to="/register" className="text-primary-700 hover:text-primary-800 font-semibold">
             {t.auth.registerLink}

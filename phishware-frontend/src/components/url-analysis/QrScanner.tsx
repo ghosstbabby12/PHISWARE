@@ -190,7 +190,7 @@ export default function QrScanner({ onDecoded, disabled }: Props) {
       {message && (
         <p role="alert" className={`text-sm font-medium ${mode === 'error' ? 'text-danger-600' : 'text-warning-600'}`}>{message}</p>
       )}
-      <p className="text-xs text-ink-500">
+      <p className="text-xs text-ink-500 dark:text-ink-300">
         La imagen se procesa en tu navegador y no se sube a ningún servidor. Solo se analiza el enlace que contenga el QR.
         También puedes pegar una captura con Ctrl/⌘+V.
       </p>

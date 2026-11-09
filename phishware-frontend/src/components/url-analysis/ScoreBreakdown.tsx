@@ -48,16 +48,16 @@ export default function ScoreBreakdown({ breakdown }: Props) {
 
   return (
     <div className="mt-5">
-      <h4 className="text-sm font-semibold text-ink-900">{t.analysis.fromBreakdown}</h4>
-      <p className="text-xs text-ink-500 mb-3 mt-0.5">{t.analysis.fromBreakdownSub}</p>
+      <h4 className="text-sm font-semibold text-ink-900 dark:text-ink-50">{t.analysis.fromBreakdown}</h4>
+      <p className="text-xs text-ink-500 dark:text-ink-300 mb-3 mt-0.5">{t.analysis.fromBreakdownSub}</p>
       <div className="space-y-2.5">
         {entries.map(([source, value]) => (
           <div key={source}>
-            <div className="flex justify-between text-xs text-ink-500 mb-1">
+            <div className="flex justify-between text-xs text-ink-500 dark:text-ink-300 mb-1">
               <span>{labels[source] ?? source}</span>
-              <span className="font-semibold text-ink-900 tabular-nums">{Number(value).toFixed(0)} / 100</span>
+              <span className="font-semibold text-ink-900 dark:text-ink-50 tabular-nums">{Number(value).toFixed(0)} / 100</span>
             </div>
-            <div className="h-1.5 bg-ink-100 rounded-full overflow-hidden">
+            <div className="h-1.5 bg-ink-100 dark:bg-dark-800 rounded-full overflow-hidden">
               <div
                 className={clsx('h-full rounded-full', barColor(Number(value)))}
                 style={{ width: `${Math.min(Math.max(Number(value) || 0, 0), 100)}%` }}

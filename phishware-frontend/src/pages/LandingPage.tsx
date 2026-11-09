@@ -15,8 +15,8 @@ export default function LandingPage() {
   const TRUST_POINTS = [t.landing.t1, t.landing.t2, t.landing.t3]
 
   return (
-    <div className="min-h-screen bg-ink-50">
-      <header className="border-b divider bg-white/85 backdrop-blur sticky top-0 z-50">
+    <div className="min-h-screen bg-ink-50 dark:bg-dark-900">
+      <header className="border-b divider bg-white/85 dark:bg-dark-800/85 backdrop-blur sticky top-0 z-50">
         <div className="max-w-6xl mx-auto px-6 h-16 flex items-center justify-between">
           <Logo size={32} />
           <div className="flex items-center gap-2">
@@ -31,10 +31,10 @@ export default function LandingPage() {
         <section className="max-w-6xl mx-auto px-6 pt-16 pb-14 lg:pt-24 lg:pb-20 grid gap-10 lg:grid-cols-2 lg:items-center">
           <div>
             <p className="badge-primary mb-5">{t.landing.badge}</p>
-            <h1 className="text-4xl lg:text-5xl font-bold text-ink-900 tracking-tight leading-[1.1]">
+            <h1 className="text-4xl lg:text-5xl font-bold text-ink-900 dark:text-ink-50 tracking-tight leading-[1.1]">
               {t.landing.title}
             </h1>
-            <p className="text-lg text-ink-500 mt-4 max-w-lg">
+            <p className="text-lg text-ink-500 dark:text-ink-300 mt-4 max-w-lg">
               {t.landing.subtitle}
             </p>
             <div className="flex flex-wrap items-center gap-3 mt-8">
@@ -47,7 +47,7 @@ export default function LandingPage() {
             </div>
             <ul className="mt-8 space-y-2.5">
               {TRUST_POINTS.map((point) => (
-                <li key={point} className="flex items-start gap-2.5 text-sm text-ink-700">
+                <li key={point} className="flex items-start gap-2.5 text-sm text-ink-700 dark:text-ink-200">
                   <CheckCircle className="w-4 h-4 text-success-500 mt-0.5 shrink-0" />
                   {point}
                 </li>
@@ -63,23 +63,23 @@ export default function LandingPage() {
               </p>
             </div>
             <div className="p-6 space-y-3">
-              <div className="rounded-xl border divider bg-ink-50 px-4 py-3">
-                <p className="text-xs text-ink-500 font-medium">{t.landing.previewLink}</p>
-                <p className="text-sm font-mono text-ink-900 break-all">https://tu-banco-seguro.example/ingreso</p>
+              <div className="rounded-xl border divider bg-ink-50 dark:bg-dark-900 px-4 py-3">
+                <p className="text-xs text-ink-500 dark:text-ink-300 font-medium">{t.landing.previewLink}</p>
+                <p className="text-sm font-mono text-ink-900 dark:text-ink-50 break-all">https://tu-banco-seguro.example/ingreso</p>
               </div>
               <div className="grid grid-cols-3 gap-3">
                 {[
                   { k: t.landing.previewSafe, v: '✓', c: 'text-success-600' },
-                  { k: t.landing.previewRisk, v: '12 / 100', c: 'text-ink-900' },
-                  { k: t.landing.previewSources, v: '3 de 3', c: 'text-ink-900' },
+                  { k: t.landing.previewRisk, v: '12 / 100', c: 'text-ink-900 dark:text-ink-50' },
+                  { k: t.landing.previewSources, v: '3 de 3', c: 'text-ink-900 dark:text-ink-50' },
                 ].map((s) => (
                   <div key={s.k} className="rounded-xl border divider px-3 py-2.5 text-center">
-                    <p className="text-[11px] text-ink-500 font-medium">{s.k}</p>
+                    <p className="text-[11px] text-ink-500 dark:text-ink-300 font-medium">{s.k}</p>
                     <p className={`text-sm font-bold ${s.c}`}>{s.v}</p>
                   </div>
                 ))}
               </div>
-              <p className="text-xs text-ink-500">
+              <p className="text-xs text-ink-500 dark:text-ink-300">
                 {t.landing.previewNote}
               </p>
             </div>
@@ -87,10 +87,10 @@ export default function LandingPage() {
         </section>
 
         <section className="max-w-6xl mx-auto px-6 pb-20">
-          <h2 className="text-2xl font-bold text-ink-900 tracking-tight text-center">
+          <h2 className="text-2xl font-bold text-ink-900 dark:text-ink-50 tracking-tight text-center">
             {t.landing.featuresTitle}
           </h2>
-          <p className="text-ink-500 text-center mt-2 max-w-xl mx-auto">
+          <p className="text-ink-500 dark:text-ink-300 text-center mt-2 max-w-xl mx-auto">
             {t.landing.featuresSub}
           </p>
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
@@ -99,15 +99,15 @@ export default function LandingPage() {
                 <div className="p-2.5 bg-primary-100 rounded-xl w-fit mb-4 border border-primary-600/10">
                   <Icon className="w-5 h-5 text-primary-700" />
                 </div>
-                <h3 className="font-semibold text-ink-900 mb-1.5">{title}</h3>
-                <p className="text-sm text-ink-500 leading-relaxed">{desc}</p>
+                <h3 className="font-semibold text-ink-900 dark:text-ink-50 mb-1.5">{title}</h3>
+                <p className="text-sm text-ink-500 dark:text-ink-300 leading-relaxed">{desc}</p>
               </div>
             ))}
           </div>
         </section>
       </main>
 
-      <footer className="border-t divider bg-white py-8 text-center text-ink-500 text-sm">
+      <footer className="border-t divider bg-white dark:bg-dark-800 py-8 text-center text-ink-500 dark:text-ink-300 text-sm">
         <div className="flex items-center justify-center mb-2">
           <Logo size={26} />
         </div>

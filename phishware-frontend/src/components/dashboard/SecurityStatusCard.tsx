@@ -27,7 +27,7 @@ export default function SecurityStatusCard({ threatsDetected, unreadAlerts, tota
         </div>
         {threatsDetected > 0 && <RiskBadge level="DANGEROUS" className="!bg-white/15 !text-white !border-white/25" />}
       </div>
-      <div className="px-6 py-4 flex flex-wrap items-center gap-2 bg-white">
+      <div className="px-6 py-4 flex flex-wrap items-center gap-2 bg-white dark:bg-dark-800">
         <Link to="/analysis" className="btn-primary !px-5 !py-2 text-sm">
           {t.dashboard.qa1t} <ArrowRight className="w-4 h-4" />
         </Link>

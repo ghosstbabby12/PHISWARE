@@ -25,7 +25,7 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
   ]
 
   return (
-    <aside className="w-64 h-full bg-white border-r divider flex flex-col shrink-0">
+    <aside className="w-64 h-full bg-white dark:bg-dark-800 border-r divider flex flex-col shrink-0">
       <div className="p-6 border-b divider">
         <Logo size={34} />
       </div>
@@ -62,8 +62,8 @@ export default function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
             {user?.username?.[0]?.toUpperCase() ?? 'U'}
           </div>
           <div className="flex-1 min-w-0">
-            <p className="text-sm font-medium text-ink-900 truncate">{user?.username}</p>
-            <p className="text-xs text-ink-500 tabular-nums">{t.common.level} {user?.level} • {user?.points} {t.common.points}</p>
+            <p className="text-sm font-medium text-ink-900 dark:text-ink-50 truncate">{user?.username}</p>
+            <p className="text-xs text-ink-500 dark:text-ink-300 tabular-nums">{t.common.level} {user?.level} • {user?.points} {t.common.points}</p>
           </div>
         </div>
         <button

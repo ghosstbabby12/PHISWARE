@@ -20,10 +20,10 @@ export default function Logo({ size = 36, showWordmark = true, dark = false, cla
       />
       {showWordmark && (
         <span className="flex flex-col leading-none">
-          <span className={clsx('font-bold tracking-tight', dark ? 'text-white' : 'text-ink-900')} style={{ fontSize: size * 0.44 }}>
+          <span className={clsx('font-bold tracking-tight', dark ? 'text-white' : 'text-ink-900 dark:text-ink-50')} style={{ fontSize: size * 0.44 }}>
             PHISHWARE
           </span>
-          <span className={clsx('text-[11px] font-medium', dark ? 'text-white/60' : 'text-ink-500')}>
+          <span className={clsx('text-[11px] font-medium', dark ? 'text-white/60' : 'text-ink-500 dark:text-ink-300')}>
             Protección Inteligente
           </span>
         </span>

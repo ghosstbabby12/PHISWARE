@@ -46,21 +46,21 @@ export default function ThreatVerdict({
         />
         <div className="flex-1 min-w-0">
           <div className="flex flex-wrap items-center gap-2.5">
-            <h2 className="text-lg font-bold text-ink-900">{message}</h2>
+            <h2 className="text-lg font-bold text-ink-900 dark:text-ink-50">{message}</h2>
             <RiskBadge level={level} />
           </div>
-          <p className="text-sm text-ink-500 font-mono break-all mt-1">{url}</p>
-          <dl className="flex flex-wrap gap-x-5 gap-y-1 mt-2 text-xs text-ink-500">
+          <p className="text-sm text-ink-500 dark:text-ink-300 font-mono break-all mt-1">{url}</p>
+          <dl className="flex flex-wrap gap-x-5 gap-y-1 mt-2 text-xs text-ink-500 dark:text-ink-300">
             <div className="flex gap-1.5"><dt className="font-semibold">{t.analysis.domain}:</dt><dd className="font-mono">{domain}</dd></div>
             <div className="flex gap-1.5"><dt className="font-semibold">{t.analysis.analyzedAt}:</dt><dd><time dateTime={analyzedAt}>{when}</time> · {t.analysis.analyzedIn(analysisTimeMs)}</dd></div>
           </dl>
         </div>
         <div className="text-right shrink-0" aria-hidden>
-          <p className="text-3xl font-bold text-ink-900 tabular-nums">{score.toFixed(0)}</p>
-          <p className="text-[11px] text-ink-500 font-medium">/ 100</p>
+          <p className="text-3xl font-bold text-ink-900 dark:text-ink-50 tabular-nums">{score.toFixed(0)}</p>
+          <p className="text-[11px] text-ink-500 dark:text-ink-300 font-medium">/ 100</p>
         </div>
       </div>
-      <p className="text-sm text-ink-700 bg-white/70 border divider rounded-xl px-4 py-3 mt-4 leading-relaxed">
+      <p className="text-sm text-ink-700 dark:text-ink-200 bg-white/70 dark:bg-dark-800/70 border divider rounded-xl px-4 py-3 mt-4 leading-relaxed">
         {note}
       </p>
     </section>

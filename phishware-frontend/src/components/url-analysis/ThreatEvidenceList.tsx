@@ -26,8 +26,8 @@ export default function ThreatEvidenceList({ threats }: { threats: ThreatRespons
   if (threats.length === 0) {
     return (
       <section className="card" aria-label={t.analysis.evidence}>
-        <h3 className="font-semibold text-ink-900 mb-1">{t.analysis.evidence}</h3>
-        <p className="text-sm text-ink-500">{t.analysis.evidenceNone}</p>
+        <h3 className="font-semibold text-ink-900 dark:text-ink-50 mb-1">{t.analysis.evidence}</h3>
+        <p className="text-sm text-ink-500 dark:text-ink-300">{t.analysis.evidenceNone}</p>
       </section>
     )
   }
@@ -37,19 +37,19 @@ export default function ThreatEvidenceList({ threats }: { threats: ThreatRespons
 
   return (
     <section className="card" aria-label={`${t.analysis.evidence}: ${threats.length}`}>
-      <h3 className="font-semibold text-ink-900 mb-1 flex items-center gap-2">
+      <h3 className="font-semibold text-ink-900 dark:text-ink-50 mb-1 flex items-center gap-2">
         <ShieldAlert className="w-4 h-4 text-danger-500" />
         {t.analysis.evidence} ({threats.length})
       </h3>
-      <p className="text-xs text-ink-500 mb-4">{t.analysis.evidenceSub}</p>
+      <p className="text-xs text-ink-500 dark:text-ink-300 mb-4">{t.analysis.evidenceSub}</p>
       <ul className="space-y-2.5">
         {sorted.map((threat) => (
           <li key={threat.id} className="flex items-start gap-3 p-3.5 rounded-xl border border-danger-500/15 bg-danger-500/[0.04]">
             <XCircle className="w-4 h-4 text-danger-500 mt-0.5 shrink-0" aria-hidden />
             <div className="min-w-0">
-              <p className="text-sm font-semibold text-ink-900">{threat.threatType}</p>
-              <p className="text-sm text-ink-500 mt-0.5">{threat.description}</p>
-              <p className="text-xs text-ink-500 mt-1.5">
+              <p className="text-sm font-semibold text-ink-900 dark:text-ink-50">{threat.threatType}</p>
+              <p className="text-sm text-ink-500 dark:text-ink-300 mt-0.5">{threat.description}</p>
+              <p className="text-xs text-ink-500 dark:text-ink-300 mt-1.5">
                 {lang === 'es' ? 'Fuente' : 'Source'}: {labels[threat.source] ?? threat.source} · {t.alerts.sev}: {threat.severity}
               </p>
             </div>

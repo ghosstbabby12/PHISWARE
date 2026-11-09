@@ -9,7 +9,7 @@ export default function AppLayout() {
   const [menuOpen, setMenuOpen] = useState(false)
 
   return (
-    <div className="flex min-h-screen bg-ink-50">
+    <div className="flex min-h-screen bg-ink-50 dark:bg-dark-900">
       {menuOpen && (
         <button
           type="button"

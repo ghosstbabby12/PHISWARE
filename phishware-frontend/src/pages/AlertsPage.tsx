@@ -104,17 +104,17 @@ export default function AlertsPage() {
                       <div className="flex flex-wrap items-center gap-2 mb-1">
                         <span className="flex items-center gap-1.5">
                           {!alert.isRead && <span className="w-2 h-2 rounded-full bg-primary-600 shrink-0" aria-hidden />}
-                          <span className="font-semibold text-ink-900">{alert.title}</span>
+                          <span className="font-semibold text-ink-900 dark:text-ink-50">{alert.title}</span>
                         </span>
                         <span className={clsx('inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold border', style.chip)}>
                           {alert.severity}
                         </span>
                       </div>
-                      <p className="text-sm text-ink-700">{alert.message}</p>
+                      <p className="text-sm text-ink-700 dark:text-ink-200">{alert.message}</p>
                       {alert.recommendations?.length > 0 && (
                         <ul className="mt-2 space-y-1">
                           {alert.recommendations.map((rec, i) => (
-                            <li key={i} className="text-xs text-ink-500 flex items-start gap-1.5">
+                            <li key={i} className="text-xs text-ink-500 dark:text-ink-300 flex items-start gap-1.5">
                               <span className="mt-[5px] w-1 h-1 rounded-full bg-ink-300 shrink-0" aria-hidden />
                               {rec}
                             </li>
@@ -122,7 +122,7 @@ export default function AlertsPage() {
                         </ul>
                       )}
                     </div>
-                    <time dateTime={alert.createdAt} className="text-xs text-ink-500 whitespace-nowrap shrink-0">
+                    <time dateTime={alert.createdAt} className="text-xs text-ink-500 dark:text-ink-300 whitespace-nowrap shrink-0">
                       {formatDate(alert.createdAt, lang === 'es' ? 'es-CO' : 'en-US')}
                     </time>
                   </div>
@@ -142,7 +142,7 @@ export default function AlertsPage() {
         onCancel={() => setConfirmAll(false)}
       />
 
-      <p className="text-xs text-ink-500 flex items-center gap-1.5">
+      <p className="text-xs text-ink-500 dark:text-ink-300 flex items-center gap-1.5">
         <Bell className="w-3.5 h-3.5" /> {t.alerts.listNote}
       </p>
     </div>

@@ -39,10 +39,10 @@ Base: `main` @ `fd2c0c6`. Reglas: Conventional Commits (EN), commits pequeños, 
 - Verificado: `assembleDebug assemblePlayDebug testFullDebugUnitTest testPlayDebugUnitTest` en verde (con red para la primera resolución de la variante play).
 
 ## FASE 7 – Evaluación/calidad/despliegue (23-26)
-- [ ] 23. `test(eval)`: dataset real + scripts corregidos + Wilcoxon
-- [ ] 24. `ci`: GitHub Actions
-- [ ] 25. `chore(deploy)`: Dockerfiles + compose
-- [ ] 26. `docs`: README/ARCHITECTURE/OWASP_NIST_MAPPING/CHANGELOG/ISO
+- [x] 23. `test(eval)` (`ff27e9b`): build_dataset real + métricas corregidas + Wilcoxon (verificado)
+- [x] 24. `ci` (`3b43e4e`): GitHub Actions (backend+postgres, frontend, android, extensión)
+- [x] 25. `chore(deploy)` (`995724c`): Dockerfiles multi-stage + compose (validado con config)
+- [x] 26. `docs` (`8a9971b`): README/ARCHITECTURE/OWASP_NIST_MAPPING/CHANGELOG/ISO
 
 ## FASE 8 – Documento de grado (27-30)
 - [ ] 27-30. `docs(thesis)`: copia v1.1, correcciones, alineación, comparativa, biblio

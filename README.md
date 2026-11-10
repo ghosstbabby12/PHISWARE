@@ -529,13 +529,17 @@ npm run build
 ./gradlew connectedPlayDebugAndroidTest   # requiere emulador
 ```
 
-### 5. Extensión Chrome/Edge (MV3, sin compilar)
-
+### 5. Extensión de navegador (Chrome, Edge, Brave, Opera, Firefox, Safari)
 ```bash
-# chrome://extensions -> modo desarrollador -> "Cargar descomprimida" -> phishware-extension/
-# Opciones de la extensión: URL base del backend (por defecto http://localhost:8080/api)
-# ES/EN automático según el idioma del navegador; tema claro/oscuro según el sistema.
+cd phishware-extension
+npm install && npm run build      # genera dist/chromium y dist/firefox (+ .zip)
+npm test                          # lógica compartida (9 pruebas)
+npm run e2e                       # prueba en Chromium y Edge reales (necesita el backend en :8080)
 ```
+- **Chrome / Edge / Brave / Opera / Vivaldi:** `chrome://extensions` (o `edge://extensions`) → modo desarrollador → "Cargar descomprimida" → `phishware-extension/` (o `dist/chromium`).
+- **Firefox (140+):** `about:debugging` → "Este Firefox" → "Cargar complemento temporal" → `dist/firefox/manifest.json`.
+- **Safari (macOS):** `xcrun safari-web-extension-converter dist/chromium`.
+- Qué hace: bloquea el sitio **antes de cargar** (página de advertencia propia), revisa el **destino real** de los enlaces de Gmail/WhatsApp Web/Instagram/Facebook/Outlook y avisa cuando **el texto del enlace no coincide con su destino**. Opciones: URL del backend (por defecto `http://localhost:8080/api`).
 
 ### 6. Frontend: i18n y tests
 

@@ -83,10 +83,9 @@ jobs:
       - name: Validate extension JS and JSON
         working-directory: phishware-extension
         run: |
-          node --check background.js
-          node --check heuristics.js
-          node --check content.js
-          node --check popup.js
-          node --check options.js
+          # background.js y los demás usan módulos ES; se validan como módulo
+          for f in background.js heuristics.js shared.js content.js popup.js options.js warning.js; do
+            [ -f "$f" ] && node --check --input-type=module < "$f"
+          done
           node -e "for (const f of ['manifest.json','_locales/es/messages.json','_locales/en/messages.json']) JSON.parse(require('fs').readFileSync(f,'utf8'))"
           echo "extension OK"

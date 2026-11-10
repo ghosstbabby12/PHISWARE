@@ -51,7 +51,7 @@ let blockedDomains = new Set();
 async function refreshBlocklist() {
   try {
     const root = await backendRoot();
-    const res = await fetch(`${root}/public/blocklist`, { signal: AbortSignal.timeout(10000) });
+    const res = await fetch(`${root}/public/url/blocklist`, { signal: AbortSignal.timeout(10000) });
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     const data = await res.json();
     const domains = Array.isArray(data.domains) ? data.domains.filter(d => typeof d === 'string') : [];
@@ -64,15 +64,29 @@ async function refreshBlocklist() {
   }
 }
 
+function warningUrl(url) {
+  return `${chrome.runtime.getURL('warning.html')}?u=${encodeURIComponent(url)}`;
+}
+
+function escapeRegex(s) {
+  return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+}
+
 async function applyBlockingRules(domains) {
   try {
     const existing = await chrome.declarativeNetRequest.getDynamicRules();
     const removeRuleIds = existing.map(r => r.id);
+    const base = chrome.runtime.getURL('warning.html');
+    // Antes de que salga una sola petición de red, el dominio confirmado se redirige a una
+    // página de advertencia propia (en vez de la pantalla de error genérica del navegador).
     const addRules = domains.map((domain, i) => ({
       id: i + 1,
       priority: 1,
-      action: { type: 'block' },
-      condition: { urlFilter: `||${domain}^`, resourceTypes: ['main_frame'] },
+      action: { type: 'redirect', redirect: { regexSubstitution: `${base}?u=\\1` } },
+      condition: {
+        regexFilter: `^(https?://([^/]*\\.)?${escapeRegex(domain)}(:[0-9]+)?(/.*)?)$`,
+        resourceTypes: ['main_frame'],
+      },
     }));
     await chrome.declarativeNetRequest.updateDynamicRules({ removeRuleIds, addRules });
   } catch (e) {
@@ -144,6 +158,76 @@ async function checkUrl(url) {
   }
 }
 
+// ── Bloqueo ANTES de cargar la página ─────────────────────────────────────────
+
+const LOCAL_HOSTS = new Set(['localhost', '127.0.0.1', '0.0.0.0', '[::1]']);
+const ALLOW_TTL = 30 * 60 * 1000; // "continuar de todos modos" vale 30 min para ese sitio
+const ALLOW_RULE_BASE = 1000;
+
+async function allowedHosts() {
+  const { allowed = {} } = await chrome.storage.session.get('allowed');
+  const now = Date.now();
+  let changed = false;
+  for (const [h, exp] of Object.entries(allowed)) {
+    if (exp < now) { delete allowed[h]; changed = true; }
+  }
+  if (changed) await chrome.storage.session.set({ allowed });
+  return allowed;
+}
+
+async function isAllowed(url) {
+  try { return Boolean((await allowedHosts())[new URL(url).hostname.toLowerCase()]); } catch { return false; }
+}
+
+async function allowHost(url) {
+  const host = new URL(url).hostname.toLowerCase();
+  const allowed = await allowedHosts();
+  allowed[host] = Date.now() + ALLOW_TTL;
+  await chrome.storage.session.set({ allowed });
+  // La regla comunitaria (DNR) también debe dejar pasar este host mientras dure el permiso
+  try {
+    const id = ALLOW_RULE_BASE + (Math.abs([...host].reduce((a, c) => (a * 31 + c.charCodeAt(0)) | 0, 7)) % 5000);
+    await chrome.declarativeNetRequest.updateSessionRules({
+      removeRuleIds: [id],
+      addRules: [{ id, priority: 10, action: { type: 'allow' },
+        condition: { requestDomains: [host], resourceTypes: ['main_frame'] } }],
+    });
+  } catch { /* DNR de sesión no disponible: basta con la lista en memoria */ }
+}
+
+// Con backend se confía en su veredicto; sin backend (heurística local) solo se bloquea con
+// puntaje alto, para no frenar sitios legítimos por una heurística débil.
+const OFFLINE_BLOCK_SCORE = 60;
+
+async function guardNavigation(details) {
+  if (details.frameId !== 0 || !/^https?:/i.test(details.url)) return;
+  let host;
+  try { host = new URL(details.url).hostname.toLowerCase(); } catch { return; }
+  if (LOCAL_HOSTS.has(host)) return;
+  if (await isAllowed(details.url)) return;
+
+  const local = classifyLocal(details.url);
+  if (local.officialSeal?.official && local.classification === 'SAFE') return; // sitio oficial: sin demora
+
+  let result = local;
+  if (local.classification !== 'DANGEROUS' || local.riskScore < 100) {
+    result = await Promise.race([
+      checkUrl(details.url),
+      new Promise(r => setTimeout(() => r(local), 2500)),
+    ]);
+  }
+  const block = result.classification === 'DANGEROUS' &&
+    (!result.offline || (result.riskScore ?? 0) >= OFFLINE_BLOCK_SCORE);
+  if (!block) return;
+
+  await chrome.storage.session.set({ [`tab_${details.tabId}`]: result });
+  chrome.action.setBadgeText({ tabId: details.tabId, text: '!' });
+  chrome.action.setBadgeBackgroundColor({ tabId: details.tabId, color: '#ef4444' });
+  chrome.tabs.update(details.tabId, { url: warningUrl(details.url) }).catch(() => {});
+}
+
+chrome.webNavigation.onBeforeNavigate.addListener(details => { guardNavigation(details); });
+
 // ── Tab navigation: check current page URL ────────────────────────────────────
 
 async function checkTabUrl(tabId, url) {
@@ -199,6 +283,25 @@ chrome.runtime.onMessage.addListener((msg, sender, sendResponse) => {
       }
     });
     return true; // keep channel open for async response
+  }
+
+  if (msg.type === 'ALLOW_CONTINUE' && msg.url && sender.tab?.id) {
+    allowHost(msg.url).then(() => {
+      chrome.tabs.update(sender.tab.id, { url: msg.url });
+      sendResponse({ ok: true });
+    });
+    return true;
+  }
+
+  if (msg.type === 'REFRESH_BLOCKLIST') {
+    refreshBlocklist().then(() => sendResponse({ ok: true, count: blockedDomains.size }));
+    return true;
+  }
+
+  if (msg.type === 'GO_SAFE' && sender.tab?.id) {
+    chrome.tabs.update(sender.tab.id, { url: 'about:blank' });
+    sendResponse({ ok: true });
+    return false;
   }
 
   if (msg.type === 'GET_TAB_RESULT') {

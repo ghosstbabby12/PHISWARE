@@ -15,7 +15,7 @@
     }[c]));
   }
 
-  function showWarning(result, continueHref) {
+  function showWarning(result, continueHref, opts = {}) {
     const existing = document.getElementById('phisware-overlay');
     if (existing) existing.remove();
 
@@ -24,16 +24,21 @@
     overlay.id = 'phisware-overlay';
     const safeDomain = escapeHtml(result.domain ?? result.url);
     const safeScore = Math.round(Number(result.riskScore) || 0);
-    const explained = Array.isArray(result.explainedIndicators) && result.explainedIndicators.length
+    const baseExplained = Array.isArray(result.explainedIndicators) && result.explainedIndicators.length
       ? result.explainedIndicators
       : (result.indicators || []).slice(0, 3).map(toExplained);
+    const explained = opts.deceptive
+      ? [{ description: chrome.i18n.getMessage('deceptiveLink', [opts.deceptive.shown, opts.deceptive.real]) ||
+            `The link says "${opts.deceptive.shown}" but goes to "${opts.deceptive.real}"`,
+           persuasionPrinciple: 'TRUST' }, ...baseExplained]
+      : baseExplained;
     const safeIndicators = explained.slice(0, 3).map(i => {
       const label = escapeHtml(typeof i === 'string' ? i : i.description);
       const principle = typeof i === 'string' ? null : principleName(i.persuasionPrinciple);
       const suffix = principle ? ` <span class="phisware-principle">${escapeHtml(msg('principleLabel'))}: ${escapeHtml(principle)}</span>` : '';
       return `<li>${label}${suffix}</li>`;
     }).join('');
-    overlay.innerHTML = `
+    const parsed = new DOMParser().parseFromString(`
       <div id="phisware-modal">
         <div id="phisware-header">
           <span id="phisware-icon">⚠️</span>
@@ -50,7 +55,8 @@
           <button id="phisware-continue">${escapeHtml(msg('overlayContinue'))}</button>
         </div>
       </div>
-    `;
+    `, 'text/html');
+    overlay.append(...parsed.body.childNodes);
 
     const light = window.matchMedia && window.matchMedia('(prefers-color-scheme: light)').matches;
     const palette = light
@@ -100,7 +106,7 @@
     overlay.querySelector('#phisware-back').addEventListener('click', () => overlay.remove());
     overlay.querySelector('#phisware-continue').addEventListener('click', () => {
       overlay.remove();
-      window.location.href = continueHref;
+      openLink(continueHref, opts);
     });
   }
 
@@ -150,74 +156,98 @@
     });
   }
 
+  // ── Navegación que respeta pestañas nuevas / teclas modificadoras ─────────
+
+  function openLink(href, opts = {}) {
+    if (opts.newTab) window.open(href, '_blank', 'noopener');
+    else window.location.href = href;
+  }
+
   // ── Link click interception ───────────────────────────────────────────────
 
+  const Shared = globalThis.PhishwareShared;
+
+  /** Resultado combinado: nunca "más seguro" de lo que dice el backend, y el engaño de texto sube a SUSPICIOUS. */
+  function withDeceptive(result, deceptive) {
+    if (!deceptive) return result;
+    const base = result ?? { classification: 'SAFE', riskScore: 0, indicators: [], domain: deceptive.real };
+    if (base.classification === 'DANGEROUS') return base;
+    return { ...base, classification: 'SUSPICIOUS', riskScore: Math.max(Number(base.riskScore) || 0, 55), isThreat: true };
+  }
+
   async function handleLinkClick(e) {
-    const anchor = e.target.closest('a[href]');
+    const anchor = e.target.closest && e.target.closest('a[href]');
     if (!anchor) return;
+    if (e.type === 'auxclick' && e.button !== 1) return; // solo clic central
 
-    const url = normalizeHref(anchor.getAttribute('href'));
-    if (!url) return;
+    const abs = normalizeHref(anchor.getAttribute('href'));
+    if (!abs) return;
+    const target = Shared.unwrapRedirect(abs);          // destino REAL (Gmail/WhatsApp/Instagram envuelven los enlaces)
+    const deceptive = Shared.isDeceptive(anchor.textContent, target);
+    const opts = {
+      newTab: anchor.target === '_blank' || e.ctrlKey || e.metaKey || e.shiftKey || e.button === 1,
+      deceptive,
+    };
 
-    // Pre-check from cache
-    const cached = checked.get(url);
-    if (cached !== null && cached !== undefined) {
-      if (cached.classification === 'DANGEROUS' || cached.classification === 'SUSPICIOUS') {
+    const cached = checked.get(target);
+    if (cached !== undefined && cached !== null) {
+      const merged = withDeceptive(cached, deceptive);
+      if (merged.classification === 'DANGEROUS' || merged.classification === 'SUSPICIOUS') {
         e.preventDefault();
         e.stopImmediatePropagation();
-        showWarning(cached, url);
+        showWarning(merged, abs, opts);
       }
       return;
     }
 
-    // Unknown link: prevent navigation, check now
+    // Enlace desconocido: se frena un instante, se revisa y se decide
     e.preventDefault();
     e.stopImmediatePropagation();
 
-    const result = await checkUrl(url);
-    if (!result) {
-      // Backend unreachable — let through silently
-      window.location.href = url;
-      return;
-    }
+    const result = await checkUrl(target);
+    const merged = withDeceptive(result, deceptive);
+    if (!merged) { openLink(abs, opts); return; } // sin backend y sin heurística: no bloquear
 
-    if (result.classification === 'DANGEROUS' || result.classification === 'SUSPICIOUS') {
-      showWarning(result, url);
-      if (result.classification === 'DANGEROUS') {
-        chrome.runtime.sendMessage({ type: 'SAVE_ALERT', alert: result });
+    if (merged.classification === 'DANGEROUS' || merged.classification === 'SUSPICIOUS') {
+      showWarning(merged, abs, opts);
+      if (merged.classification === 'DANGEROUS') {
+        chrome.runtime.sendMessage({ type: 'SAVE_ALERT', alert: merged });
       }
     } else {
-      window.location.href = url;
+      openLink(abs, opts);
     }
   }
 
-  // ── Pre-scan visible links (hover badge tinting) ──────────────────────────
+  // ── Pre-scan visible links (marcar enlaces peligrosos antes del clic) ─────
 
-  function tintLink(anchor, result) {
-    if (!result) return;
-    if (result.classification === 'DANGEROUS') {
+  function tintLink(anchor, result, deceptive) {
+    if (result && result.classification === 'DANGEROUS') {
       anchor.style.outline = '2px solid #ef4444';
-    } else if (result.classification === 'SUSPICIOUS') {
+      anchor.title = result.domain ? `PHISWARE: ${result.domain}` : 'PHISWARE';
+    } else if (result && result.classification === 'SUSPICIOUS') {
       anchor.style.outline = '2px solid #f59e0b';
+    }
+    if (deceptive) {
+      anchor.style.outline = '2px dashed #b3234a';
+      anchor.title = chrome.i18n.getMessage('deceptiveLink', [deceptive.shown, deceptive.real]) || anchor.title;
     }
   }
 
   function scanLinks(root) {
-    const anchors = root.querySelectorAll('a[href]');
-    // limitamos para no mandar 100 requests de una
+    const anchors = root.querySelectorAll ? root.querySelectorAll('a[href]') : [];
     let count = 0;
     for (const anchor of anchors) {
-      if (count >= 20) break;
-      const url = normalizeHref(anchor.getAttribute('href'));
-      if (!url) continue;
+      const abs = normalizeHref(anchor.getAttribute('href'));
+      if (!abs) continue;
+      const target = Shared.unwrapRedirect(abs);
+      const deceptive = Shared.isDeceptive(anchor.textContent, target);
+      if (deceptive) tintLink(anchor, null, deceptive); // el engaño de texto se marca al instante, sin red
 
-      // Use cached result to tint immediately
-      const cached = checked.get(url);
-      if (cached !== undefined) { tintLink(anchor, cached); continue; }
-
+      const cached = checked.get(target);
+      if (cached !== undefined) { tintLink(anchor, cached, deceptive); continue; }
+      if (count >= 20) continue; // límite de peticiones simultáneas
       count++;
-      // Background pre-fetch
-      checkUrl(url).then(result => tintLink(anchor, result));
+      checkUrl(target).then(result => tintLink(anchor, result, deceptive));
     }
   }
 
@@ -226,15 +256,18 @@
   const observer = new MutationObserver(mutations => {
     for (const m of mutations) {
       for (const node of m.addedNodes) {
-        if (node.nodeType === 1) scanLinks(node);
+        if (node.nodeType !== 1) continue;
+        scanLinks(node);
+        if (node.matches && node.matches('a[href]')) scanLinks({ querySelectorAll: () => [node] });
       }
     }
   });
 
-  observer.observe(document.body, { childList: true, subtree: true });
+  if (document.body) observer.observe(document.body, { childList: true, subtree: true });
 
   // ── Bootstrap ─────────────────────────────────────────────────────────────
 
   document.addEventListener('click', handleLinkClick, true);
+  document.addEventListener('auxclick', handleLinkClick, true);
   scanLinks(document);
 })();

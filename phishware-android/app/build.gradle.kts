@@ -1,9 +1,18 @@
+import java.util.Properties
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.kapt)
     alias(libs.plugins.hilt)
 }
+
+val keystoreProps = Properties().apply {
+    val f = rootProject.file("keystore.properties")
+    if (f.exists()) f.inputStream().use { load(it) }
+}
+
+val apiUrl: String = (project.findProperty("apiUrl") as String?) ?: "https://api.phishware.pro/api/"
 
 android {
     namespace = "com.phishware.android"
@@ -19,9 +28,10 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // 10.0.2.2 es el localhost de la pc cuando se corre en emulador
-        // Celular por USB con adb reverse -> 127.0.0.1; por WiFi usar http://192.168.1.5:8080/api/
-        buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/api/\"")
+        // Por defecto la app habla con el backend desplegado en Railway.
+        // Para desarrollo local: ./gradlew installFullDebug -PapiUrl=http://127.0.0.1:8080/api/
+        //   (celular por USB con adb reverse -> 127.0.0.1; emulador -> 10.0.2.2; WiFi -> IP de la PC)
+        buildConfigField("String", "BASE_URL", "\"$apiUrl\"")
     }
 
     flavorDimensions += "dist"
@@ -35,16 +45,26 @@ android {
         }
     }
 
+    signingConfigs {
+        if (keystoreProps.containsKey("storeFile")) {
+            create("release") {
+                storeFile = file(keystoreProps.getProperty("storeFile"))
+                storePassword = keystoreProps.getProperty("storePassword")
+                keyAlias = keystoreProps.getProperty("keyAlias")
+                keyPassword = keystoreProps.getProperty("keyPassword")
+            }
+        }
+    }
+
     buildTypes {
         debug {
             isDebuggable = true
-            buildConfigField("String", "BASE_URL", "\"http://127.0.0.1:8080/api/\"")
         }
         release {
+            signingConfigs.findByName("release")?.let { signingConfig = it }
             isMinifyEnabled = true
             isShrinkResources = true
             proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-            buildConfigField("String", "BASE_URL", "\"https://api.phishware.com/api/\"")
         }
     }
 

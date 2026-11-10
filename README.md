@@ -2,6 +2,29 @@
 
 > Proyecto Académico-Profesional | Arquitectura Full Stack | Java 17 · Spring Boot · React · Kotlin
 
+<p align="center">
+  <a href="https://github.com/ghosstbabby12/PHISWARE/releases/latest/download/PhishWare.apk"><img alt="Descargar la app para Android" src="https://img.shields.io/badge/Descargar-App%20Android%20(APK)-3DDC84?style=for-the-badge&logo=android&logoColor=white"></a>
+  &nbsp;
+  <a href="https://phishware.pro"><img alt="Abrir la aplicación web" src="https://img.shields.io/badge/Abrir-phishware.pro-790D2B?style=for-the-badge"></a>
+</p>
+
+## Descarga y uso rápido
+
+| Plataforma | Cómo usarla |
+|---|---|
+| **App Android** | [**Pulsa aquí para descargar el APK**](https://github.com/ghosstbabby12/PHISWARE/releases/latest/download/PhishWare.apk) · todas las versiones en [Releases](https://github.com/ghosstbabby12/PHISWARE/releases) |
+| **Web** | [phishware.pro](https://phishware.pro) · no requiere instalar nada |
+| **API** | `https://api.phishware.pro/api` ([estado del servicio](https://api.phishware.pro/api/actuator/health)) |
+
+**Instalar la app en Android**
+
+1. Abre el enlace de descarga desde el celular y guarda el archivo `PhishWare.apk`.
+2. Ábrelo. Si Android lo pide, permite **instalar apps de esta fuente** (es un APK fuera de Google Play, por eso puede aparecer un aviso de Play Protect: elige *Instalar de todos modos*).
+3. Abre PhishWare, crea tu cuenta o inicia sesión.
+4. En la pestaña **Protección** activa los permisos que quieras usar: acceso a notificaciones (revisa los enlaces que llegan por WhatsApp, Instagram o correo antes de abrirlos), lectura de pantalla y navegador predeterminado (revisa el enlace en el momento del toque).
+
+Requiere Android 8.0 (API 26) o superior.
+
 ---
 
 ## Tabla de Contenidos

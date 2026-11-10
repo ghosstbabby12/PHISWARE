@@ -113,6 +113,21 @@
         </com.google.android.material.card.MaterialCardView>
 
         <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnPermissionsCheck"
+            android:layout_width="match_parent"
+            android:layout_height="52dp"
+            android:layout_marginTop="14dp"
+            android:text="@string/perm_open"
+            app:backgroundTint="@color/proton_primary"
+            app:cornerRadius="26dp" />
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/btnBackgroundLinks"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:text="@string/bg_open" />
+        <com.google.android.material.button.MaterialButton
             android:id="@+id/btnPermissions"
             android:layout_width="match_parent"
             android:layout_height="52dp"

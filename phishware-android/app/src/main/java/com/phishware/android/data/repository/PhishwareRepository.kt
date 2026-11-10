@@ -31,6 +31,10 @@ class PhishwareRepository @Inject constructor(
     suspend fun analyzeUrl(url: String): Result<UrlAnalysisResponse> =
         call { apiService.analyzeUrl(UrlAnalysisRequest(url)) }
 
+    /** Veredicto heurístico rápido (<1 s, sin APIs externas, sin login). */
+    suspend fun quickCheck(url: String): Result<QuickCheckResponse> =
+        call { apiService.quickCheck(url) }
+
     suspend fun getHistory(
         page: Int = 0, size: Int = 10, riskLevel: String? = null
     ): Result<PageResponse<UrlAnalysisResponse>> =

@@ -56,4 +56,17 @@ object UrlExtractor {
         }
         return true
     }
+
+    fun hostOf(url: String): String =
+        url.lowercase(Locale.US).substringAfter("://").substringBefore("/").substringBefore("?")
+            .substringAfter("@").substringBefore(":").removePrefix("www.")
+
+    /** Dominio "registrable" aproximado (ejemplo.com, ejemplo.co.uk) para comparar el texto de un enlace con su destino. */
+    fun registrable(host: String): String {
+        val parts = host.split('.').filter { it.isNotBlank() }
+        if (parts.size <= 2) return parts.joinToString(".")
+        val secondLevel = setOf("co", "com", "org", "net", "gov", "edu", "ac")
+        val take = if (parts.last().length == 2 && parts[parts.size - 2] in secondLevel) 3 else 2
+        return parts.takeLast(take).joinToString(".")
+    }
 }

@@ -2,6 +2,7 @@ package com.phishware.android.service
 
 import android.service.notification.NotificationListenerService
 import android.service.notification.StatusBarNotification
+import com.phishware.android.R
 import com.phishware.android.data.local.GuardPreferences
 import com.phishware.android.data.local.SessionManager
 import com.phishware.android.data.repository.PhishwareRepository
@@ -29,54 +30,64 @@ class PhishNotificationListener : NotificationListenerService() {
     @Inject lateinit var session: SessionManager
     @Inject lateinit var repository: PhishwareRepository
     @Inject lateinit var notifications: NotificationHelper
+    @Inject lateinit var bgLog: com.phishware.android.data.local.BackgroundLog
+    @Inject lateinit var scanner: com.phishware.android.security.LinkScanner
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
 
     private val MONITORED = setOf(
+        // WhatsApp
         "com.whatsapp", "com.whatsapp.w4b",
-        "com.google.android.gm", "com.microsoft.office.outlook",
-        "org.telegram.messenger", "com.facebook.orca"
+        // Instagram / Facebook / Messenger
+        "com.instagram.android", "com.instagram.barcelona",
+        "com.facebook.katana", "com.facebook.orca", "com.facebook.mlite",
+        // Correo
+        "com.google.android.gm", "com.microsoft.office.outlook", "com.yahoo.mobile.client.android.mail",
+        "com.samsung.android.email.provider", "ch.protonmail.android", "com.fsck.k9", "com.my.mail",
+        // Otras mensajerías
+        "org.telegram.messenger", "org.telegram.messenger.web", "org.thoughtcrime.securesms",
+        "com.discord", "com.snapchat.android", "com.twitter.android", "com.zhiliaoapp.musically",
+        "com.linkedin.android",
+        // SMS / Mensajes (Google y Samsung)
+        "com.google.android.apps.messaging", "com.samsung.android.messaging", "com.android.mms"
     )
+
+    /** Junta todo el texto visible de la notificación, incluidos mensajes agrupados (MessagingStyle/InboxStyle). */
+    private fun collectText(n: android.app.Notification): String {
+        val e = n.extras
+        val parts = mutableListOf<String>()
+        for (k in listOf("android.title", "android.text", "android.bigText", "android.subText",
+            "android.summaryText", "android.infoText", "android.title.big")) {
+            e.getCharSequence(k)?.toString()?.let { parts += it }
+        }
+        e.getCharSequenceArray("android.textLines")?.forEach { parts += it.toString() }
+        try {
+            @Suppress("DEPRECATION")
+            val msgs = e.getParcelableArray("android.messages")
+            msgs?.forEach { m ->
+                (m as? android.os.Bundle)?.getCharSequence("text")?.toString()?.let { parts += it }
+            }
+        } catch (_: Exception) { }
+        n.tickerText?.toString()?.let { parts += it }
+        return parts.joinToString("\n")
+    }
 
     override fun onNotificationPosted(sbn: StatusBarNotification) {
         val pkg = sbn.packageName ?: return
-        if (pkg !in MONITORED) return
-        // Ignora nuestras propias notificaciones
-        if (pkg == packageName) return
+        if (pkg !in MONITORED || pkg == packageName) return
+        val text = collectText(sbn.notification)
         scope.launch {
             try {
-                if (!guard.isActive()) return@launch
-                if (!guard.notificationsListenerEnabled.first()) return@launch
-                if (!session.isLoggedIn()) return@launch
-                val extras = sbn.notification.extras
-                val title = extras.getCharSequence("android.title")?.toString().orEmpty()
-                val text = extras.getCharSequence("android.text")?.toString().orEmpty()
-                val big = extras.getCharSequence("android.bigText")?.toString().orEmpty()
-                val urls = UrlExtractor.extractUrls("$title\n$text\n$big")
-                if (urls.isEmpty()) return@launch
-                var notifOn = true
-                try { notifOn = guard.notificationsEnabled.first() } catch (_: Exception) { }
-                if (!notifOn) return@launch
-                for (url in urls) {
-                    if (!guard.shouldScan("notif:$url")) continue
-                    repository.analyzeUrl(url).onSuccess { r ->
-                        val level = r.riskLevel ?: "SAFE"
-                        if (level != "SAFE") {
-                            val top = r.threats?.firstOrNull()
-                            notifications.showThreat(
-                                url = r.originalUrl ?: url,
-                                domain = r.domain ?: url,
-                                riskLevel = level,
-                                score = r.riskScore,
-                                firstTip = r.recommendations?.firstOrNull(),
-                                principle = top?.persuasionPrinciple,
-                                microlessonSlug = top?.microlessonSlug,
-                                sealBrand = r.officialSeal?.takeIf { it.official }?.brand
-                            )
-                        }
-                    }
-                }
-            } catch (_: Exception) { }
+                if (!scanner.enabled()) return@launch
+                val urls = UrlExtractor.extractUrls(text)
+                android.util.Log.d("PhishListener", "$pkg -> ${urls.size} URL(s)")
+                val source = com.phishware.android.data.local.BackgroundLog.sourceLabel(pkg)
+                if (urls.isEmpty()) { scanner.scanText(text, source); return@launch }
+                // En paralelo: la alerta rápida de un enlace no espera al análisis lento de otro
+                urls.map { url -> launch { scanner.scan(url, source) } }
+            } catch (e: Exception) {
+                android.util.Log.w("PhishListener", "fallo analizando notificación de $pkg", e)
+            }
         }
     }
 }

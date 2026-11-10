@@ -106,6 +106,12 @@ class SettingsFragment : Fragment() {
                 Snackbar.make(binding.root, getString(R.string.guard_battery_how), Snackbar.LENGTH_LONG).show()
             }
         }
+        binding.btnPermissionsCheck.setOnClickListener {
+            androidx.navigation.fragment.NavHostFragment.findNavController(this).navigate(R.id.permissions_fragment)
+        }
+        binding.btnBackgroundLinks.setOnClickListener {
+            androidx.navigation.fragment.NavHostFragment.findNavController(this).navigate(R.id.background_fragment)
+        }
         binding.btnNotifAccess.setOnClickListener {
             try {
                 startActivity(android.content.Intent("android.settings.ACTION_NOTIFICATION_LISTENER_SETTINGS"))

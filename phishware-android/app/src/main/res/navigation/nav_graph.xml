@@ -38,4 +38,14 @@
         android:id="@+id/education_fragment"
         android:name="com.phishware.android.ui.education.EducationFragment"
         android:label="@string/nav_education" />
+
+    <fragment
+        android:id="@+id/background_fragment"
+        android:name="com.phishware.android.ui.settings.BackgroundFragment"
+        android:label="@string/bg_title" />
+
+    <fragment
+        android:id="@+id/permissions_fragment"
+        android:name="com.phishware.android.ui.settings.PermissionsFragment"
+        android:label="@string/perm_title" />
 </navigation>

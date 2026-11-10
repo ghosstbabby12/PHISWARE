@@ -11,6 +11,9 @@ interface ApiService {
     @POST("auth/register")
     suspend fun register(@Body request: RegisterRequest): AuthResponse
 
+    @GET("public/url/check")
+    suspend fun quickCheck(@Query("url") url: String): QuickCheckResponse
+
     @POST("analysis")
     suspend fun analyzeUrl(@Body request: UrlAnalysisRequest): UrlAnalysisResponse
 

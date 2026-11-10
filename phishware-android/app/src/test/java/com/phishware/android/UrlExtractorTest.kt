@@ -34,4 +34,22 @@ class UrlExtractorTest {
         val text = (1..10).joinToString(" ") { "https://evil$it.xyz/login" }
         assertTrue(UrlExtractor.extractUrls(text).size <= 5)
     }
+
+    @Test
+    fun `hostOf ignora esquema www puerto y ruta`() {
+        assertEquals("paypal.com", UrlExtractor.hostOf("https://www.paypal.com:443/login?x=1"))
+        assertEquals("evil.tk", UrlExtractor.hostOf("http://user@evil.tk/a"))
+    }
+
+    @Test
+    fun `registrable distingue dominio real de subdominio enganoso`() {
+        assertEquals("paypal.com", UrlExtractor.registrable("secure.paypal.com"))
+        assertEquals("paypal-verify.tk", UrlExtractor.registrable("paypal.com.paypal-verify.tk"))
+        assertEquals("bancolombia.com.co", UrlExtractor.registrable("www.bancolombia.com.co"))
+        // El texto muestra paypal.com pero el destino es otro dominio -> deben diferir
+        assertNotEquals(
+            UrlExtractor.registrable(UrlExtractor.hostOf("https://paypal.com")),
+            UrlExtractor.registrable(UrlExtractor.hostOf("https://paypal.com.paypal-verify.tk/x"))
+        )
+    }
 }

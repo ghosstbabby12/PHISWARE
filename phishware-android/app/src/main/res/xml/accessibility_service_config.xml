@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<accessibility-service xmlns:android="http://schemas.android.com/apk/res/android"
+    android:accessibilityEventTypes="typeWindowContentChanged|typeWindowStateChanged"
+    android:accessibilityFeedbackType="feedbackGeneric"
+    android:accessibilityFlags="flagReportViewIds"
+    android:canRetrieveWindowContent="true"
+    android:description="@string/a11y_description"
+    android:notificationTimeout="400"
+    android:packageNames="com.whatsapp,com.whatsapp.w4b,com.instagram.android,com.instagram.barcelona,com.facebook.katana,com.facebook.orca,com.facebook.mlite,org.telegram.messenger,org.telegram.messenger.web,org.thoughtcrime.securesms,com.discord,com.snapchat.android,com.twitter.android,com.google.android.gm,com.microsoft.office.outlook,com.samsung.android.email.provider,ch.protonmail.android,com.fsck.k9,com.yahoo.mobile.client.android.mail,com.google.android.apps.messaging,com.samsung.android.messaging,com.android.mms" />

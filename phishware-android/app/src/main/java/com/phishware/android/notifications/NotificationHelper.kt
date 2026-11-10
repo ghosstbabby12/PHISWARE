@@ -23,6 +23,7 @@ class NotificationHelper @Inject constructor(
     companion object {
         const val CHANNEL_GUARD = "guard_persistent"
         const val CHANNEL_THREATS = "threat_alerts"
+        const val CHANNEL_INFO = "link_checked"
         const val NOTIF_GUARD_ID = 1001
         const val EXTRA_URL = "extra_url"
         const val EXTRA_RISK = "extra_risk"
@@ -34,6 +35,11 @@ class NotificationHelper @Inject constructor(
         nm.createNotificationChannel(
             NotificationChannel(CHANNEL_GUARD, context.getString(R.string.channel_guard), NotificationManager.IMPORTANCE_LOW).apply {
                 description = context.getString(R.string.channel_guard_desc)
+            }
+        )
+        nm.createNotificationChannel(
+            NotificationChannel(CHANNEL_INFO, context.getString(R.string.channel_info), NotificationManager.IMPORTANCE_LOW).apply {
+                description = context.getString(R.string.channel_info_desc)
             }
         )
         nm.createNotificationChannel(
@@ -69,14 +75,16 @@ class NotificationHelper @Inject constructor(
         firstTip: String?,
         principle: String? = null,
         microlessonSlug: String? = null,
-        sealBrand: String? = null
+        sealBrand: String? = null,
+        source: String? = null
     ) {
         ensureChannels()
-        val (title, icon) = when (riskLevel) {
+        val (baseTitle, icon) = when (riskLevel) {
             "DANGEROUS" -> context.getString(R.string.notif_threat_danger) to R.drawable.ic_alert
             "SUSPICIOUS" -> context.getString(R.string.notif_threat_susp) to R.drawable.ic_analyze
             else -> return // SAFE no notifica (evita ruido)
         }
+        val title = if (source.isNullOrBlank()) baseTitle else "$baseTitle · $source"
         val open = PendingIntent.getActivity(
             context, Random.nextInt(),
             Intent(context, MainActivity::class.java).apply {
@@ -125,6 +133,10 @@ class NotificationHelper @Inject constructor(
             .setCategory(NotificationCompat.CATEGORY_MESSAGE)
             .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
             .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .apply {
+                // Peligro real: vibración larga y repetida para que no pase desapercibida
+                if (riskLevel == "DANGEROUS") setVibrate(longArrayOf(0, 400, 150, 400, 150, 600))
+            }
             .setWhen(System.currentTimeMillis())
             .setShowWhen(true)
             .setAutoCancel(true)
@@ -136,5 +148,59 @@ class NotificationHelper @Inject constructor(
             .build()
         context.getSystemService(NotificationManager::class.java)
             .notify(url.hashCode(), notif)
+    }
+
+    /** Aviso discreto (sin sonido, se borra solo) para que el usuario sepa que el enlace sí fue revisado. */
+    fun showInfo(title: String, text: String, tag: String) {
+        ensureChannels()
+        val open = PendingIntent.getActivity(
+            context, Random.nextInt(),
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val n = NotificationCompat.Builder(context, CHANNEL_INFO)
+            .setSmallIcon(R.drawable.ic_shield)
+            .setContentTitle(title)
+            .setContentText(text)
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text))
+            .setPriority(NotificationCompat.PRIORITY_LOW)
+            .setTimeoutAfter(15_000)
+            .setAutoCancel(true)
+            .setContentIntent(open)
+            .build()
+        context.getSystemService(NotificationManager::class.java).notify(tag.hashCode(), n)
+    }
+
+    /** Alerta fuerte para un mensaje de ingeniería social aunque NO traiga enlace (se analizó solo en el teléfono). */
+    fun showTextThreat(source: String, score: Double, principles: List<String>, tag: String) {
+        ensureChannels()
+        val open = PendingIntent.getActivity(
+            context, Random.nextInt(),
+            Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_SINGLE_TOP or Intent.FLAG_ACTIVITY_CLEAR_TOP
+            },
+            PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+        )
+        val title = context.getString(R.string.notif_text_title, source)
+        val why = if (principles.isEmpty()) "" else "\n" + context.getString(R.string.notif_principle_fmt, principles.joinToString("/"))
+        val text = context.getString(R.string.notif_text_body) + why
+        val n = NotificationCompat.Builder(context, CHANNEL_THREATS)
+            .setSmallIcon(R.drawable.ic_alert)
+            .setColor(0xFFDC2626.toInt())
+            .setContentTitle(title)
+            .setContentText(text)
+            .setSubText("PHISHWARE")
+            .setStyle(NotificationCompat.BigTextStyle().bigText(text).setBigContentTitle(title))
+            .setPriority(NotificationCompat.PRIORITY_MAX)
+            .setCategory(NotificationCompat.CATEGORY_MESSAGE)
+            .setVisibility(NotificationCompat.VISIBILITY_PUBLIC)
+            .setDefaults(NotificationCompat.DEFAULT_ALL)
+            .setVibrate(longArrayOf(0, 400, 150, 400, 150, 600))
+            .setAutoCancel(true)
+            .setContentIntent(open)
+            .build()
+        context.getSystemService(NotificationManager::class.java).notify(tag.hashCode(), n)
     }
 }

@@ -59,6 +59,16 @@ data class ThreatResponse(
     @SerializedName("microlessonSlug") val microlessonSlug: String? = null
 )
 
+data class QuickCheckResponse(
+    @SerializedName("url") val url: String? = null,
+    @SerializedName("domain") val domain: String? = null,
+    @SerializedName("riskScore") val riskScore: Double = 0.0,
+    @SerializedName("classification") val classification: String? = null,
+    @SerializedName("indicators") val indicators: List<String>? = null,
+    @SerializedName("recommendations") val recommendations: List<String>? = null,
+    @SerializedName("officialSeal") val officialSeal: OfficialSeal? = null
+)
+
 data class OfficialSeal(
     @SerializedName("official") val official: Boolean = false,
     @SerializedName("brand") val brand: String? = null,

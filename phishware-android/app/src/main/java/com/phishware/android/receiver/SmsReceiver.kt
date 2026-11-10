@@ -31,6 +31,7 @@ class SmsReceiver : BroadcastReceiver() {
     @Inject lateinit var session: SessionManager
     @Inject lateinit var repository: PhishwareRepository
     @Inject lateinit var notifications: NotificationHelper
+    @Inject lateinit var bgLog: com.phishware.android.data.local.BackgroundLog
 
     override fun onReceive(context: Context, intent: Intent) {
         if (intent.action != Telephony.Sms.Intents.SMS_RECEIVED_ACTION) return
@@ -61,13 +62,18 @@ class SmsReceiver : BroadcastReceiver() {
                     val res = repository.analyzeUrl(url)
                     res.onSuccess { r ->
                         val level = r.riskLevel ?: "SAFE"
+                        bgLog.add(com.phishware.android.data.local.BackgroundDetection(
+                            url = r.originalUrl ?: url, domain = r.domain ?: url, source = "SMS",
+                            riskLevel = level, score = r.riskScore,
+                            tip = r.recommendations?.firstOrNull(), timestamp = System.currentTimeMillis()))
                         if (notifOn && level != "SAFE") {
                             notifications.showThreat(
                                 url = r.originalUrl ?: url,
                                 domain = r.domain ?: url,
                                 riskLevel = level,
                                 score = r.riskScore,
-                                firstTip = r.recommendations?.firstOrNull()
+                                firstTip = r.recommendations?.firstOrNull(),
+                                source = "SMS"
                             )
                         }
                     }.onFailure {

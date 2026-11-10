@@ -234,4 +234,43 @@ class UrlAnalysisServiceTest {
         assertThat(response.getThreats()).anyMatch(t -> t.getSource().equals("COMMUNITY"));
         assertThat(response.isPhishing()).isTrue();
     }
+
+    @Test
+    @DisplayName("Un solo motor de VirusTotal (de ~90) no debe escalar el sitio a DANGEROUS")
+    void analyzeUrl_WhenOnlyOneVirusTotalEngineFlags_ShouldNotBeDangerous() {
+        // Regresión: 1/92 motores (ruido típico de un motor aislado) hacía que la fórmula
+        // anterior saltara a ~51% de confianza con un piso artificial de 0.5.
+        UrlAnalysisRequest request = new UrlAnalysisRequest();
+        request.setUrl("https://wa.me/settings/linked_devices");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(safeBrowsingService.checkUrl(any())).thenReturn(GoogleSafeBrowsingService.SafeBrowsingResult.safe());
+        when(virusTotalService.analyzeUrl(any())).thenReturn(
+            VirusTotalService.VirusTotalResult.malicious(1, 92));
+        when(analysisRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        UrlAnalysisResponse response = urlAnalysisService.analyzeUrl(request, 1L);
+
+        assertThat(response.getRiskLevel()).isNotEqualTo(RiskLevel.DANGEROUS);
+        assertThat(response.getRiskScore()).isLessThan(BigDecimal.valueOf(20));
+    }
+
+    @Test
+    @DisplayName("Un dominio oficial verificado no debe quedar DANGEROUS por una señal débil aislada")
+    void analyzeUrl_WhenOfficialDomainHasWeakSignal_ShouldNotBeDangerous() {
+        UrlAnalysisRequest request = new UrlAnalysisRequest();
+        request.setUrl("https://wa.me/settings/linked_devices");
+
+        when(userRepository.findById(1L)).thenReturn(Optional.of(testUser));
+        when(safeBrowsingService.checkUrl(any())).thenReturn(GoogleSafeBrowsingService.SafeBrowsingResult.safe());
+        when(virusTotalService.analyzeUrl(any())).thenReturn(
+            VirusTotalService.VirusTotalResult.malicious(1, 92));
+        when(officialSealService.check(any())).thenReturn(OfficialSeal.of("whatsapp", "wa.me"));
+        when(analysisRepository.save(any())).thenAnswer(i -> i.getArgument(0));
+
+        UrlAnalysisResponse response = urlAnalysisService.analyzeUrl(request, 1L);
+
+        assertThat(response.getRiskLevel()).isNotEqualTo(RiskLevel.DANGEROUS);
+        assertThat(response.isPhishing()).isFalse();
+    }
 }

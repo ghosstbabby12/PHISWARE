@@ -1,6 +1,7 @@
 package com.phishware.service;
 
 import com.phishware.dto.request.UrlAnalysisRequest;
+import com.phishware.dto.response.OfficialSeal;
 import com.phishware.dto.response.ThreatResponse;
 import com.phishware.dto.response.UrlAnalysisResponse;
 import com.phishware.entity.Alert;
@@ -145,8 +146,13 @@ public class UrlAnalysisService {
         DomainAgeService.DomainAgeResult age = ageFuture.getNow(
             DomainAgeService.DomainAgeResult.unavailable());
 
+        // NIST ID.RA-2: dominio verificado contra el catálogo de marcas oficiales —
+        // se usa para atenuar señales débiles (p. ej. un solo motor de VirusTotal)
+        OfficialSeal officialSeal = officialSealService.check(domain);
+
         // NIST ID.RA-3: Calcular riesgo combinado (APIs + heurística + contenido + antigüedad)
-        RiskAssessment assessment = calculateCombinedRisk(gsbResult, vtResult, heuristic, content, age, community);
+        RiskAssessment assessment =
+            calculateCombinedRisk(gsbResult, vtResult, heuristic, content, age, community, officialSeal);
 
         // Construir y persistir entidad
         UrlAnalysis analysis = UrlAnalysis.builder()
@@ -226,7 +232,8 @@ public class UrlAnalysisService {
             NistThreatClassifier.HeuristicResult heuristic,
             WebContentAnalyzer.ContentAnalysisResult content,
             DomainAgeService.DomainAgeResult age,
-            CommunityVerdict community) {
+            CommunityVerdict community,
+            OfficialSeal officialSeal) {
 
         Map<String, Double> breakdown = new LinkedHashMap<>();
         List<String> recommendations = new ArrayList<>();
@@ -246,8 +253,14 @@ public class UrlAnalysisService {
         if (!vt.isError()) {
             double p = 0.0;
             if (vt.threatLevel() == VirusTotalService.VirusTotalResult.ThreatLevel.MALICIOUS) {
-                p = Math.min(0.95, 0.5 + vt.maliciousPercentage() / 100.0);
-                isPhishing = true;
+                // Proporcional al consenso real, sin piso artificial: 1-2 motores de ~90
+                // suelen ser ruido de un motor heurístico aislado (el propio VirusTotal
+                // recomienda no tratar detecciones mínimas como señal fuerte). Antes,
+                // cualquier detección saltaba a ~50% de confianza aunque fuera 1/92.
+                p = Math.min(0.95, vt.maliciousPercentage() / 100.0 * 3.0);
+                if (vt.maliciousCount() >= 3) {
+                    isPhishing = true;
+                }
                 recommendations.add(vt.maliciousCount() + "/" + vt.totalEngines()
                     + " motores antivirus detectaron malware.");
             } else if (vt.threatLevel() == VirusTotalService.VirusTotalResult.ThreatLevel.SUSPICIOUS) {
@@ -289,6 +302,19 @@ public class UrlAnalysisService {
         for (double p : breakdown.values()) notMalicious *= (1.0 - p);
         double score = Math.min(100.0, (1.0 - notMalicious) * 100.0);
         score = Math.round(score * 100.0) / 100.0;
+
+        // NIST ID.RA-2: un dominio verificado contra el catálogo oficial de marcas no
+        // debería caer en DANGEROUS por una señal débil aislada (p. ej. un motor de VT).
+        // Solo evidencia fuerte e independiente (GSB o reportes CONFIRMED de la comunidad,
+        // que implicarían una cuenta/dominio oficial comprometido) puede anular esta
+        // atenuación; de lo contrario el sitio ya está confirmado como legítimo.
+        boolean strongIndependentEvidence = (!gsb.isError() && !gsb.isSafe()) || community.present();
+        if (officialSeal != null && officialSeal.official() && !strongIndependentEvidence && score > SUSPICIOUS_THRESHOLD) {
+            score = Math.min(score, SUSPICIOUS_THRESHOLD);
+            isPhishing = false;
+            recommendations.add("Dominio verificado como sitio oficial de " + officialSeal.brand()
+                + "; el riesgo se atenuó pese a señales débiles aisladas.");
+        }
 
         if (score >= PHISHING_THRESHOLD) isPhishing = true;
 

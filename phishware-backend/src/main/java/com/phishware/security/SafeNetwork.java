@@ -31,7 +31,12 @@ public final class SafeNetwork {
         try {
             addresses = InetAddress.getAllByName(host);
         } catch (UnknownHostException e) {
-            throw new SecurityException("El host no resuelve a ninguna dirección IP: " + host);
+            // No resuelve: no hay ningún destino al que hacer SSRF, así que no es un riesgo
+            // de seguridad bloquear aquí. SafePageFetcher vuelve a resolver antes de cada
+            // fetch real (incluso por cada salto de redirección), así que esa es la barrera
+            // efectiva contra SSRF. Dejar pasar el análisis es necesario para poder evaluar
+            // dominios de phishing ya dados de baja o con DNS "sinkholeado", que son comunes.
+            return;
         }
         for (InetAddress address : addresses) {
             if (isNonPublic(address)) {

@@ -46,4 +46,17 @@ class OwaspComplianceValidatorTest {
     void nullDomainIsIgnored() {
         assertThatNoException().isThrownBy(() -> validator.validateAgainstSsrf("http://x/", null));
     }
+
+    @Test
+    void unresolvableDomainIsNotBlocked() {
+        // Un dominio que no resuelve (p. ej. phishing ya dado de baja) no es un riesgo de
+        // SSRF -- no hay ningún destino al que hacer la petición -- así que el análisis
+        // debe poder continuar en vez de abortar con un SecurityException.
+        // ".invalid" está reservado por RFC 2606 para nunca resolver, así la prueba es
+        // determinista sin depender de que un dominio real siga sin existir.
+        assertThatNoException().isThrownBy(
+            () -> validator.validateAgainstSsrf(
+                "http://secure-login.paypa1-verify.invalid/account",
+                "secure-login.paypa1-verify.invalid"));
+    }
 }

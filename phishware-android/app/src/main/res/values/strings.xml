@@ -190,6 +190,16 @@
     <string name="analysis_analyzed">ANALYZED</string>
     <string name="qr_no_perm_full">No camera permission: use gallery or type the URL.</string>
     <string name="qr_no_cam_start">Could not start the camera</string>
+    <string name="qr_hold">Hold the QR steady…</string>
+    <string name="qr_torch">Toggle flashlight</string>
+    <string name="qr_stats_title">Your statistics</string>
+    <string name="qr_stats_sub">Everything you have analyzed, same as on the web.</string>
+    <string name="qr_session_fmt">This session: %1$d</string>
+    <string name="qr_stat_accumulated">Accumulated</string>
+    <string name="qr_stat_no_risk">No risk</string>
+    <string name="qr_stat_review">Review before opening</string>
+    <string name="qr_stat_plus_susp_fmt">+ %1$d suspicious</string>
+    <string name="qr_score_fmt">Risk %1$d/100</string>
     <string name="notif_offline_tip">Offline: matches a smishing pattern, verify through an official channel</string>
     <string name="notif_threat_danger">Possible phishing blocked</string>
     <string name="notif_threat_susp">Suspicious link</string>

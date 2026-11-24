@@ -1,4 +1,5 @@
-import { useRef, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import toast from 'react-hot-toast'
 import { Info, Link as LinkIcon, QrCode, RotateCcw, ShieldCheck } from 'lucide-react'
@@ -17,7 +18,9 @@ type Tab = 'url' | 'qr'
 export default function UrlAnalysisPage() {
   const { t } = useLang()
   const [result, setResult] = useState<UrlAnalysisResponse | null>(null)
-  const [tab, setTab] = useState<Tab>('url')
+  const [searchParams, setSearchParams] = useSearchParams()
+  const tabParam: Tab = searchParams.get('tab') === 'qr' ? 'qr' : 'url'
+  const [tab, setTab] = useState<Tab>(tabParam)
   const [qrContent, setQrContent] = useState<QrContent | null>(null)
   const [analyzedUrl, setAnalyzedUrl] = useState<string | null>(null)
   const queryClient = useQueryClient()
@@ -74,7 +77,16 @@ export default function UrlAnalysisPage() {
     setAnalyzedUrl(null)
   }
 
+  // El FAB y el dashboard enlazan a /analysis?tab=qr
+  useEffect(() => {
+    setTab(tabParam)
+    setResult(null)
+    setQrContent(null)
+    setAnalyzedUrl(null)
+  }, [tabParam])
+
   function switchTab(next: Tab) {
+    setSearchParams(next === 'qr' ? { tab: 'qr' } : {}, { replace: true })
     setTab(next)
     setResult(null)
     setQrContent(null)
@@ -92,16 +104,22 @@ export default function UrlAnalysisPage() {
   const tips = tab === 'qr' ? t.analysis.qrTips : t.analysis.tips
 
   return (
-    <div className="max-w-3xl mx-auto space-y-6 animate-fade-in" ref={topRef}>
+    <div className="max-w-3xl mx-auto space-y-6" ref={topRef}>
       <div>
         <h1 className="section-title flex items-center gap-2">
-          <ShieldCheck className="w-6 h-6 text-primary-700" />
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-[0_8px_18px_-6px_rgba(121,13,43,0.6)]">
+            <ShieldCheck className="w-5 h-5" />
+          </span>
           {t.analysis.title}
         </h1>
         <p className="section-subtitle">{t.analysis.subtitle}</p>
       </div>
 
-      <div className="inline-flex rounded-xl border divider bg-white dark:bg-dark-800 p-1 shadow-sm" role="tablist" aria-label={t.analysis.typeLabel}>
+      <div className="glass relative inline-grid grid-cols-2 rounded-2xl p-1" role="tablist" aria-label={t.analysis.typeLabel}>
+        <span
+          aria-hidden
+          className={`absolute inset-y-1 left-1 w-[calc(50%-0.25rem)] rounded-xl bg-gradient-to-br from-primary-500 to-primary-700 shadow-[0_8px_18px_-8px_rgba(121,13,43,0.7)] transition-transform duration-300 ease-out ${tab === 'qr' ? 'translate-x-full' : 'translate-x-0'}`}
+        />
         {([
           { id: 'url', label: t.analysis.urlTab, icon: LinkIcon },
           { id: 'qr',  label: t.analysis.qrTab, icon: QrCode },
@@ -112,8 +130,8 @@ export default function UrlAnalysisPage() {
             role="tab"
             aria-selected={tab === id}
             onClick={() => switchTab(id)}
-            className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
-              tab === id ? 'bg-primary-600 text-white shadow-sm' : 'text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 hover:bg-ink-50 dark:hover:bg-dark-800 dark:bg-dark-900'
+            className={`relative z-10 flex items-center justify-center gap-2 px-5 py-2 rounded-xl text-sm font-semibold transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 ${
+              tab === id ? 'text-white' : 'text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white'
             }`}
           >
             <Icon className="w-4 h-4" /> {label}
@@ -147,14 +165,21 @@ export default function UrlAnalysisPage() {
       )}
 
       {isPending && (
-        <div className="card animate-pulse text-sm text-ink-500 dark:text-ink-300" role="status" aria-live="polite">
-          {t.analysis.analyzingUrl(analyzedUrl ?? '…')}
+        <div className="card relative overflow-hidden text-sm text-ink-700 dark:text-ink-200" role="status" aria-live="polite">
+          <span className="absolute inset-x-0 top-0 h-1 bg-[linear-gradient(90deg,transparent,#B42345,transparent)] bg-[length:200%_100%] animate-shine" aria-hidden />
+          <span className="flex items-center gap-3">
+            <span className="relative grid h-9 w-9 place-items-center">
+              <span className="absolute inset-0 rounded-full bg-primary-500/30 animate-ring-pulse" />
+              <ShieldCheck className="relative h-5 w-5 text-primary-700 dark:text-primary-300" />
+            </span>
+            <span className="break-all">{t.analysis.analyzingUrl(analyzedUrl ?? '…')}</span>
+          </span>
         </div>
       )}
 
       {result && <AnalysisResult result={result} onAnalyzeAnother={analyzeAnother} />}
 
-      <div className="card !bg-primary-50/60 !border-primary-600/15">
+      <div className="card !bg-primary-50/50 dark:!bg-primary-900/20">
         <h3 className="text-sm font-semibold text-ink-900 dark:text-ink-50 flex items-center gap-2 mb-3">
           <Info className="w-4 h-4 text-primary-700" />
           {t.analysis.tipsTitle}

@@ -142,10 +142,12 @@ export default function EducationPage() {
   }) ?? []
 
   return (
-    <div className="space-y-6 animate-fade-in">
+    <div className="space-y-6">
       <div>
-        <h1 className="section-title flex items-center gap-2">
-          <BookOpen className="w-6 h-6 text-primary-700" />
+        <h1 className="section-title flex items-center gap-3">
+          <span className="grid h-10 w-10 place-items-center rounded-2xl bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-[0_8px_18px_-6px_rgba(121,13,43,0.6)]">
+            <BookOpen className="w-5 h-5" />
+          </span>
           Módulo Educativo
         </h1>
         <p className="section-subtitle">
@@ -156,20 +158,20 @@ export default function EducationPage() {
       <LearningProgressPanel />
 
       {/* Category filter */}
-      <div className="flex flex-wrap gap-2">
+      <div className="-mx-4 flex gap-2 overflow-x-auto px-4 pb-1 sm:mx-0 sm:flex-wrap sm:overflow-visible sm:px-0">
         {CATEGORIES.map(c => (
           <button
             key={c.value}
             onClick={() => setCategory(c.value)}
             aria-pressed={category === c.value}
-            className={`px-4 py-2 rounded-full text-sm font-medium transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
+            className={`shrink-0 px-4 py-2 rounded-full text-sm font-semibold transition-all duration-200 hover:-translate-y-0.5 focus:outline-none focus-visible:ring-2 focus-visible:ring-primary-600 focus-visible:ring-offset-2 ${
               category === c.value
                 ? c.value === 'OWASP'
                   ? 'bg-orange-600 text-white'
                   : c.value === 'NIST'
                     ? 'bg-blue-600 text-white'
-                    : 'bg-primary-600 text-white'
-                : 'bg-white dark:bg-dark-800 text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white dark:text-ink-50 border border-ink-200 dark:border-dark-800 shadow-sm'
+                    : 'bg-gradient-to-br from-primary-500 to-primary-700 text-white shadow-[0_8px_18px_-8px_rgba(121,13,43,0.7)]'
+                : 'glass text-ink-500 dark:text-ink-300 hover:text-ink-900 dark:hover:text-white'
             }`}
           >
             {c.label}
@@ -223,7 +225,7 @@ export default function EducationPage() {
             <Link
               key={article.id}
               to={`/education/${article.slug}`}
-              className={`card hover:-translate-y-0.5 transition-all duration-200 group ${
+              className={`module group flex flex-col ${
                 article.category === 'OWASP'
                   ? 'hover:border-orange-500/50'
                   : article.category === 'NIST'
@@ -231,7 +233,13 @@ export default function EducationPage() {
                     : 'hover:border-primary-500/50'
               }`}
             >
-              <div className="flex items-start justify-between mb-3">
+              <span
+                aria-hidden
+                className={`absolute inset-x-0 top-0 h-1 ${
+                  article.difficulty === 'ADVANCED' ? 'bg-danger-500' : article.difficulty === 'INTERMEDIATE' ? 'bg-warning-500' : 'bg-success-500'
+                } opacity-70 transition-opacity group-hover:opacity-100`}
+              />
+              <div className="relative flex items-start justify-between mb-3">
                 <div className="flex items-center gap-2">
                   <span className={`text-xs font-semibold px-2 py-0.5 rounded-full ${DIFFICULTY_COLORS[article.difficulty] ?? ''}`}>
                     {DIFFICULTY_LABELS[article.difficulty] ?? article.difficulty}
@@ -244,7 +252,7 @@ export default function EducationPage() {
                 </span>
               </div>
 
-              <h3 className={`font-semibold text-ink-900 dark:text-ink-50 transition-colors mb-2 line-clamp-2 ${
+              <h3 className={`relative font-semibold text-ink-900 dark:text-ink-50 transition-colors mb-2 line-clamp-2 ${
                 article.category === 'OWASP'
                   ? 'group-hover:text-orange-600'
                   : article.category === 'NIST'
@@ -253,9 +261,9 @@ export default function EducationPage() {
               }`}>
                 {article.title}
               </h3>
-              <p className="text-sm text-ink-500 dark:text-ink-300 line-clamp-2 mb-4">{article.summary}</p>
+              <p className="relative text-sm text-ink-500 dark:text-ink-300 line-clamp-2 mb-4">{article.summary}</p>
 
-              <div className="flex items-center justify-between text-xs text-ink-500 dark:text-ink-300">
+              <div className="relative mt-auto flex items-center justify-between border-t divider pt-3 text-xs text-ink-500 dark:text-ink-300">
                 <span className="flex items-center gap-1">
                   <Clock className="w-3 h-3" />
                   {article.readingTimeMin} min de lectura

@@ -1,34 +1,26 @@
-import { useState } from 'react'
-import { Outlet } from 'react-router-dom'
-import Sidebar from './Sidebar'
+import { Outlet, useLocation } from 'react-router-dom'
+import FloatingDock from './FloatingDock'
 import Navbar from './Navbar'
-import LinkGuardWidget from './LinkGuardWidget'
+import QuickActionsFab from './QuickActionsFab'
+import SafetyAssistant from './SafetyAssistant'
+import AmbientBackground from './AmbientBackground'
 
 export default function AppLayout() {
-  const [menuOpen, setMenuOpen] = useState(false)
+  const { pathname } = useLocation()
 
   return (
-    <div className="flex min-h-screen bg-ink-50 dark:bg-dark-900">
-      {menuOpen && (
-        <button
-          type="button"
-          aria-label="Cerrar menú de navegación"
-          className="fixed inset-0 z-30 bg-ink-900/40 lg:hidden"
-          onClick={() => setMenuOpen(false)}
-        />
-      )}
-      <div className={`fixed z-40 h-dvh transition-transform duration-300 lg:static lg:z-auto lg:translate-x-0 lg:h-full ${menuOpen ? 'translate-x-0' : '-translate-x-full'}`}>
-        <Sidebar onNavigate={() => setMenuOpen(false)} />
-      </div>
-      <div className="flex flex-col flex-1 min-w-0">
-        <Navbar onMenu={() => setMenuOpen(v => !v)} />
-        <main className="flex-1 overflow-y-auto">
-          <div className="max-w-6xl mx-auto w-full p-4 sm:p-6 lg:p-8">
-            <Outlet />
-          </div>
-        </main>
-      </div>
-      <LinkGuardWidget />
+    <div className="relative isolate min-h-screen lg:pl-20">
+      <AmbientBackground />
+      <FloatingDock />
+      <Navbar />
+      <main className="mx-auto w-full max-w-6xl px-4 pt-6 pb-32 sm:px-6 lg:px-8 lg:pb-28">
+        {/* key: re-dispara la animación de entrada en cada cambio de página */}
+        <div key={pathname} className="animate-slide-up">
+          <Outlet />
+        </div>
+      </main>
+      <SafetyAssistant />
+      <QuickActionsFab />
     </div>
   )
 }

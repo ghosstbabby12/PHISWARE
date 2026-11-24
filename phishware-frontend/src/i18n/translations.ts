@@ -4,6 +4,43 @@ export const STRINGS = {
   es: {
     nav: { dashboard: 'Dashboard', analysis: 'Analizar URL', history: 'Historial', education: 'Educación', alerts: 'Alertas', report: 'Reportar', profile: 'Perfil', settings: 'Configuración', admin: 'Administración', logout: 'Cerrar sesión' },
     common: { retry: 'Reintentar', cancel: 'Cancelar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', viewAll: 'Ver todo', back: 'Volver', save: 'Guardar', level: 'Nivel', points: 'pts' },
+    fx: {
+      quickActions: 'Acciones rápidas', openActions: 'Abrir acciones rápidas', closeActions: 'Cerrar acciones rápidas',
+      analyzeUrl: 'Analizar enlace', scanQr: 'Escanear QR', reportSite: 'Reportar sitio',
+      guardOn: 'Link Guard activo', guardOff: 'Activar Link Guard', guardScanning: 'Revisando portapapeles…',
+      guardSafe: 'Enlace seguro', guardSuspicious: 'Enlace sospechoso', guardDangerous: 'Enlace peligroso',
+      guardDetails: 'Ver detalles', score: 'Riesgo',
+      more: 'Más', menu: 'Menú', mainNav: 'Navegación principal',
+      assistant: 'Asistente de seguridad', openAssistant: 'Abrir asistente', tipsTab: 'Consejos', gameTab: 'Reto rápido',
+      next: 'Siguiente', prev: 'Anterior', tipOf: (i: number, n: number) => `${i} de ${n}`,
+      gameIntro: '¿Este enlace es legítimo o es phishing?', legit: 'Legítimo', phishing: 'Phishing',
+      correct: '¡Correcto!', wrong: 'Casi…', nextChallenge: 'Otro reto', streak: (n: number) => `Racha: ${n}`,
+      tips: {
+        default: [
+          'Antes de hacer clic, pasa el cursor sobre el enlace y mira el dominio real.',
+          'Los bancos nunca te piden la clave ni códigos por correo o SMS.',
+          'La urgencia ("tu cuenta se cerrará hoy") es la táctica favorita del phishing.',
+        ],
+        analysis: [
+          'Lo que va antes de una "@" en una URL se ignora: el destino real es lo que sigue.',
+          'Dominios como .icu, .top o .xyz son baratos y muy usados en campañas de fraude.',
+          'Un candado HTTPS solo significa conexión cifrada, no que el sitio sea legítimo.',
+        ],
+        education: [
+          'Completa los quizzes para subir de nivel y desbloquear insignias.',
+          'Repasa los principios de persuasión: autoridad, urgencia, escasez y reciprocidad.',
+          'Comparte lo que aprendes: la mayoría de ataques llegan por contactos de confianza.',
+        ],
+      },
+      challenges: [
+        { url: 'https://www.google.com@dian-devolucion-renta.icu/reclamar', phishing: true, why: 'Todo lo anterior a la "@" es decorado: el sitio real es dian-devolucion-renta.icu.' },
+        { url: 'https://www.bancolombia.com/personas', phishing: false, why: 'Dominio oficial escrito correctamente, sin subdominios raros.' },
+        { url: 'https://bancolombia.com.seguridad-verificar.top/login', phishing: true, why: 'El dominio real es seguridad-verificar.top; "bancolombia.com" es solo un subdominio.' },
+        { url: 'https://accounts.google.com/signin', phishing: false, why: 'Subdominio legítimo de google.com.' },
+        { url: 'https://nequi-verificacion.tk/premio', phishing: true, why: 'Marca + "verificación" + TLD gratuito (.tk) + premio: combinación clásica de fraude.' },
+        { url: 'https://paypa1.com/account/update', phishing: true, why: 'Typosquatting: "paypa1" usa un 1 en lugar de la l.' },
+      ],
+    },
     errors: {
       AUTH_INVALID_CREDENTIALS: 'Credenciales incorrectas. Verifica tu usuario y contraseña.',
       VALIDATION_FAILED: 'Los datos enviados contienen errores de validación.',
@@ -238,6 +275,43 @@ export const STRINGS = {
   en: {
     nav: { dashboard: 'Dashboard', analysis: 'Analyze URL', history: 'History', education: 'Education', alerts: 'Alerts', report: 'Report', profile: 'Profile', settings: 'Settings', admin: 'Admin', logout: 'Log out' },
     common: { retry: 'Retry', cancel: 'Cancel', confirm: 'Confirm', close: 'Close', loading: 'Loading…', viewAll: 'View all', back: 'Back', save: 'Save', level: 'Level', points: 'pts' },
+    fx: {
+      quickActions: 'Quick actions', openActions: 'Open quick actions', closeActions: 'Close quick actions',
+      analyzeUrl: 'Analyze link', scanQr: 'Scan QR', reportSite: 'Report site',
+      guardOn: 'Link Guard on', guardOff: 'Turn on Link Guard', guardScanning: 'Checking clipboard…',
+      guardSafe: 'Safe link', guardSuspicious: 'Suspicious link', guardDangerous: 'Dangerous link',
+      guardDetails: 'View details', score: 'Risk',
+      more: 'More', menu: 'Menu', mainNav: 'Main navigation',
+      assistant: 'Security assistant', openAssistant: 'Open assistant', tipsTab: 'Tips', gameTab: 'Quick challenge',
+      next: 'Next', prev: 'Previous', tipOf: (i: number, n: number) => `${i} of ${n}`,
+      gameIntro: 'Is this link legitimate or phishing?', legit: 'Legitimate', phishing: 'Phishing',
+      correct: 'Correct!', wrong: 'Not quite…', nextChallenge: 'Another one', streak: (n: number) => `Streak: ${n}`,
+      tips: {
+        default: [
+          'Before clicking, hover over the link and check the real domain.',
+          'Banks never ask for your password or codes by email or SMS.',
+          'Urgency ("your account closes today") is phishing’s favorite trick.',
+        ],
+        analysis: [
+          'Anything before an "@" in a URL is ignored: the real destination comes after it.',
+          'Domains like .icu, .top or .xyz are cheap and widely used in scams.',
+          'An HTTPS padlock only means the connection is encrypted, not that the site is legit.',
+        ],
+        education: [
+          'Finish the quizzes to level up and unlock badges.',
+          'Review the persuasion principles: authority, urgency, scarcity and reciprocity.',
+          'Share what you learn: most attacks arrive through trusted contacts.',
+        ],
+      },
+      challenges: [
+        { url: 'https://www.google.com@dian-devolucion-renta.icu/reclamar', phishing: true, why: 'Everything before the "@" is decoration: the real site is dian-devolucion-renta.icu.' },
+        { url: 'https://www.bancolombia.com/personas', phishing: false, why: 'Official domain spelled correctly, no odd subdomains.' },
+        { url: 'https://bancolombia.com.seguridad-verificar.top/login', phishing: true, why: 'The real domain is seguridad-verificar.top; "bancolombia.com" is just a subdomain.' },
+        { url: 'https://accounts.google.com/signin', phishing: false, why: 'Legitimate subdomain of google.com.' },
+        { url: 'https://nequi-verificacion.tk/premio', phishing: true, why: 'Brand + "verification" + free TLD (.tk) + prize: a classic scam combo.' },
+        { url: 'https://paypa1.com/account/update', phishing: true, why: 'Typosquatting: "paypa1" uses a 1 instead of an l.' },
+      ],
+    },
     errors: {
       AUTH_INVALID_CREDENTIALS: 'Wrong credentials. Check your username and password.',
       VALIDATION_FAILED: 'The submitted data has validation errors.',

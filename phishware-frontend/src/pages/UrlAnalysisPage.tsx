@@ -63,6 +63,9 @@ export default function UrlAnalysisPage() {
     setQrContent(content)
     setResult(null)
     setAnalyzedUrl(null)
+    // Clasifica de inmediato el enlace del QR (sin abrirlo). Si hay varios,
+    // se analiza el primero y el resto queda disponible con su botón.
+    if (content.urls.length > 0) analyze(content.urls[0])
   }
 
   function resetQr() {

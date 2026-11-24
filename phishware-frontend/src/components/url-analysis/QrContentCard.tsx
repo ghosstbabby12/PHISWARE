@@ -58,16 +58,18 @@ export default function QrContentCard({ content, analyzedUrl, onAnalyze, isAnaly
         <p className="text-sm text-ink-500 dark:text-ink-300">
           {t.qr.noLink}
         </p>
-      ) : content.urls.length > 1 && (
+      ) : (
         <div className="space-y-2">
-          <p className="text-sm text-ink-500 dark:text-ink-300">{t.qr.multiLinks(content.urls.length)}</p>
+          {content.urls.length > 1 && (
+            <p className="text-sm text-ink-500 dark:text-ink-300">{t.qr.multiLinks(content.urls.length)}</p>
+          )}
           {content.urls.map(url => (
             <div key={url} className="flex items-center gap-2 rounded-xl border divider px-3 py-2">
               <span className="flex-1 text-sm text-ink-900 dark:text-ink-50 font-mono truncate" title={url}>{url}</span>
               <button
                 type="button"
                 onClick={() => onAnalyze(url)}
-                disabled={isAnalyzing || url === analyzedUrl}
+                disabled={isAnalyzing}
                 className="btn-ghost text-xs inline-flex items-center gap-1 disabled:opacity-50 !text-primary-700"
               >
                 <Search className="w-3.5 h-3.5" />

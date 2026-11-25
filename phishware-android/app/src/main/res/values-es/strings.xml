@@ -284,4 +284,16 @@ Cuando alguien te envíe un enlace por WhatsApp, Instagram, SMS o correo, PHISHW
     <string name="notif_text_title">Mensaje sospechoso · %1$s</string>
     <string name="notif_text_body">Parece un intento de estafa (presión, miedo o petición de códigos/claves). No compartas códigos ni claves y no respondas.</string>
     <string name="deceptive_tip">Enlace engañoso: el texto dice “%1$s” pero en realidad lleva a “%2$s”.</string>
+    <string name="dash_secured">Protegido</string>
+    <string name="dash_calm">Todo se ve tranquilo.</string>
+    <string name="dash_total_fmt">Enlaces analizados hasta ahora: %1$d</string>
+    <string name="dash_next_level">Siguiente nivel</string>
+    <string name="dash_keep_learning">Seguir aprendiendo</string>
+    <string name="dash_level_big_fmt">Nivel %1$d</string>
+    <string name="dash_points_fmt">%1$d puntos</string>
+    <string name="dash_qa_analyze_d">Revisa un enlace antes de abrirlo</string>
+    <string name="dash_qa_qr_d">Escanea un QR de forma segura</string>
+    <string name="dash_qa_alerts_d">Revisa tus últimas advertencias</string>
+    <string name="dash_qa_alerts_unread_fmt">%1$d alertas sin leer</string>
+    <string name="dash_qa_history_d">Todo lo que has analizado</string>
 </resources>

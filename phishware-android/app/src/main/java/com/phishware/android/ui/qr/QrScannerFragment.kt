@@ -1,7 +1,6 @@
 package com.phishware.android.ui.qr
 
 import android.Manifest
-import android.animation.ValueAnimator
 import android.content.pm.PackageManager
 import android.content.res.ColorStateList
 import android.graphics.Color
@@ -13,8 +12,6 @@ import android.view.HapticFeedbackConstants
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.animation.DecelerateInterpolator
-import android.widget.TextView
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.camera.core.Camera
 import androidx.camera.core.CameraSelector
@@ -23,7 +20,6 @@ import androidx.camera.core.ImageProxy
 import androidx.camera.core.Preview
 import androidx.camera.lifecycle.ProcessCameraProvider
 import androidx.core.content.ContextCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -38,10 +34,10 @@ import com.phishware.android.R
 import com.phishware.android.data.model.UrlAnalysisResponse
 import com.phishware.android.data.repository.PhishwareRepository
 import com.phishware.android.databinding.FragmentQrScannerBinding
-import com.phishware.android.databinding.ItemStatCardBinding
 import com.phishware.android.notifications.NotificationHelper
 import com.phishware.android.security.UrlExtractor
 import com.phishware.android.ui.RiskUi
+import com.phishware.android.ui.StatCards
 import com.phishware.android.viewmodel.UrlAnalysisViewModel
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
@@ -403,7 +399,7 @@ class QrScannerFragment : Fragment() {
         val color = Color.parseColor(RiskUi.colorFor(r.riskLevel))
         binding.barRisk.visibility = View.VISIBLE
         binding.barRisk.progressTintList = ColorStateList.valueOf(color)
-        animateProgress(binding.barRisk, r.riskScore.toInt().coerceIn(0, 100))
+        StatCards.animateProgress(binding.barRisk, r.riskScore.toInt().coerceIn(0, 100))
 
         val tips = r.recommendations.orEmpty().take(2).joinToString("\n") { "• $it" }
         binding.tvDetail.text = listOf(
@@ -438,19 +434,10 @@ class QrScannerFragment : Fragment() {
     // ---------- estadísticas ----------
 
     private fun setupStatCards() {
-        bindStatStatic(binding.statTotal, R.string.dash_total, R.drawable.ic_analyze, "#790D2B")
-        // El total no es una proporción: igual que en la web, sin barra.
-        binding.statTotal.barStat.visibility = View.GONE
-        bindStatStatic(binding.statSafe, R.string.dash_safe, R.drawable.ic_stat_check, RiskUi.SAFE)
-        bindStatStatic(binding.statSusp, R.string.dash_susp, R.drawable.ic_stat_warning, RiskUi.SUSPICIOUS)
-        bindStatStatic(binding.statDanger, R.string.dash_danger, R.drawable.ic_stat_danger, RiskUi.DANGEROUS)
-    }
-
-    private fun bindStatStatic(card: ItemStatCardBinding, label: Int, icon: Int, color: String) {
-        card.tvStatLabel.setText(label)
-        card.ivStatIcon.setImageResource(icon)
-        ImageViewCompat.setImageTintList(card.ivStatIcon, ColorStateList.valueOf(Color.parseColor(color)))
-        card.barStat.progressTintList = ColorStateList.valueOf(Color.parseColor(color))
+        StatCards.bindStatic(binding.statTotal, R.string.dash_total, R.drawable.ic_analyze, "#790D2B", showBar = false)
+        StatCards.bindStatic(binding.statSafe, R.string.dash_safe, R.drawable.ic_stat_check, RiskUi.SAFE)
+        StatCards.bindStatic(binding.statSusp, R.string.dash_susp, R.drawable.ic_stat_warning, RiskUi.SUSPICIOUS)
+        StatCards.bindStatic(binding.statDanger, R.string.dash_danger, R.drawable.ic_stat_danger, RiskUi.DANGEROUS)
     }
 
     private fun loadStats() {
@@ -460,10 +447,10 @@ class QrScannerFragment : Fragment() {
                 binding.tvStatsOffline.visibility = View.GONE
                 val total = d.totalAnalyses
                 fun pct(n: Long) = if (total > 0) ((n * 100) / total).toInt() else 0
-                setStat(binding.statTotal, total, 0, getString(R.string.qr_stat_accumulated))
-                setStat(binding.statSafe, d.safeUrls, pct(d.safeUrls), getString(R.string.qr_stat_no_risk))
-                setStat(binding.statSusp, d.suspiciousUrls, pct(d.suspiciousUrls), getString(R.string.qr_stat_review))
-                setStat(
+                StatCards.setValue(binding.statTotal, total, 0, getString(R.string.qr_stat_accumulated))
+                StatCards.setValue(binding.statSafe, d.safeUrls, pct(d.safeUrls), getString(R.string.qr_stat_no_risk))
+                StatCards.setValue(binding.statSusp, d.suspiciousUrls, pct(d.suspiciousUrls), getString(R.string.qr_stat_review))
+                StatCards.setValue(
                     binding.statDanger, d.dangerousUrls, pct(d.dangerousUrls),
                     getString(R.string.qr_stat_plus_susp_fmt, d.suspiciousUrls.toInt())
                 )
@@ -473,35 +460,8 @@ class QrScannerFragment : Fragment() {
         }
     }
 
-    private fun setStat(card: ItemStatCardBinding, value: Long, ratio: Int, sub: String) {
-        card.tvStatSub.text = sub
-        countUp(card.tvStatValue, value.toInt())
-        animateProgress(card.barStat, ratio.coerceIn(0, 100))
-    }
-
     private fun updateSessionChip() {
         binding.tvSession.text = getString(R.string.qr_session_fmt, sessionScans)
-    }
-
-    /** Cuenta desde el valor mostrado hasta el nuevo con easing (igual que el StatCard de la web). */
-    private fun countUp(view: TextView, to: Int) {
-        val from = (view.tag as? Int) ?: 0
-        view.tag = to
-        ValueAnimator.ofInt(from, to).apply {
-            duration = 800
-            interpolator = DecelerateInterpolator()
-            addUpdateListener { view.text = it.animatedValue.toString() }
-            start()
-        }
-    }
-
-    private fun animateProgress(bar: android.widget.ProgressBar, to: Int) {
-        ValueAnimator.ofInt(bar.progress, to).apply {
-            duration = 900
-            interpolator = DecelerateInterpolator()
-            addUpdateListener { bar.progress = it.animatedValue as Int }
-            start()
-        }
     }
 
     override fun onDestroyView() {

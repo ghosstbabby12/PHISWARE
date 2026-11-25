@@ -284,4 +284,16 @@ When someone sends you a link on WhatsApp, Instagram, SMS or email, PHISHWARE ch
     <string name="notif_text_title">Suspicious message · %1$s</string>
     <string name="notif_text_body">This looks like a scam attempt (pressure, fear or a request for codes/passwords). Don\'t share codes or passwords and don\'t reply.</string>
     <string name="deceptive_tip">Deceptive link: the text says “%1$s” but it actually goes to “%2$s”.</string>
+    <string name="dash_secured">Protected</string>
+    <string name="dash_calm">Everything looks calm.</string>
+    <string name="dash_total_fmt">Links analyzed so far: %1$d</string>
+    <string name="dash_next_level">Next level</string>
+    <string name="dash_keep_learning">Keep learning</string>
+    <string name="dash_level_big_fmt">Level %1$d</string>
+    <string name="dash_points_fmt">%1$d points</string>
+    <string name="dash_qa_analyze_d">Check a link before you open it</string>
+    <string name="dash_qa_qr_d">Scan a QR code safely</string>
+    <string name="dash_qa_alerts_d">Review your latest warnings</string>
+    <string name="dash_qa_alerts_unread_fmt">%1$d unread alerts</string>
+    <string name="dash_qa_history_d">Everything you have analyzed</string>
 </resources>

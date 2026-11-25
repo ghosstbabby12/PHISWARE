@@ -48,6 +48,10 @@ class MainActivity : AppCompatActivity() {
         )
         setupActionBarWithNavController(navController, appBarConfiguration)
         binding.bottomNavigation.setupWithNavController(navController)
+        // Tocar la pestaña activa desde una pantalla secundaria (QR, historial…) vuelve a su pantalla principal.
+        binding.bottomNavigation.setOnItemReselectedListener { item ->
+            navController.popBackStack(item.itemId, false)
+        }
 
         handleIntent(intent)
         // Aviso Ley 1581 antes de proteger correo/WhatsApp

@@ -10,7 +10,7 @@
     <ScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="@color/proton_bg"
+        android:background="@android:color/transparent"
         android:fillViewport="true">
         <LinearLayout
             android:layout_width="match_parent"
@@ -18,6 +18,7 @@
             android:orientation="vertical"
             android:padding="20dp">
 
+            <!-- Cabecera -->
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -47,13 +48,16 @@
                         android:layout_height="wrap_content"
                         android:text="@string/dash_vault_ok"
                         android:textColor="@color/proton_text"
-                        android:textSize="18sp"
+                        android:textSize="17sp"
                         android:textStyle="bold" />
                 </LinearLayout>
                 <FrameLayout
                     android:id="@+id/btnAlerts"
                     android:layout_width="42dp"
-                    android:layout_height="42dp">
+                    android:layout_height="42dp"
+                    android:clickable="true"
+                    android:focusable="true"
+                    android:foreground="?attr/selectableItemBackgroundBorderless">
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="match_parent"
@@ -68,7 +72,7 @@
                 </FrameLayout>
             </LinearLayout>
 
-            <!-- Search pill: abre el analizador al tocar -->
+            <!-- Buscador: abre el analizador -->
             <LinearLayout
                 android:id="@+id/searchPill"
                 android:layout_width="match_parent"
@@ -96,244 +100,220 @@
                     android:textSize="13sp" />
             </LinearLayout>
 
-            <!-- Hero: tasa de seguridad -->
+            <!-- Tarjeta principal: estado de seguridad + anillo -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:background="@drawable/bg_hero_gradient"
+                android:gravity="center_vertical"
+                android:orientation="horizontal"
+                android:padding="20dp">
                 <LinearLayout
-                    android:layout_width="match_parent"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="14dp"
-                    android:background="@drawable/bg_hero_gradient"
-                    android:orientation="vertical"
-                    android:padding="20dp">
-                    <TextView
+                    android:layout_weight="1"
+                    android:orientation="vertical">
+                    <LinearLayout
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/dash_score_title"
-                        android:textColor="@color/proton_on_brand_muted"
-                        android:textSize="13sp"
+                        android:background="@drawable/bg_pill_white_soft"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:paddingStart="10dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="5dp">
+                        <View
+                            android:layout_width="8dp"
+                            android:layout_height="8dp"
+                            android:background="@drawable/bg_dot_white" />
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="6dp"
+                            android:text="@string/dash_secured"
+                            android:textColor="#FFFFFF"
+                            android:textSize="11sp"
+                            android:textStyle="bold" />
+                    </LinearLayout>
+                    <TextView
+                        android:id="@+id/tvHeroTitle"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:ellipsize="end"
+                        android:maxLines="2"
+                        android:text="@string/dash_hello"
+                        android:textColor="#FFFFFF"
+                        android:textSize="24sp"
                         android:textStyle="bold" />
-                    <LinearLayout
+                    <TextView
+                        android:id="@+id/tvHeroStatus"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:layout_marginTop="4dp"
-                        android:gravity="bottom"
-                        android:orientation="horizontal">
+                        android:textColor="#F2FFFFFF"
+                        android:textSize="13sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvHeroSub"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="2dp"
+                        android:textColor="@color/proton_on_brand_muted"
+                        android:textSize="12sp" />
+                    <TextView
+                        android:id="@+id/tvLevel"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="12dp"
+                        android:background="@drawable/bg_pill_white_soft"
+                        android:paddingStart="12dp"
+                        android:paddingTop="5dp"
+                        android:paddingEnd="12dp"
+                        android:paddingBottom="5dp"
+                        android:text="@string/dash_loading"
+                        android:textColor="#FFFFFF"
+                        android:textSize="11sp"
+                        android:textStyle="bold" />
+                </LinearLayout>
+
+                <FrameLayout
+                    android:layout_width="104dp"
+                    android:layout_height="104dp"
+                    android:layout_marginStart="12dp">
+                    <com.phishware.android.ui.ProtectionRingView
+                        android:id="@+id/ringScore"
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent" />
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center"
+                        android:orientation="vertical">
                         <TextView
                             android:id="@+id/tvScore"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
                             android:text="—"
                             android:textColor="#FFFFFF"
-                            android:textSize="44sp"
+                            android:textSize="24sp"
                             android:textStyle="bold" />
                         <TextView
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:layout_marginStart="4dp"
-                            android:layout_marginBottom="8dp"
-                            android:text="%"
-                            android:textColor="#FFFFFF"
-                            android:textSize="20sp" />
+                            android:text="@string/dash_safe"
+                            android:textColor="@color/proton_on_brand_muted"
+                            android:textSize="10sp" />
                     </LinearLayout>
-                    <ProgressBar
-                        android:id="@+id/progressScore"
-                        android:layout_width="match_parent"
-                        android:layout_height="6dp"
-                        android:layout_marginTop="10dp"
-                        android:max="100"
-                        android:progress="0"
-                        android:progressTint="#FFFFFF"
-                        android:progressBackgroundTint="#33FFFFFF"
-                        android:scaleY="2"
-                        style="?android:attr/progressBarStyleHorizontal" />
+                </FrameLayout>
+            </LinearLayout>
 
-                    <View
-                        android:layout_width="match_parent"
-                        android:layout_height="1dp"
-                        android:layout_marginTop="18dp"
-                        android:background="#26FFFFFF" />
-
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="14dp"
-                        android:orientation="horizontal">
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvTotal"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="0"
-                                android:textColor="#FFFFFF"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/dash_total"
-                                android:textColor="@color/proton_on_brand_muted"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-                        <LinearLayout
-                            android:layout_width="0dp"
-                            android:layout_height="wrap_content"
-                            android:layout_weight="1"
-                            android:orientation="vertical">
-                            <TextView
-                                android:id="@+id/tvLevel"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/dash_loading"
-                                android:textColor="#FFFFFF"
-                                android:textSize="20sp"
-                                android:textStyle="bold" />
-                            <TextView
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:text="@string/dash_total_stored"
-                                android:textColor="@color/proton_on_brand_muted"
-                                android:textSize="11sp" />
-                        </LinearLayout>
-                    </LinearLayout>
-                </LinearLayout>
-
-            <!-- Stats row: Danger / Suspicious / Safe -->
+            <!-- Estadísticas -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="14dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <include
+                    android:id="@+id/statTotal"
+                    layout="@layout/item_stat_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1" />
+                <include
+                    android:id="@+id/statSafe"
+                    layout="@layout/item_stat_card"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="12dp"
-                android:orientation="horizontal">
-                <com.google.android.material.card.MaterialCardView
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <include
+                    android:id="@+id/statSusp"
+                    layout="@layout/item_stat_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/proton_card"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/border_color"
-                    app:strokeWidth="1dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_stat_danger" android:contentDescription="@string/dash_danger" />
-                        <TextView android:id="@+id/tvDanger" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="0" android:textColor="@color/proton_text" android:textSize="20sp" android:textStyle="bold" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dash_danger" android:textColor="@color/proton_subtext" android:textSize="11sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-                <Space android:layout_width="8dp" android:layout_height="wrap_content" />
-                <com.google.android.material.card.MaterialCardView
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1" />
+                <include
+                    android:id="@+id/statDanger"
+                    layout="@layout/item_stat_card"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/proton_card"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/border_color"
-                    app:strokeWidth="1dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_stat_warning" android:contentDescription="@string/dash_susp" />
-                        <TextView android:id="@+id/tvSusp" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="0" android:textColor="@color/proton_text" android:textSize="20sp" android:textStyle="bold" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dash_susp" android:textColor="@color/proton_subtext" android:textSize="11sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
-                <Space android:layout_width="8dp" android:layout_height="wrap_content" />
-                <com.google.android.material.card.MaterialCardView
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    app:cardBackgroundColor="@color/proton_card"
-                    app:cardCornerRadius="16dp"
-                    app:cardElevation="0dp"
-                    app:strokeColor="@color/border_color"
-                    app:strokeWidth="1dp">
-                    <LinearLayout
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="center"
-                        android:orientation="vertical"
-                        android:padding="12dp">
-                        <ImageView android:layout_width="22dp" android:layout_height="22dp" android:src="@drawable/ic_stat_check" android:contentDescription="@string/dash_safe" />
-                        <TextView android:id="@+id/tvSafe" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_marginTop="4dp" android:text="0" android:textColor="@color/proton_text" android:textSize="20sp" android:textStyle="bold" />
-                        <TextView android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/dash_safe" android:textColor="@color/proton_subtext" android:textSize="11sp" />
-                    </LinearLayout>
-                </com.google.android.material.card.MaterialCardView>
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1" />
             </LinearLayout>
 
+            <!-- Accesos rápidos -->
             <TextView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="22dp"
                 android:text="@string/dash_quick"
-                android:textColor="@color/proton_text"
-                android:textSize="15sp"
+                android:textAllCaps="true"
+                android:textColor="@color/proton_subtext"
+                android:textSize="12sp"
                 android:textStyle="bold" />
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:orientation="horizontal">
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGoAnalyze"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <include
+                    android:id="@+id/qaAnalyze"
+                    layout="@layout/item_quick_action"
                     android:layout_width="0dp"
-                    android:layout_height="76dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/dash_go_analyze"
-                    android:textSize="11sp"
-                    app:cornerRadius="18dp"
-                    app:icon="@drawable/ic_analyze"
-                    app:iconGravity="top"
-                    app:iconPadding="4dp"
-                    app:iconSize="22dp" />
-                <Space android:layout_width="8dp" android:layout_height="wrap_content" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGoQr"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1" />
+                <include
+                    android:id="@+id/qaQr"
+                    layout="@layout/item_quick_action"
                     android:layout_width="0dp"
-                    android:layout_height="76dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/dash_go_qr"
-                    android:textSize="11sp"
-                    app:cornerRadius="18dp"
-                    app:icon="@drawable/ic_qr"
-                    app:iconGravity="top"
-                    app:iconPadding="4dp"
-                    app:iconSize="22dp" />
-                <Space android:layout_width="8dp" android:layout_height="wrap_content" />
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btnGoHistory"
-                    style="@style/Widget.Material3.Button.OutlinedButton"
-                    android:layout_width="0dp"
-                    android:layout_height="76dp"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:text="@string/dash_go_history"
-                    android:textSize="11sp"
-                    app:cornerRadius="18dp"
-                    app:icon="@drawable/ic_history"
-                    app:iconGravity="top"
-                    app:iconPadding="4dp"
-                    app:iconSize="22dp" />
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1" />
             </LinearLayout>
-
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="22dp"
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal"
+                android:weightSum="2">
+                <include
+                    android:id="@+id/qaAlerts"
+                    layout="@layout/item_quick_action"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginEnd="6dp"
+                    android:layout_weight="1" />
+                <include
+                    android:id="@+id/qaHistory"
+                    layout="@layout/item_quick_action"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="6dp"
+                    android:layout_weight="1" />
+            </LinearLayout>
+
+            <!-- Análisis recientes -->
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
                 android:gravity="center_vertical"
                 android:orientation="horizontal">
                 <TextView
@@ -342,12 +322,13 @@
                     android:layout_weight="1"
                     android:text="@string/dash_recent_title"
                     android:textColor="@color/proton_text"
-                    android:textSize="15sp"
+                    android:textSize="16sp"
                     android:textStyle="bold" />
                 <TextView
                     android:id="@+id/tvViewAll"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:padding="6dp"
                     android:text="@string/dash_view_all"
                     android:textColor="@color/proton_primary"
                     android:textSize="12sp"
@@ -368,11 +349,69 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="10dp"
-                android:layout_marginBottom="16dp"
                 android:text="@string/dash_loading"
                 android:textColor="@color/proton_subtext"
                 android:textSize="13sp"
                 android:visibility="gone" />
+
+            <!-- Siguiente nivel -->
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="20dp"
+                android:layout_marginBottom="12dp"
+                app:cardBackgroundColor="@color/proton_card"
+                app:cardCornerRadius="24dp"
+                app:cardElevation="1dp"
+                app:strokeColor="@color/border_color"
+                app:strokeWidth="1dp">
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:padding="18dp">
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="@string/dash_next_level"
+                        android:textColor="@color/proton_subtext"
+                        android:textSize="12sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvLevelBig"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:textColor="@color/proton_primary"
+                        android:textSize="30sp"
+                        android:textStyle="bold" />
+                    <TextView
+                        android:id="@+id/tvLevelPoints"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:textColor="@color/proton_subtext"
+                        android:textSize="13sp" />
+                    <ProgressBar
+                        android:id="@+id/barLevel"
+                        style="?android:attr/progressBarStyleHorizontal"
+                        android:layout_width="match_parent"
+                        android:layout_height="6dp"
+                        android:layout_marginTop="14dp"
+                        android:max="100"
+                        android:progress="0"
+                        android:progressBackgroundTint="@color/border_color"
+                        android:progressTint="@color/proton_primary"
+                        android:scaleY="1.6" />
+                    <com.google.android.material.button.MaterialButton
+                        android:id="@+id/btnKeepLearning"
+                        style="@style/Widget.Material3.Button.OutlinedButton"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="14dp"
+                        android:text="@string/dash_keep_learning"
+                        app:cornerRadius="22dp" />
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
         </LinearLayout>
     </ScrollView>
 </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>

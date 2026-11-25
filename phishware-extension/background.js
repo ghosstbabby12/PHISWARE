@@ -94,7 +94,16 @@ async function applyBlockingRules(domains) {
   }
 }
 
-chrome.runtime.onInstalled.addListener(() => {
+// Hasta la v1.1.0 el backend por defecto era localhost. chrome.storage.sync sobrevive a
+// reinstalar la extensión (se sincroniza con la cuenta de Google), así que se limpia ese
+// valor heredado para que se use la nube. Quien quiera localhost puede volver a ponerlo en Opciones.
+const LEGACY_DEFAULT_BACKENDS = ['http://localhost:8080/api', 'http://localhost:8080/api/'];
+
+chrome.runtime.onInstalled.addListener(async () => {
+  try {
+    const { backendRoot } = await chrome.storage.sync.get('backendRoot');
+    if (LEGACY_DEFAULT_BACKENDS.includes(backendRoot)) await chrome.storage.sync.remove('backendRoot');
+  } catch { /* sin acceso a storage: se queda el valor actual */ }
   chrome.alarms.create(BLOCKLIST_ALARM, { periodInMinutes: 30 });
   refreshBlocklist();
 });
@@ -232,6 +241,7 @@ chrome.webNavigation.onBeforeNavigate.addListener(details => { guardNavigation(d
 
 async function checkTabUrl(tabId, url) {
   if (!url || !url.startsWith('http')) return;
+  try { if (LOCAL_HOSTS.has(new URL(url).hostname.toLowerCase())) return; } catch { return; }
 
   const result = await checkUrl(url);
   if (!result) return;

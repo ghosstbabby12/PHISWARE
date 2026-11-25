@@ -14,6 +14,10 @@ api.interceptors.request.use((config: InternalAxiosRequestConfig) => {
   if (token) {
     config.headers.Authorization = `Bearer ${token}`
   }
+  // El backend devuelve el contenido educativo en este idioma (español por defecto)
+  let lang = 'es'
+  try { lang = localStorage.getItem('phishware_lang') === 'en' ? 'en' : 'es' } catch { /* sin storage */ }
+  config.headers['Accept-Language'] = lang
   return config
 })
 

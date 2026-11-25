@@ -42,6 +42,17 @@ public class QuizQuestion {
     @Column(columnDefinition = "TEXT")
     private String explanation;
 
+    // ── Traducción al inglés (V9) ──
+    @Column(name = "question_text_en", columnDefinition = "TEXT")
+    private String questionTextEn;
+
+    @JdbcTypeCode(SqlTypes.JSON)
+    @Column(name = "options_en", columnDefinition = "jsonb")
+    private JsonNode optionsEn;
+
+    @Column(name = "explanation_en", columnDefinition = "TEXT")
+    private String explanationEn;
+
     @Column(nullable = false)
     @Builder.Default
     private int points = 10;

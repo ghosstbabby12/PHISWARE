@@ -2,6 +2,7 @@ package com.phishware.service;
 
 import com.phishware.dto.request.QuizAnswerRequest;
 import com.phishware.dto.response.LearningProgressResponse;
+import com.phishware.i18n.ContentLanguage;
 import com.phishware.dto.response.QuizResponse;
 import com.phishware.dto.response.QuizResultResponse;
 import com.phishware.entity.Quiz;
@@ -97,7 +98,7 @@ public class QuizService {
                 .correct(isCorrect)
                 .selected(List.copyOf(selected))
                 .correctAnswers(List.copyOf(correct))
-                .explanation(question.getExplanation())
+                .explanation(ContentLanguage.pick(question.getExplanation(), question.getExplanationEn()))
                 .build());
         }
 
@@ -131,7 +132,7 @@ public class QuizService {
         return QuizResultResponse.builder()
             .id(result.getId())
             .quizId(quiz.getId())
-            .quizTitle(quiz.getTitle())
+            .quizTitle(ContentLanguage.pick(quiz.getTitle(), quiz.getTitleEn()))
             .score(score)
             .passed(passed)
             .passingScore(quiz.getPassingScore())
@@ -166,11 +167,11 @@ public class QuizService {
             modules.add(LearningProgressResponse.ModuleProgress.builder()
                 .contentId(quiz.getContent().getId())
                 .slug(quiz.getContent().getSlug())
-                .title(quiz.getContent().getTitle())
+                .title(ContentLanguage.pick(quiz.getContent().getTitle(), quiz.getContent().getTitleEn()))
                 .category(quiz.getContent().getCategory())
                 .difficulty(quiz.getDifficulty())
                 .quizId(quiz.getId())
-                .quizTitle(quiz.getTitle())
+                .quizTitle(ContentLanguage.pick(quiz.getTitle(), quiz.getTitleEn()))
                 .questionCount(quiz.getQuestions().size())
                 .passingScore(quiz.getPassingScore())
                 .attempts(attempts.size())
@@ -197,7 +198,7 @@ public class QuizService {
                 return LearningProgressResponse.AttemptSummary.builder()
                     .id(r.getId())
                     .quizId(r.getQuiz().getId())
-                    .quizTitle(q != null ? q.getTitle() : r.getQuiz().getTitle())
+                    .quizTitle(q != null ? ContentLanguage.pick(q.getTitle(), q.getTitleEn()) : ContentLanguage.pick(r.getQuiz().getTitle(), r.getQuiz().getTitleEn()))
                     .moduleSlug(q != null ? q.getContent().getSlug() : null)
                     .score(r.getScore())
                     .passed(r.isPassed())
@@ -227,9 +228,9 @@ public class QuizService {
         List<QuizResponse.Question> questions = sortedQuestions(quiz).stream()
             .map(q -> QuizResponse.Question.builder()
                 .id(q.getId())
-                .questionText(q.getQuestionText())
+                .questionText(ContentLanguage.pick(q.getQuestionText(), q.getQuestionTextEn()))
                 .questionType(q.getQuestionType())
-                .options(toOptionsMap(q.getOptions()))
+                .options(toOptionsMap(ContentLanguage.pick(q.getOptions(), q.getOptionsEn())))
                 .points(q.getPoints())
                 .orderIndex(q.getOrderIndex())
                 .build())
@@ -237,11 +238,11 @@ public class QuizService {
 
         return QuizResponse.builder()
             .id(quiz.getId())
-            .title(quiz.getTitle())
-            .description(quiz.getDescription())
+            .title(ContentLanguage.pick(quiz.getTitle(), quiz.getTitleEn()))
+            .description(ContentLanguage.pick(quiz.getDescription(), quiz.getDescriptionEn()))
             .contentId(quiz.getContent() != null ? quiz.getContent().getId() : null)
             .contentSlug(quiz.getContent() != null ? quiz.getContent().getSlug() : null)
-            .contentTitle(quiz.getContent() != null ? quiz.getContent().getTitle() : null)
+            .contentTitle(quiz.getContent() != null ? ContentLanguage.pick(quiz.getContent().getTitle(), quiz.getContent().getTitleEn()) : null)
             .difficulty(quiz.getDifficulty())
             .timeLimitSec(quiz.getTimeLimitSec())
             .passingScore(quiz.getPassingScore())

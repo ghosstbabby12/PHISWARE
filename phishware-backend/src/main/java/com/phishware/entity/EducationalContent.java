@@ -1,5 +1,7 @@
 package com.phishware.entity;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.phishware.i18n.ContentLanguage;
 import jakarta.persistence.*;
 import lombok.*;
 import org.hibernate.annotations.JdbcTypeCode;
@@ -62,6 +64,25 @@ public class EducationalContent {
     @JoinColumn(name = "author_id")
     private User author;
 
+    // ── Traducción al inglés (V9). Solo escritura en JSON: la API responde con title/content
+    // ya localizados (ver localized()), así que no se duplican en la respuesta.
+    @Column(name = "title_en", length = 200)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String titleEn;
+
+    @Column(name = "summary_en", length = 500)
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String summaryEn;
+
+    @Column(name = "content_en", columnDefinition = "TEXT")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String contentEn;
+
+    @JdbcTypeCode(SqlTypes.ARRAY)
+    @Column(name = "tags_en", columnDefinition = "text[]")
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private List<String> tagsEn;
+
     @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
@@ -77,5 +98,22 @@ public class EducationalContent {
     @PreUpdate
     protected void onUpdate() {
         updatedAt = LocalDateTime.now();
+    }
+
+    /**
+     * Copia desacoplada (no gestionada por JPA) con los textos en el idioma de la petición.
+     * Nunca se modifica la entidad original, para no persistir la traducción por accidente.
+     */
+    public EducationalContent localized() {
+        if (!ContentLanguage.isEnglish()) return this;
+        return EducationalContent.builder()
+            .id(id).slug(slug).category(category).difficulty(difficulty)
+            .readingTimeMin(readingTimeMin).thumbnailUrl(thumbnailUrl).views(views)
+            .isPublished(isPublished).author(author).createdAt(createdAt).updatedAt(updatedAt)
+            .title(ContentLanguage.pick(title, titleEn))
+            .summary(ContentLanguage.pick(summary, summaryEn))
+            .content(ContentLanguage.pick(content, contentEn))
+            .tags(ContentLanguage.pick(tags, tagsEn))
+            .build();
     }
 }

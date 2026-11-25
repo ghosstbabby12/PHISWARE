@@ -26,13 +26,13 @@ public class EducationalController {
             @RequestParam(required = false) String category,
             @RequestParam(required = false) String difficulty,
             @PageableDefault(size = 12) Pageable pageable) {
-        return ResponseEntity.ok(educationalService.getAll(category, difficulty, pageable));
+        return ResponseEntity.ok(educationalService.getAll(category, difficulty, pageable).map(EducationalContent::localized));
     }
 
     @GetMapping("/{slug}")
     @Operation(summary = "Obtener artículo", description = "Retorna el contenido de un artículo por su slug")
     public ResponseEntity<EducationalContent> getBySlug(@PathVariable String slug) {
-        return ResponseEntity.ok(educationalService.getBySlug(slug));
+        return ResponseEntity.ok(educationalService.getBySlug(slug).localized());
     }
 
     @PostMapping
@@ -63,6 +63,10 @@ public class EducationalController {
         actual.setThumbnailUrl(content.getThumbnailUrl());
         actual.setTags(content.getTags());
         actual.setPublished(content.isPublished());
+        actual.setTitleEn(content.getTitleEn());
+        actual.setSummaryEn(content.getSummaryEn());
+        actual.setContentEn(content.getContentEn());
+        actual.setTagsEn(content.getTagsEn());
         return ResponseEntity.ok(educationalService.save(actual));
     }
 

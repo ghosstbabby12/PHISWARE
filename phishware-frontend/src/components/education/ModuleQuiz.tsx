@@ -126,7 +126,7 @@ function ResultView({ result, questions, onRetry }: {
 }
 
 export default function ModuleQuiz({ slug }: { slug: string }) {
-  const { t } = useLang()
+  const { t, lang } = useLang()
   const queryClient = useQueryClient()
   const [phase, setPhase] = useState<Phase>('intro')
   const [current, setCurrent] = useState(0)
@@ -136,7 +136,7 @@ export default function ModuleQuiz({ slug }: { slug: string }) {
   const startedAt = useRef<number>(0)
 
   const { data: quiz, isLoading, isError } = useQuery({
-    queryKey: ['module-quiz', slug],
+    queryKey: ['module-quiz', slug, lang],
     queryFn: () => educationService.getModuleQuiz(slug),
     retry: false,
   })

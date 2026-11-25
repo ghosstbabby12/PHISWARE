@@ -3,11 +3,12 @@ import { useQuery } from '@tanstack/react-query'
 import { CheckCircle2, Circle, CircleDashed, GraduationCap, TrendingUp } from 'lucide-react'
 import { educationService } from '@/services/educationService'
 import { ModuleProgress } from '@/types/education.types'
+import { useLang } from '@/i18n/LanguageContext'
 
-const STATUS_STYLE: Record<ModuleProgress['status'], { label: string; className: string }> = {
-  PASSED:      { label: 'Aprobado',    className: 'text-success-600' },
-  IN_PROGRESS: { label: 'Por aprobar', className: 'text-warning-600' },
-  NOT_STARTED: { label: 'Sin empezar', className: 'text-ink-500 dark:text-ink-300' },
+const STATUS_CLASS: Record<ModuleProgress['status'], string> = {
+  PASSED:      'text-success-600',
+  IN_PROGRESS: 'text-warning-600',
+  NOT_STARTED: 'text-ink-500 dark:text-ink-300',
 }
 
 function StatusIcon({ status }: { status: ModuleProgress['status'] }) {
@@ -17,14 +18,17 @@ function StatusIcon({ status }: { status: ModuleProgress['status'] }) {
 }
 
 export function useLearningProgress() {
+  const { lang } = useLang()
   return useQuery({
-    queryKey: ['quiz-progress'],
+    queryKey: ['quiz-progress', lang],
     queryFn: educationService.getProgress,
   })
 }
 
 export default function LearningProgressPanel() {
   const { data, isLoading } = useLearningProgress()
+  const { t } = useLang()
+  const p = t.edu.progress
 
   if (isLoading) return <div className="card animate-pulse h-48" />
   if (!data || data.totalModules === 0) return null
@@ -35,31 +39,31 @@ export default function LearningProgressPanel() {
         <div>
           <h2 id="learning-progress-title" className="text-lg font-semibold text-ink-900 dark:text-ink-50 flex items-center gap-2">
             <GraduationCap className="w-5 h-5 text-primary-700" />
-            Tu progreso de aprendizaje
+            {p.title}
           </h2>
           <p className="text-sm text-ink-500 dark:text-ink-300 mt-1">
-            Aprueba el quiz de cada módulo para completarlo.
+            {p.subtitle}
           </p>
         </div>
         <div className="grid grid-cols-3 gap-3 text-center md:min-w-96">
           <div className="rounded-lg bg-ink-50 dark:bg-dark-900 border divider p-3">
             <p className="text-xl font-bold text-ink-900 dark:text-ink-50">{data.modulesPassed}/{data.totalModules}</p>
-            <p className="text-xs text-ink-500 dark:text-ink-300">módulos aprobados</p>
+            <p className="text-xs text-ink-500 dark:text-ink-300">{p.passedModules}</p>
           </div>
           <div className="rounded-lg bg-ink-50 dark:bg-dark-900 border divider p-3">
             <p className="text-xl font-bold text-ink-900 dark:text-ink-50">{data.averageBestScore ?? '—'}{data.averageBestScore != null && '%'}</p>
-            <p className="text-xs text-ink-500 dark:text-ink-300">puntaje promedio</p>
+            <p className="text-xs text-ink-500 dark:text-ink-300">{p.avgScore}</p>
           </div>
           <div className="rounded-lg bg-ink-50 dark:bg-dark-900 border divider p-3">
             <p className="text-xl font-bold text-ink-900 dark:text-ink-50">{data.totalAttempts}</p>
-            <p className="text-xs text-ink-500 dark:text-ink-300">intentos</p>
+            <p className="text-xs text-ink-500 dark:text-ink-300">{p.attempts}</p>
           </div>
         </div>
       </div>
 
       <div>
         <div className="flex justify-between text-xs text-ink-500 dark:text-ink-300 mb-1.5">
-          <span className="flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" /> Avance general</span>
+          <span className="flex items-center gap-1"><TrendingUp className="w-3.5 h-3.5" /> {p.overall}</span>
           <span>{data.completionPercentage}%</span>
         </div>
         <div className="h-2 rounded-full bg-ink-100 dark:bg-dark-800 overflow-hidden">
@@ -77,9 +81,9 @@ export default function LearningProgressPanel() {
               <StatusIcon status={m.status} />
               <span className="flex-1 min-w-0">
                 <span className="block text-sm text-ink-900 dark:text-ink-50 truncate">{m.title}</span>
-                <span className={`block text-xs ${STATUS_STYLE[m.status].className}`}>
-                  {STATUS_STYLE[m.status].label}
-                  {m.attempts > 0 && ` · mejor ${m.bestScore}% · ${m.attempts} ${m.attempts === 1 ? 'intento' : 'intentos'}`}
+                <span className={`block text-xs ${STATUS_CLASS[m.status]}`}>
+                  {p.status[m.status]}
+                  {m.attempts > 0 && p.best(m.bestScore, m.attempts)}
                 </span>
               </span>
             </Link>

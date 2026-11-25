@@ -26,6 +26,12 @@ public class Quiz {
     @Column(columnDefinition = "TEXT")
     private String description;
 
+    @Column(name = "title_en", length = 200)
+    private String titleEn;
+
+    @Column(name = "description_en", columnDefinition = "TEXT")
+    private String descriptionEn;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "content_id")
     private EducationalContent content;

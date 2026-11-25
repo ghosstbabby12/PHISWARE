@@ -25,7 +25,22 @@ public class CorsConfig {
         config.setAllowCredentials(true);
         config.setMaxAge(3600L);
 
+        // La extensión (popup y service worker) envía Origin: chrome-extension://<id>, moz-extension://...
+        // El id cambia por instalación, así que se admite por patrón, pero SOLO en endpoints
+        // públicos de solo lectura y sin credenciales: no expone sesiones ni datos de usuario.
+        CorsConfiguration extension = new CorsConfiguration();
+        extension.setAllowedOriginPatterns(new java.util.ArrayList<>(List.of(
+            "chrome-extension://*", "moz-extension://*", "safari-web-extension://*")));
+        allowedOrigins.forEach(extension::addAllowedOriginPattern);
+        extension.setAllowedMethods(List.of("GET", "OPTIONS"));
+        extension.setAllowedHeaders(List.of("Content-Type"));
+        extension.setAllowCredentials(false);
+        extension.setMaxAge(3600L);
+
+        // El primer patrón que coincide gana: los específicos van antes de "/**"
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/public/url/**", extension);
+        source.registerCorsConfiguration("/actuator/health", extension);
         source.registerCorsConfiguration("/**", config);
         return new CorsFilter(source);
     }

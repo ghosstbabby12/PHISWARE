@@ -49,7 +49,9 @@ public final class BrandCatalog {
         new Brand("mercadopago",  List.of("mercadopago.com", "mercadopago.com.co", "mercadopago.com.mx", "mercadopago.com.ar")),
         new Brand("mercadolibre", List.of("mercadolibre.com", "mercadolibre.com.co", "mercadolibre.com.mx", "mercadolibre.com.ar")),
         new Brand("dian",         List.of("dian.gov.co")),
-        new Brand("servientrega", List.of("servientrega.com"))
+        new Brand("servientrega", List.of("servientrega.com")),
+        // Propio: evita falsos positivos en nuestro dominio y detecta su suplantación
+        new Brand("phishware",    List.of("phishware.pro"))
     );
 
     private static final Map<String, Pattern> MENTION_PATTERNS = BRANDS.stream()

@@ -26,6 +26,7 @@ const BRANDS = [
   { name: 'microsoft', official: ['microsoft.com', 'live.com', 'outlook.com', 'office.com'] },
   { name: 'apple', official: ['apple.com', 'icloud.com'] },
   { name: 'netflix', official: ['netflix.com'] },
+  { name: 'phishware', official: ['phishware.pro'] },
 ];
 
 const HIGH_RISK_TLDS = ['tk', 'ml', 'ga', 'cf', 'gq', 'xyz', 'top', 'click', 'loan', 'win', 'download', 'stream', 'party', 'review', 'icu', 'cyou', 'buzz', 'rest', 'monster', 'sbs', 'cfd', 'zip', 'mov', 'country', 'kim', 'work', 'support'];
@@ -131,7 +132,8 @@ function classifyLocal(rawUrl) {
   if (HIGH_RISK_TLDS.includes(tld)) {
     push('HIGH_RISK_TLD', `The domain uses a TLD frequently linked to malicious activity: .${tld}`, 'MEDIUM', 15);
   }
-  if (KEYWORDS.some(k => rawUrl.toLowerCase().includes(k))) {
+  // Igual que el backend: /login o /account en un dominio oficial no es señal de phishing
+  if (!seal.official && KEYWORDS.some(k => rawUrl.toLowerCase().includes(k))) {
     push('PHISHING_KEYWORDS', 'The URL contains urgency/verification keywords', 'MEDIUM', 15);
   }
   if (rawUrl.length > 150) push('EXCESSIVE_URL_LENGTH', 'The URL is unusually long', 'LOW', 5);

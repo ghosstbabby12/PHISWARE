@@ -3,7 +3,7 @@ export type Lang = 'es' | 'en'
 export const STRINGS = {
   es: {
     nav: { dashboard: 'Dashboard', analysis: 'Analizar URL', history: 'Historial', education: 'Educación', alerts: 'Alertas', report: 'Reportar', profile: 'Perfil', settings: 'Configuración', admin: 'Administración', logout: 'Cerrar sesión' },
-    common: { retry: 'Reintentar', cancel: 'Cancelar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', viewAll: 'Ver todo', back: 'Volver', save: 'Guardar', level: 'Nivel', points: 'pts' },
+    common: { retry: 'Reintentar', cancel: 'Cancelar', confirm: 'Confirmar', close: 'Cerrar', loading: 'Cargando…', viewAll: 'Ver todo', back: 'Volver', save: 'Guardar', level: 'Nivel', points: 'pts', tagline: 'Protección Inteligente' },
     edu: {
       title: 'Módulo Educativo',
       subtitle: 'Fortalece tu cultura de ciberseguridad con nuestros recursos',
@@ -100,7 +100,7 @@ export const STRINGS = {
       b2t: 'Análisis de URL', b2d: 'Veredicto claro con evidencia: fuentes consultadas, riesgos y recomendaciones.',
       b3t: 'Protección proactiva', b3d: 'Alertas oportunas e historial para actuar antes de comprometer tu información.',
       t1: 'Veredicto basado en evidencia real', t2: 'Tus credenciales nunca se exponen en el análisis', t3: 'Web, extensión de navegador y Android',
-      preview: 'Vista previa del análisis', previewLink: 'Enlace', previewSafe: 'Seguro', previewRisk: 'Riesgo', previewSources: 'Fuentes',
+      preview: 'Vista previa del análisis', previewLink: 'Enlace', previewSafe: 'Seguro', previewRisk: 'Riesgo', previewSources: 'Fuentes', sourcesOf: (a: number, b: number) => `${a} de ${b}`,
       previewNote: 'Ilustración del flujo real: pega un enlace, obtén veredicto, evidencia y recomendaciones.',
       footer: 'Proyecto académico — Sistema de Detección y Prevención de Phishing',
     },
@@ -306,7 +306,7 @@ export const STRINGS = {
   },
   en: {
     nav: { dashboard: 'Dashboard', analysis: 'Analyze URL', history: 'History', education: 'Education', alerts: 'Alerts', report: 'Report', profile: 'Profile', settings: 'Settings', admin: 'Admin', logout: 'Log out' },
-    common: { retry: 'Retry', cancel: 'Cancel', confirm: 'Confirm', close: 'Close', loading: 'Loading…', viewAll: 'View all', back: 'Back', save: 'Save', level: 'Level', points: 'pts' },
+    common: { retry: 'Retry', cancel: 'Cancel', confirm: 'Confirm', close: 'Close', loading: 'Loading…', viewAll: 'View all', back: 'Back', save: 'Save', level: 'Level', points: 'pts', tagline: 'Smart Protection' },
     edu: {
       title: 'Education',
       subtitle: 'Strengthen your cybersecurity culture with our resources',
@@ -403,7 +403,7 @@ export const STRINGS = {
       b2t: 'URL analysis', b2d: 'Clear verdict with evidence: sources consulted, risks and recommendations.',
       b3t: 'Proactive protection', b3d: 'Timely alerts and history so you can act before your data is at risk.',
       t1: 'Verdict based on real evidence', t2: 'Your credentials are never exposed during analysis', t3: 'Web, browser extension and Android',
-      preview: 'Analysis preview', previewLink: 'Link', previewSafe: 'Safe', previewRisk: 'Risk', previewSources: 'Sources',
+      preview: 'Analysis preview', previewLink: 'Link', previewSafe: 'Safe', previewRisk: 'Risk', previewSources: 'Sources', sourcesOf: (a: number, b: number) => `${a} of ${b}`,
       previewNote: 'How the real flow works: paste a link, get a verdict, evidence and recommendations.',
       footer: 'Academic project — Phishing Detection and Prevention System',
     },

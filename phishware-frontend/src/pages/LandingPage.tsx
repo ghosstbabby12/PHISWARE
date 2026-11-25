@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom'
 import { Search, ShieldCheck, BellRing, ArrowRight, CheckCircle } from 'lucide-react'
 import Logo from '@/components/common/Logo'
 import LanguageToggle from '@/components/common/LanguageToggle'
+import ThemeToggle from '@/components/common/ThemeToggle'
 import { useLang } from '@/i18n/LanguageContext'
 
 export default function LandingPage() {
@@ -21,6 +22,7 @@ export default function LandingPage() {
           <Logo size={32} />
           <div className="flex items-center gap-2">
             <LanguageToggle compact />
+            <ThemeToggle compact />
             <Link to="/login" className="btn-ghost hidden sm:inline-flex">{t.landing.login}</Link>
             <Link to="/register" className="btn-primary !px-5 !py-2">{t.landing.start}</Link>
           </div>
@@ -71,7 +73,7 @@ export default function LandingPage() {
                 {[
                   { k: t.landing.previewSafe, v: '✓', c: 'text-success-600' },
                   { k: t.landing.previewRisk, v: '12 / 100', c: 'text-ink-900 dark:text-ink-50' },
-                  { k: t.landing.previewSources, v: '3 de 3', c: 'text-ink-900 dark:text-ink-50' },
+                  { k: t.landing.previewSources, v: t.landing.sourcesOf(3, 3), c: 'text-ink-900 dark:text-ink-50' },
                 ].map((s) => (
                   <div key={s.k} className="rounded-xl border divider px-3 py-2.5 text-center">
                     <p className="text-[11px] text-ink-500 dark:text-ink-300 font-medium">{s.k}</p>
@@ -96,8 +98,8 @@ export default function LandingPage() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mt-10">
             {BENEFITS.map(({ icon: Icon, title, desc }) => (
               <div key={title} className="card-hover">
-                <div className="p-2.5 bg-primary-100 rounded-xl w-fit mb-4 border border-primary-600/10">
-                  <Icon className="w-5 h-5 text-primary-700" />
+                <div className="p-2.5 bg-primary-100 dark:bg-primary-600/20 rounded-xl w-fit mb-4 border border-primary-600/10 dark:border-primary-400/20">
+                  <Icon className="w-5 h-5 text-primary-700 dark:text-primary-300" />
                 </div>
                 <h3 className="font-semibold text-ink-900 dark:text-ink-50 mb-1.5">{title}</h3>
                 <p className="text-sm text-ink-500 dark:text-ink-300 leading-relaxed">{desc}</p>

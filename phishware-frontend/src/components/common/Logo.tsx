@@ -1,4 +1,5 @@
 import clsx from 'clsx'
+import { useLang } from '@/i18n/LanguageContext'
 
 interface Props {
   size?: number
@@ -9,6 +10,7 @@ interface Props {
 
 /** Identidad PHISHWARE: escudo geometrico + enlace verificado. Monocromo y legible en pequeno. */
 export default function Logo({ size = 36, showWordmark = true, dark = false, className }: Props) {
+  const { t } = useLang()
   return (
     <span className={clsx('inline-flex items-center gap-2.5', className)}>
       <img
@@ -24,7 +26,7 @@ export default function Logo({ size = 36, showWordmark = true, dark = false, cla
             PHISHWARE
           </span>
           <span className={clsx('text-[11px] font-medium', dark ? 'text-white/60' : 'text-ink-500 dark:text-ink-300')}>
-            Protección Inteligente
+            {t.common.tagline}
           </span>
         </span>
       )}

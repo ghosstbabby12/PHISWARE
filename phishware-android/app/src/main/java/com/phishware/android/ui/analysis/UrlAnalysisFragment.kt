@@ -18,6 +18,7 @@ import com.phishware.android.viewmodel.UrlAnalysisViewModel
 import javax.inject.Inject
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
+import com.phishware.android.ui.TextClean
 
 @AndroidEntryPoint
 class UrlAnalysisFragment : Fragment() {
@@ -113,7 +114,7 @@ class UrlAnalysisFragment : Fragment() {
             else         -> getString(R.string.analysis_analyzed)
         }
         RiskUi.applyBadge(binding.tvRiskLevel, result.riskLevel, label)
-        binding.tvRiskMessage.text = result.riskMessage.orEmpty()
+        binding.tvRiskMessage.text = TextClean.plain(result.riskMessage)
         binding.tvDomain.text = getString(R.string.analysis_domain_fmt, result.domain.orEmpty())
         binding.tvScore.text = getString(R.string.analysis_score_fmt, result.riskScore)
         binding.tvAnalysisTime.text = getString(R.string.analysis_time_fmt, result.analysisTimeMs ?: 0)
@@ -126,7 +127,7 @@ class UrlAnalysisFragment : Fragment() {
             binding.tvThreats.visibility = View.GONE
         }
 
-        binding.tvRecommendations.text = result.recommendations.orEmpty().joinToString("\n") { "• $it" }
+        binding.tvRecommendations.text = result.recommendations.orEmpty().map { TextClean.plain(it) }.filter { it.isNotBlank() }.joinToString("\n") { "• $it" }
     }
 
     override fun onDestroyView() {

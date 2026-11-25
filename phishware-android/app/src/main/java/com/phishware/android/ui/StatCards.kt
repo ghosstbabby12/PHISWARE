@@ -7,6 +7,7 @@ import android.view.View
 import android.view.animation.DecelerateInterpolator
 import android.widget.ProgressBar
 import android.widget.TextView
+import androidx.annotation.ColorInt
 import androidx.core.widget.ImageViewCompat
 import com.phishware.android.databinding.ItemStatCardBinding
 
@@ -16,11 +17,14 @@ import com.phishware.android.databinding.ItemStatCardBinding
  */
 object StatCards {
 
-    fun bindStatic(card: ItemStatCardBinding, label: Int, icon: Int, color: String, showBar: Boolean = true) {
+    fun bindStatic(card: ItemStatCardBinding, label: Int, icon: Int, color: String, showBar: Boolean = true) =
+        bindStatic(card, label, icon, Color.parseColor(color), showBar)
+
+    fun bindStatic(card: ItemStatCardBinding, label: Int, icon: Int, @ColorInt color: Int, showBar: Boolean) {
         card.tvStatLabel.setText(label)
         card.ivStatIcon.setImageResource(icon)
-        ImageViewCompat.setImageTintList(card.ivStatIcon, ColorStateList.valueOf(Color.parseColor(color)))
-        card.barStat.progressTintList = ColorStateList.valueOf(Color.parseColor(color))
+        ImageViewCompat.setImageTintList(card.ivStatIcon, ColorStateList.valueOf(color))
+        card.barStat.progressTintList = ColorStateList.valueOf(color)
         card.barStat.visibility = if (showBar) View.VISIBLE else View.GONE
     }
 

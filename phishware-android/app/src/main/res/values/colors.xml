@@ -43,4 +43,6 @@
     <color name="proton_pill">#B42345</color>
     <color name="proton_on_brand">#FFFFFF</color>
     <color name="proton_on_brand_muted">#F2C9D3</color>
+    <color name="dock_bg">#F2FFFFFF</color>
+    <color name="dock_stroke">#CCFFFFFF</color>
 </resources>

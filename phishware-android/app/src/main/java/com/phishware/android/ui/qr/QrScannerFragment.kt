@@ -44,6 +44,7 @@ import kotlinx.coroutines.launch
 import java.util.concurrent.ExecutorService
 import java.util.concurrent.Executors
 import javax.inject.Inject
+import com.phishware.android.ui.TextClean
 
 /**
  * Flujo QR:
@@ -401,10 +402,10 @@ class QrScannerFragment : Fragment() {
         binding.barRisk.progressTintList = ColorStateList.valueOf(color)
         StatCards.animateProgress(binding.barRisk, r.riskScore.toInt().coerceIn(0, 100))
 
-        val tips = r.recommendations.orEmpty().take(2).joinToString("\n") { "• $it" }
+        val tips = r.recommendations.orEmpty().map { TextClean.plain(it) }.filter { it.isNotBlank() }.take(2).joinToString("\n") { "• $it" }
         binding.tvDetail.text = listOf(
             getString(R.string.qr_score_fmt, r.riskScore.toInt()),
-            r.riskMessage.orEmpty(),
+            TextClean.plain(r.riskMessage),
             tips
         ).filter { it.isNotBlank() }.joinToString("\n")
         setStatus(getString(R.string.qr_analysis_ready_fmt, label))
@@ -434,7 +435,7 @@ class QrScannerFragment : Fragment() {
     // ---------- estadísticas ----------
 
     private fun setupStatCards() {
-        StatCards.bindStatic(binding.statTotal, R.string.dash_total, R.drawable.ic_analyze, "#790D2B", showBar = false)
+        StatCards.bindStatic(binding.statTotal, R.string.dash_total, R.drawable.ic_analyze, androidx.core.content.ContextCompat.getColor(requireContext(), R.color.proton_primary), false)
         StatCards.bindStatic(binding.statSafe, R.string.dash_safe, R.drawable.ic_stat_check, RiskUi.SAFE)
         StatCards.bindStatic(binding.statSusp, R.string.dash_susp, R.drawable.ic_stat_warning, RiskUi.SUSPICIOUS)
         StatCards.bindStatic(binding.statDanger, R.string.dash_danger, R.drawable.ic_stat_danger, RiskUi.DANGEROUS)

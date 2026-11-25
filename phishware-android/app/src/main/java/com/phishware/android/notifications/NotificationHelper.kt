@@ -14,6 +14,7 @@ import dagger.hilt.android.qualifiers.ApplicationContext
 import javax.inject.Inject
 import javax.inject.Singleton
 import kotlin.random.Random
+import com.phishware.android.ui.TextClean
 
 /** Notificaciones enriquecidas estilo iOS: icono por severidad + acciones Ver/Reportar/Ignorar. */
 @Singleton
@@ -110,7 +111,7 @@ class NotificationHelper @Inject constructor(
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
         )
         val lines = mutableListOf("$domain · riesgo ${"%.0f".format(score)}/100")
-        firstTip?.let { lines.add("• $it") }
+        firstTip?.let { TextClean.plain(it) }?.takeIf { it.isNotBlank() }?.let { lines.add("• $it") }
         if (!principle.isNullOrBlank() && principle != "NONE") {
             lines.add("• " + context.getString(R.string.notif_principle_fmt, principle))
         }

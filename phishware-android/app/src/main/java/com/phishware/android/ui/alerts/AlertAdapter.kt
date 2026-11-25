@@ -8,6 +8,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.phishware.android.data.remote.AlertDto
 import com.phishware.android.databinding.ItemAlertRowBinding
 import com.phishware.android.ui.RiskUi
+import com.phishware.android.ui.TextClean
+import com.phishware.android.ui.Labels
 
 class AlertAdapter(private val onClick: (AlertDto) -> Unit) : RecyclerView.Adapter<AlertAdapter.VH>() {
 
@@ -33,11 +35,11 @@ class AlertAdapter(private val onClick: (AlertDto) -> Unit) : RecyclerView.Adapt
         private val onClick: (AlertDto) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: AlertDto) {
-            binding.tvTitle.text = item.title
-            binding.tvMessage.text = item.message
-            binding.tvTime.text = item.createdAt
+            binding.tvTitle.text = TextClean.plain(item.title)
+            binding.tvMessage.text = TextClean.plain(item.message)
+            binding.tvTime.text = Labels.dateTime(item.createdAt)
             binding.dotUnread.visibility = if (item.isRead) View.GONE else View.VISIBLE
-            RiskUi.applyBadge(binding.tvBadge, item.severity, item.severity)
+            RiskUi.applyBadge(binding.tvBadge, item.severity, Labels.severity(binding.root.context, item.severity))
             binding.vSeverity.backgroundTintList =
                 android.content.res.ColorStateList.valueOf(Color.parseColor(RiskUi.colorFor(item.severity)))
             binding.root.setOnClickListener { onClick(item) }

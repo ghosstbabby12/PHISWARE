@@ -296,4 +296,9 @@ Cuando alguien te envíe un enlace por WhatsApp, Instagram, SMS o correo, PHISHW
     <string name="dash_qa_alerts_d">Revisa tus últimas advertencias</string>
     <string name="dash_qa_alerts_unread_fmt">%1$d alertas sin leer</string>
     <string name="dash_qa_history_d">Todo lo que has analizado</string>
+    <string name="nav_home">Inicio</string>
+    <string name="sev_critical">Crítica</string>
+    <string name="sev_high">Alta</string>
+    <string name="sev_medium">Media</string>
+    <string name="sev_low">Baja</string>
 </resources>

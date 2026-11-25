@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.phishware.android.data.model.EducationDto
 import com.phishware.android.databinding.ItemEducationFeaturedBinding
+import com.phishware.android.ui.Labels
 
 class EducationFeaturedAdapter(private val onClick: (EducationDto) -> Unit) :
     RecyclerView.Adapter<EducationFeaturedAdapter.VH>() {
@@ -32,7 +33,7 @@ class EducationFeaturedAdapter(private val onClick: (EducationDto) -> Unit) :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: EducationDto, position: Int) {
             binding.tvRank.text = (position + 1).toString()
-            binding.tvCategory.text = item.category?.uppercase().orEmpty().ifEmpty { "PHISHWARE" }
+            binding.tvCategory.text = Labels.category(item.category).uppercase()
             binding.tvTitle.text = item.title
             binding.root.setOnClickListener { onClick(item) }
         }

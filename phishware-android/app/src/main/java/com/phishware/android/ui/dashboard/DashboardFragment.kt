@@ -41,7 +41,7 @@ class DashboardFragment : Fragment() {
         binding.rvRecent.layoutManager = LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
         binding.rvRecent.adapter = recentAdapter
 
-        StatCards.bindStatic(binding.statTotal, R.string.dash_total, R.drawable.ic_analyze, "#790D2B", showBar = false)
+        StatCards.bindStatic(binding.statTotal, R.string.dash_total, R.drawable.ic_analyze, androidx.core.content.ContextCompat.getColor(requireContext(), R.color.proton_primary), false)
         StatCards.bindStatic(binding.statSafe, R.string.dash_safe, R.drawable.ic_stat_check, RiskUi.SAFE)
         StatCards.bindStatic(binding.statSusp, R.string.dash_susp, R.drawable.ic_stat_warning, RiskUi.SUSPICIOUS)
         StatCards.bindStatic(binding.statDanger, R.string.dash_danger, R.drawable.ic_stat_danger, RiskUi.DANGEROUS)

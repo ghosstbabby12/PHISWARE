@@ -296,4 +296,9 @@ When someone sends you a link on WhatsApp, Instagram, SMS or email, PHISHWARE ch
     <string name="dash_qa_alerts_d">Review your latest warnings</string>
     <string name="dash_qa_alerts_unread_fmt">%1$d unread alerts</string>
     <string name="dash_qa_history_d">Everything you have analyzed</string>
+    <string name="nav_home">Home</string>
+    <string name="sev_critical">Critical</string>
+    <string name="sev_high">High</string>
+    <string name="sev_medium">Medium</string>
+    <string name="sev_low">Low</string>
 </resources>

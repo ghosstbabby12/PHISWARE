@@ -14,6 +14,7 @@ import com.phishware.android.databinding.FragmentHistoryBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.phishware.android.ui.TextClean
 
 @AndroidEntryPoint
 class HistoryFragment : Fragment() {
@@ -25,9 +26,9 @@ class HistoryFragment : Fragment() {
         MaterialAlertDialogBuilder(requireContext())
             .setTitle(item.domain ?: item.originalUrl.orEmpty())
             .setMessage(
-                "${item.riskLevel} · ${"%.0f".format(item.riskScore)}/100\n\n" +
-                    (item.riskMessage ?: "") +
-                    (if (!item.recommendations.isNullOrEmpty()) "\n\n" + item.recommendations.orEmpty().joinToString("\n") { "• $it" } else "")
+                "${com.phishware.android.ui.Labels.risk(requireContext(), item.riskLevel)} · ${"%.0f".format(item.riskScore)}/100\n\n" +
+                    TextClean.plain(item.riskMessage) +
+                    (if (!item.recommendations.isNullOrEmpty()) "\n\n" + item.recommendations.orEmpty().map { TextClean.plain(it) }.filter { it.isNotBlank() }.joinToString("\n") { "• $it" } else "")
             )
             .setPositiveButton(getString(R.string.common_close), null)
             .show()

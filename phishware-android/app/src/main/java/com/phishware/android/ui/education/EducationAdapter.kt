@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.phishware.android.data.model.EducationDto
 import com.phishware.android.databinding.ItemEducationRowBinding
+import com.phishware.android.ui.Labels
 
 class EducationAdapter(
     private val onRead: (EducationDto) -> Unit,
@@ -34,7 +35,7 @@ class EducationAdapter(
         private val onQuiz: (EducationDto) -> Unit
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: EducationDto) {
-            binding.tvCategory.text = item.category?.uppercase().orEmpty().ifEmpty { "PHISHWARE" }
+            binding.tvCategory.text = Labels.category(item.category).uppercase()
             binding.tvTitle.text = item.title
             binding.tvSummary.text = item.summary.orEmpty()
             binding.root.setOnClickListener { onRead(item) }

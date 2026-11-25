@@ -14,6 +14,7 @@ import com.phishware.android.databinding.FragmentAlertsBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.phishware.android.ui.TextClean
 
 /** Alertas generadas por SMS/QR/correo o analisis manual (backend /alerts). */
 @AndroidEntryPoint
@@ -26,9 +27,9 @@ class AlertsFragment : Fragment() {
             lifecycleScope.launch { repository.markAlertRead(alert.id); load() }
         }
         MaterialAlertDialogBuilder(requireContext())
-            .setTitle(alert.title)
+            .setTitle(TextClean.plain(alert.title))
             .setMessage(
-                alert.message + (if (alert.recommendations.isNotEmpty()) "\n\n" + alert.recommendations.joinToString("\n") { "• $it" } else "")
+                TextClean.plain(alert.message) + (if (alert.recommendations.isNotEmpty()) "\n\n" + alert.recommendations.map { TextClean.plain(it) }.filter { it.isNotBlank() }.joinToString("\n") { "• $it" } else "")
             )
             .setPositiveButton(getString(R.string.common_close), null)
             .show()

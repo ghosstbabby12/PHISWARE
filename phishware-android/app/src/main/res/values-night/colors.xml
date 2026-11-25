@@ -41,5 +41,7 @@
     <color name="proton_pink">#2A1620</color>
     <color name="proton_pill">#E0607E</color>
     <color name="proton_on_brand">#FFFFFF</color>
-    <color name="proton_on_brand_muted">#F2C9D3</color>
+    <color name="proton_on_brand_muted">#FFE4EB</color>
+    <color name="dock_bg">#F20F172A</color>
+    <color name="dock_stroke">#33FFFFFF</color>
 </resources>

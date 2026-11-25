@@ -15,6 +15,7 @@ import com.phishware.android.databinding.FragmentEducationBinding
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import com.phishware.android.ui.TextClean
 
 @AndroidEntryPoint
 class EducationFragment : Fragment() {
@@ -73,7 +74,7 @@ class EducationFragment : Fragment() {
             repository.getEducationDetail(slug).onSuccess {
                 MaterialAlertDialogBuilder(requireContext())
                     .setTitle(it.title)
-                    .setMessage((it.summary.orEmpty() + "\n\n" + it.content.orEmpty()).take(1500))
+                    .setMessage(TextClean.rich(it.content?.takeIf { c -> c.isNotBlank() } ?: it.summary, it.title))
                     .setPositiveButton(getString(R.string.common_close), null)
                     .show()
             }.onFailure { Snackbar.make(binding.root, it.message ?: getString(R.string.common_error), Snackbar.LENGTH_LONG).show() }

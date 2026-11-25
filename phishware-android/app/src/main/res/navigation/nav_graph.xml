@@ -7,7 +7,7 @@
     <fragment
         android:id="@+id/dashboard_fragment"
         android:name="com.phishware.android.ui.dashboard.DashboardFragment"
-        android:label="Inicio" />
+        android:label="@string/nav_home" />
 
     <fragment
         android:id="@+id/url_analysis_fragment"

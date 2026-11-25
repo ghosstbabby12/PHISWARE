@@ -7,6 +7,7 @@ import com.phishware.android.R
 import com.phishware.android.data.model.UrlAnalysisResponse
 import com.phishware.android.databinding.ItemHistoryRowBinding
 import com.phishware.android.ui.RiskUi
+import com.phishware.android.ui.Labels
 
 class HistoryAdapter(private val onClick: (UrlAnalysisResponse) -> Unit) :
     RecyclerView.Adapter<HistoryAdapter.VH>() {
@@ -34,8 +35,8 @@ class HistoryAdapter(private val onClick: (UrlAnalysisResponse) -> Unit) :
     ) : RecyclerView.ViewHolder(binding.root) {
         fun bind(item: UrlAnalysisResponse) {
             binding.tvDomain.text = item.domain ?: item.originalUrl.orEmpty()
-            binding.tvMeta.text = "${"%.0f".format(item.riskScore)}/100 · ${item.analyzedAt.orEmpty()}"
-            RiskUi.applyBadge(binding.tvBadge, item.riskLevel, item.riskLevel.orEmpty())
+            binding.tvMeta.text = "${"%.0f".format(item.riskScore)}/100 · ${Labels.dateTime(item.analyzedAt)}"
+            RiskUi.applyBadge(binding.tvBadge, item.riskLevel, Labels.risk(binding.root.context, item.riskLevel))
             binding.ivRiskIcon.setImageResource(
                 when (item.riskLevel) {
                     "DANGEROUS" -> R.drawable.ic_stat_danger

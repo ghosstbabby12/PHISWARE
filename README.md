@@ -52,7 +52,7 @@ Requiere Android 8.0 (API 26) o superior.
 
 ### ¿Por qué PHISHWARE?
 
-El phishing es responsable del **36% de todos los ciberataques** según IBM Security. Las víctimas a menudo no distinguen sitios falsos de legítimos. PHISHWARE aborda este problema desde dos ángulos:
+El phishing es una de las amenazas digitales más frecuentes y peligrosas en la actualidad, y afecta tanto a usuarios individuales como a organizaciones públicas y privadas. La falta de conocimiento sobre cómo identificar enlaces maliciosos, dominios fraudulentos o mensajes engañosos facilita el robo de información sensible y de credenciales de acceso. PHISHWARE aborda este problema desde dos ángulos:
 
 1. **Detección técnica**: Análisis automatizado con APIs de seguridad profesionales
 2. **Educación**: Contenido didáctico que fortalece la cultura de ciberseguridad
@@ -120,15 +120,15 @@ Desarrollar una aplicación web y Android para detectar y prevenir ataques de ph
 ### Backend
 | Tecnología | Versión | Propósito |
 |-----------|---------|-----------|
-| Java | 21 | Lenguaje principal |
-| Spring Boot | 3.2.5 | Framework web |
-| Spring Security | 6.x | Autenticación/Autorización |
-| Spring WebFlux | 6.x | Clientes HTTP reactivos |
-| Hibernate/JPA | 6.x | ORM |
-| Flyway | 10.x | Migraciones de BD |
+| Java | 17 | Lenguaje principal |
+| Spring Boot | 3.5.16 | Framework web |
+| Spring Security | 6.5 | Autenticación/Autorización |
+| Spring WebFlux | 6.2 | Clientes HTTP reactivos |
+| Hibernate/JPA | 6.6 | ORM |
+| Flyway | 11.7 | Migraciones de BD |
 | jjwt | 0.12.5 | Tokens JWT |
 | MapStruct | 1.5.5 | Mapeo de objetos |
-| Lombok | Latest | Reducción de boilerplate |
+| Lombok | 1.18.46 | Reducción de boilerplate |
 | SpringDoc | 2.5.0 | Documentación Swagger |
 | JUnit 5 | 5.x | Testing |
 | Mockito | Latest | Mocks en tests |
@@ -569,7 +569,7 @@ npm run e2e                       # prueba en Chromium y Edge reales (necesita e
 ```bash
 cd phishware-frontend
 npm run i18n:check   # falla si falta una clave en es o en
-npx vitest run       # 17 tests (jsdom + Testing Library)
+npx vitest run       # 20 tests (jsdom + Testing Library)
 ```
 
 ---
@@ -581,6 +581,7 @@ npx vitest run       # 17 tests (jsdom + Testing Library)
 | `DB_USERNAME` | Usuario PostgreSQL | `phishware` |
 | `DB_PASSWORD` | Contraseña PostgreSQL | *Sin valor por defecto (requerida)* |
 | `JWT_SECRET` | Clave secreta JWT (min 32 chars) | *Sin valor por defecto (requerida)* |
+| `ADMIN_PASSWORD` | Contraseña del usuario `admin` (mín. 12 caracteres). Se aplica al arrancar; la contraseña semilla queda bloqueada (V10) | *Vacía: el admin semilla permanece bloqueado* |
 | `GOOGLE_SAFE_BROWSING_KEY` | API Key Google Safe Browsing | **Requerida** |
 | `VIRUSTOTAL_KEY` | API Key VirusTotal | **Requerida** |
 
@@ -604,9 +605,11 @@ mvn test jacoco:report
 # Reporte: target/site/jacoco/index.html
 ```
 
-**Tests incluidos:**
+**114 pruebas** (`mvn test`, 0 fallos), entre ellas:
 - `AuthServiceTest` — Registro, login, validaciones
 - `UrlAnalysisServiceTest` — Análisis URL, clasificación de riesgo, detección de amenazas
+- `NistThreatClassifierTest`, `OwaspComplianceValidatorTest`, `SafePageFetcherTest` — heurística, SSRF e inyección
+- `ContentLanguageTest`, `AdminPasswordInitializerTest` — contenido bilingüe y contraseña del admin por entorno
 
 ### Frontend (Vitest)
 
@@ -672,7 +675,7 @@ cd phishware-android
 - [x] Reportes comunitarios CONFIRMED como sexta fuente (`GET /public/blocklist`)
 - [x] Verificación de filtraciones con k-anonimato (`POST /security/password-check`)
 - [x] Principio de persuasión por indicador + 7 microlecciones + sello oficial + favicon
-- [x] Web: tema claro/oscuro, ES/EN completo (339+ claves), insignias, racha, admin con gráficas, 17 tests
+- [x] Web: tema claro/oscuro, ES/EN completo (339+ claves), insignias, racha, admin con gráficas, 20 tests
 - [x] Extensión MV3: heurística offline, fail-safe, blocklist cada 30 min, backend configurable, ES/EN
 - [x] Android: analizador de texto on-device, DayNight, EN por defecto, flavor `play` sin SMS
 - [x] CI (4 jobs), Docker multi-stage + compose, scripts de evaluación con dataset real y Wilcoxon
@@ -688,7 +691,7 @@ cd phishware-android
 
 **PHISHWARE** — Proyecto Académico-Profesional  
 Arquitectura: Clean Architecture · MVC · SOLID  
-Desarrollado con Java 17, Spring Boot 3, React 18, Kotlin
+Desarrollado con Java 17, Spring Boot 3.5, React 18, Kotlin
 
 APIs utilizadas:
 - Google Safe Browsing API — Google LLC

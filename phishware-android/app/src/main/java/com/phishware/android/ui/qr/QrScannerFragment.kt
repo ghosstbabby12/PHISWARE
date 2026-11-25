@@ -342,6 +342,7 @@ class QrScannerFragment : Fragment() {
     private fun onQrUrl(url: String) {
         lastUrl = url
         scanningPaused = true
+        binding.scanOverlay.locked = true
         stopCamera()
         setStatus(getString(R.string.qr_detected))
         binding.btnRescan.visibility = View.VISIBLE
@@ -351,6 +352,7 @@ class QrScannerFragment : Fragment() {
     /** QR sin URL (texto, WiFi, vCard…): se muestra, no es error. */
     private fun showNonUrlResult(raw: String?) {
         scanningPaused = true
+        binding.scanOverlay.locked = true
         stopCamera()
         binding.cardResult.visibility = View.VISIBLE
         binding.tvRiskLevel.background = null
@@ -437,6 +439,8 @@ class QrScannerFragment : Fragment() {
 
     private fun setupStatCards() {
         bindStatStatic(binding.statTotal, R.string.dash_total, R.drawable.ic_analyze, "#790D2B")
+        // El total no es una proporción: igual que en la web, sin barra.
+        binding.statTotal.barStat.visibility = View.GONE
         bindStatStatic(binding.statSafe, R.string.dash_safe, R.drawable.ic_stat_check, RiskUi.SAFE)
         bindStatStatic(binding.statSusp, R.string.dash_susp, R.drawable.ic_stat_warning, RiskUi.SUSPICIOUS)
         bindStatStatic(binding.statDanger, R.string.dash_danger, R.drawable.ic_stat_danger, RiskUi.DANGEROUS)
@@ -456,7 +460,7 @@ class QrScannerFragment : Fragment() {
                 binding.tvStatsOffline.visibility = View.GONE
                 val total = d.totalAnalyses
                 fun pct(n: Long) = if (total > 0) ((n * 100) / total).toInt() else 0
-                setStat(binding.statTotal, total, 100, getString(R.string.qr_stat_accumulated))
+                setStat(binding.statTotal, total, 0, getString(R.string.qr_stat_accumulated))
                 setStat(binding.statSafe, d.safeUrls, pct(d.safeUrls), getString(R.string.qr_stat_no_risk))
                 setStat(binding.statSusp, d.suspiciousUrls, pct(d.suspiciousUrls), getString(R.string.qr_stat_review))
                 setStat(

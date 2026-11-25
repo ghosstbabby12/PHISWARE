@@ -1,4 +1,10 @@
-const BACKEND_HEALTH = 'http://localhost:8080/api/actuator/health';
+const DEFAULT_BACKEND_ROOT = 'https://api.phishware.pro/api';
+
+// Usa el backend configurado en Opciones (nube por defecto)
+async function backendHealthUrl() {
+  const { backendRoot } = await chrome.storage.sync.get({ backendRoot: DEFAULT_BACKEND_ROOT });
+  return String(backendRoot || DEFAULT_BACKEND_ROOT).replace(/\/$/, '') + '/actuator/health';
+}
 
 function t(key) {
   return chrome.i18n.getMessage(key) || key;
@@ -27,7 +33,7 @@ async function checkBackend() {
   const dot    = document.getElementById('status-dot');
   const status = document.getElementById('backend-status');
   try {
-    const res = await fetch(BACKEND_HEALTH, { signal: AbortSignal.timeout(3000) });
+    const res = await fetch(await backendHealthUrl(), { signal: AbortSignal.timeout(5000) });
     if (res.ok) {
       dot.className = 'status-dot connected';
       status.textContent = t('popupBackendOn');

@@ -1,6 +1,6 @@
 'use strict';
 
-const DEFAULT_BACKEND_ROOT = 'http://localhost:8080/api';
+const DEFAULT_BACKEND_ROOT = 'https://api.phishware.pro/api';
 const input = document.getElementById('backendRoot');
 const status = document.getElementById('status');
 

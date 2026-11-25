@@ -1,6 +1,6 @@
 import { classifyLocal } from './heuristics.js';
 
-const DEFAULT_BACKEND_ROOT = 'http://localhost:8080/api';
+const DEFAULT_BACKEND_ROOT = 'https://api.phishware.pro/api';
 const CACHE_TTL = 5 * 60 * 1000; // 5 min
 const BLOCKLIST_ALARM = 'phishware-blocklist-refresh';
 const MAX_DNR_RULES = 100;

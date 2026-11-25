@@ -25,7 +25,7 @@
   "popupClear": {"message": "Clear alerts", "description": "Popup clear alerts button"},
   "optionsTitle": {"message": "PHISWARE Link Guard — Options", "description": "Options page title"},
   "optionsBackendLabel": {"message": "Backend URL", "description": "Options backend label"},
-  "optionsHelp": {"message": "Base URL of your PHISWARE backend (without /public/url/check). Default: http://localhost:8080/api", "description": "Options backend help"},
+  "optionsHelp": {"message": "Base URL of your PHISWARE backend (without /public/url/check). Default: https://api.phishware.pro/api (local: http://localhost:8080/api)", "description": "Options backend help"},
   "optionsSave": {"message": "Save", "description": "Options save button"},
   "principleLabel": {"message": "Principle", "description": "Persuasion principle label"},
   "principle_AUTHORITY": {"message": "Authority", "description": "Principle name"},
